@@ -1,0 +1,542 @@
+/* HomePage specific styles */
+.home-page {
+    text-align: right;
+    color: var(--text-color);
+}
+
+/* Section Common Styles */
+.homepage-section {
+    padding: 60px 0;
+}
+
+/* Hero Section */
+.hero-section {
+    background-color: var(--primary-bg-color);
+    padding: 80px 0;
+}
+
+.hero-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 30px;
+}
+
+.hero-content {
+    flex: 2;
+    min-width: 300px;
+    text-align: right;
+}
+
+.hero-content h1 {
+    font-size: 3.5em;
+    margin-bottom: 10px;
+    color: var(--heading-color);
+    line-height: 1.2;
+}
+
+.hero-content h3 {
+    font-size: 1.8em;
+    color: var(--accent-color-1);
+    margin-bottom: 30px;
+}
+
+.hero-image {
+    flex: 1;
+    min-width: 250px;
+    text-align: center;
+}
+
+.hero-image img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+.hero-cta .btn {
+    margin-left: 15px;
+    font-size: 1.1em;
+    padding: 12px 30px;
+    border-radius: 8px;
+}
+
+/* Teachers Section */
+.teachers-section {
+    background-color: var(--secondary-bg-color);
+    text-align: center;
+}
+
+.teachers-section h2, .courses-section h2, .academic-levels-section h2 {
+    font-size: 2.5em;
+    margin-bottom: 40px;
+    color: var(--heading-color);
+    text-align: center;
+    position: relative;
+}
+
+.teachers-section h2::after, .courses-section h2::after, .academic-levels-section h2::after {
+    content: '';
+    display: block;
+    width: 80px;
+    height: 4px;
+    background-color: var(--accent-color-1);
+    margin: 10px auto 0;
+    border-radius: 2px;
+}
+
+.teachers-filter {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+}
+
+.teachers-filter select, .teachers-filter .filter-btn {
+    padding: 10px 15px;
+    border-radius: 5px;
+    border: 1px solid var(--border-color);
+    background-color: var(--primary-bg-color);
+    color: var(--text-color);
+    font-family: 'Cairo', sans-serif;
+    font-size: 1em;
+}
+
+.teachers-filter select:focus {
+    border-color: var(--accent-color-1);
+    outline: none;
+}
+
+.teachers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+.teacher-card {
+    background-color: var(--primary-bg-color);
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid var(--border-color);
+}
+
+.teacher-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+}
+
+.teacher-card .teacher-image {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--heading-color);
+    margin-bottom: 15px;
+}
+
+.teacher-card h3 {
+    color: var(--accent-color-1);
+    font-size: 1.5em;
+    margin-bottom: 10px;
+}
+
+.teacher-card p {
+    color: var(--text-color);
+    font-size: 1em;
+    margin-bottom: 20px;
+    min-height: 40px;
+}
+
+.teacher-card .btn {
+    background-color: var(--accent-color-1);
+    color: var(--button-text-color);
+    padding: 8px 18px;
+    font-size: 0.9em;
+}
+
+/* Join as Teacher CTA */
+.join-as-teacher-cta {
+    background-color: var(--primary-bg-color);
+    padding: 40px;
+    border-radius: 10px;
+    margin-top: 50px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    border: 1px solid var(--border-color);
+}
+
+.join-as-teacher-cta h2 {
+    color: var(--heading-color);
+    font-size: 2em;
+    margin-bottom: 20px;
+}
+
+.join-as-teacher-cta .btn {
+    font-size: 1.1em;
+    padding: 12px 25px;
+}
+
+
+/* Courses Section */
+.courses-section {
+    background-color: var(--primary-bg-color);
+    text-align: center;
+}
+
+.courses-section .section-description {
+    max-width: 700px;
+    margin: 0 auto 50px;
+    color: var(--text-color);
+    font-size: 1.1em;
+}
+
+.courses-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+.course-card {
+    background-color: var(--secondary-bg-color);
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid var(--border-color);
+}
+
+.course-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+}
+
+.course-card .course-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    display: block;
+}
+
+.course-card .course-info {
+    padding: 20px;
+    text-align: right;
+}
+
+.course-card h3 {
+    color: var(--heading-color);
+    font-size: 1.6em;
+    margin-bottom: 10px;
+}
+
+.course-card p {
+    color: var(--text-color);
+    font-size: 0.95em;
+    margin-bottom: 20px;
+}
+
+.course-card .btn {
+    background-color: var(--accent-color-1);
+    color: var(--button-text-color);
+    padding: 10px 20px;
+    font-size: 1em;
+    width: 100%;
+}
+
+/* Academic Levels Section - قسم "مواد تفاهم" */
+.academic-levels-section {
+    background-color: var(--secondary-bg-color);
+    text-align: center;
+}
+
+/* Full Materials Grid - العرض الجديد لجميع المواد */
+.all-levels-materials-grid { /* <--- تم تغيير اسم الكلاس هنا */
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* لتقسيم الصفوف */
+    gap: 40px; /* مسافة بين الصفوف */
+    margin-top: 40px;
+}
+
+.level-group-card { /* بطاقة للصف بأكمله (مثل الصف الأول الثانوي) */
+    background-color: var(--primary-bg-color);
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border-color);
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 350px; /* ارتفاع أدنى للبطاقة عشان المحتوى يكون متناسق */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* إضافة تأثير للحركة الديناميكية */
+}
+
+.level-group-card:hover { /* تأثير ديناميكي عند التمرير */
+    transform: translateY(-8px); /* يتحرك لأعلى أكثر */
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5); /* ظل أكبر */
+}
+
+.level-group-card h3 { /* عنوان الصف (مثلاً الصف الأول الثانوي) */
+    color: var(--heading-color); /* يمكن تغيير هذا اللون ليتماشى مع صورة bassthalik.com */
+    font-size: 2em;
+    margin-bottom: 25px;
+    text-align: center;
+    position: relative;
+}
+
+.level-group-card h3::after { /* الخط تحت العنوان */
+    content: '';
+    display: block;
+    width: 60px;
+    height: 3px;
+    background-color: var(--accent-color-1);
+    margin: 10px auto 0;
+    border-radius: 2px;
+}
+
+.level-materials-container { /* حاوية للمواد داخل الصف */
+    flex-grow: 1;
+    overflow: hidden; /* إخفاء المحتوى الزائد في البداية */
+    max-height: 250px; /* ارتفاع أقصى للمحتوى الأصلي (أول 3 مواد) */
+    transition: max-height 0.5s ease-out; /* انتقال سلس لـ max-height */
+    padding-right: 10px; /* مسافة عشان السكرول بار */
+}
+
+.level-materials-container.show-all { /* عندما يتم عرض كل المواد */
+    max-height: 1000px; /* ارتفاع كبير كافي لعرض كل المواد */
+    overflow-y: auto; /* إظهار السكرول بار إذا لزم الأمر */
+}
+
+/* ستايل السكرول بار */
+.level-materials-container::-webkit-scrollbar {
+    width: 8px;
+}
+.level-materials-container::-webkit-scrollbar-track {
+    background: var(--primary-bg-color);
+    border-radius: 10px;
+}
+.level-materials-container::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 10px;
+}
+.level-materials-container::-webkit-scrollbar-thumb:hover {
+    background: var(--heading-color);
+}
+
+
+.level-group-card .subject-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    text-align: right;
+}
+
+.level-group-card .subject-list li {
+    padding: 5px 0;
+    border-bottom: 1px dotted rgba(var(--border-color-rgb), 0.5);
+    text-align: center;
+}
+
+.level-group-card .subject-list li:last-child {
+    border-bottom: none;
+}
+
+.level-group-card .subject-list li a {
+    color: var(--text-color);
+    font-size: 0.95em;
+    transition: color 0.3s ease, text-decoration 0.3s ease;
+    display: block;
+}
+
+.level-group-card .subject-list li a:hover {
+    color: var(--heading-color);
+    text-decoration: underline;
+}
+
+/* زر "عرض المزيد" للمواد */
+.view-more-materials-btn {
+    margin-top: 15px;
+    background-color: var(--accent-color-2);
+    color: var(--button-text-color);
+    padding: 8px 15px;
+    font-size: 0.9em;
+    border-radius: 5px;
+    width: 100%;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease; /* إضافة تأثيرات ديناميكية */
+}
+
+.view-more-materials-btn:hover {
+    background-color: rgba(var(--accent-color-2-rgb), 0.8);
+    transform: translateY(-3px); /* حركة لأعلى عند الهوفر */
+    box-shadow: 0 5px 10px rgba(var(--accent-color-2-rgb), 0.4); /* ظل عند الهوفر */
+}
+
+/* زر "عرض كل مواد الصف" (الزر السفلي) - تم حذفه من الكود */
+/* .level-group-card .view-level-btn { ... } */
+
+/* Join Team Section */
+.join-team-section {
+    background-color: var(--primary-bg-color);
+    padding: 60px 0;
+    margin-top: 40px;
+}
+
+.join-team-container {
+    display: flex;
+    align-items: center;
+    gap: 50px;
+    max-width: 1000px;
+    width: 90%;
+    margin: 0 auto;
+    padding: 30px;
+    background-color: var(--secondary-bg-color);
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+    flex-wrap: wrap;
+    order: 1;
+    border: 1px solid var(--border-color);
+}
+
+.join-team-content {
+    flex: 2;
+    min-width: 300px;
+    text-align: right;
+}
+
+.join-team-content h2 {
+    color: var(--accent-color-1);
+    font-size: 2.2em;
+    margin-bottom: 15px;
+}
+
+.join-team-content p {
+    color: var(--text-color);
+    line-height: 1.7;
+    margin-bottom: 30px;
+    font-size: 1.1em;
+}
+
+.join-team-btn {
+    background-color: var(--heading-color);
+    color: var(--button-text-color);
+    padding: 15px 30px;
+    font-size: 1.1em;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.join-team-btn:hover {
+    background-color: rgba(var(--heading-color-rgb), 0.8);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(var(--heading-color-rgb), 0.5);
+}
+
+.join-team-image {
+    flex: 1;
+    min-width: 250px;
+    text-align: center;
+}
+
+.join-team-image img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Footer (General, but duplicated here for clarity) */
+.app-footer {
+    background-color: var(--primary-bg-color);
+    color: var(--text-color);
+    padding: 30px 0;
+    text-align: center;
+    border-top: 1px solid var(--border-color);
+    margin-top: 50px;
+}
+
+.app-footer p {
+    margin-bottom: 15px;
+}
+
+.app-footer .footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.app-footer .footer-links li a {
+    color: var(--text-color);
+    transition: color 0.3s ease;
+}
+
+.app-footer .footer-links li a:hover {
+    color: var(--accent-color-1);
+}
+
+/* Responsive adjustments for HomePage */
+@media (max-width: 992px) {
+    .hero-section h1 {
+        font-size: 3em;
+    }
+    .hero-content h3 {
+        font-size: 1.5em;
+    }
+    .teachers-grid, .courses-grid, .levels-grid, .selected-materials-display {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .hero-container, .join-team-container {
+        flex-direction: column;
+        text-align: center;
+    }
+    .hero-content, .hero-image, .join-team-content, .join-team-image {
+        order: initial;
+        text-align: center;
+    }
+    .hero-cta {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .hero-cta .btn {
+        margin-left: 0;
+        width: 80%;
+    }
+    .teachers-filter, .academic-browse-filters {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .teachers-filter select, .teachers-filter .filter-btn, .academic-browse-filters select {
+        width: 100%;
+    }
+    .academic-browse-filters {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .academic-browse-filters select {
+        width: 100%;
+    }
+    /* New responsive for all-levels-materials-grid */
+    .all-levels-materials-grid {
+        grid-template-columns: 1fr; /* عمود واحد في الشاشات الصغيرة */
+    }
+    .level-group-card {
+        min-height: auto;
+        margin-bottom: 20px;
+    }
+    .level-materials-container {
+        max-height: none; /* إلغاء الـ max-height في الشاشات الصغيرة */
+        overflow-y: visible; /* إلغاء السكرول بار */
+        padding-right: 0;
+    }
+}

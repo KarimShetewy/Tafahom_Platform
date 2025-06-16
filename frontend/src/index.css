@@ -1,0 +1,89 @@
+/* Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
+
+/* Colors Variables */
+:root { /* Dark Theme (Default) - الوضع الليلي (الوضع الافتراضي) */
+    --primary-bg-color: #0c142b; /* خلفية أساسية داكنة جداً */
+    --secondary-bg-color: #1a223a; /* خلفية ثانوية أفتح قليلاً للبطاقات/الكونتينرات */
+    --text-color: #f0f2f5; /* لون النص الرئيسي فاتح */
+    --heading-color: #009465; /* لون العناوين الرئيسية (أخضر مائي) */
+    --accent-color-1: #e2613d; /* لون مميز/أزرار أساسية (برتقالي محمر) */
+    --accent-color-2: #96724a; /* لون ثانوي/حدود (بني فاتح) */
+    --border-color: #4b8357; /* لون الحدود/الفواصل (أخضر داكن) */
+    --button-text-color: #fff; /* لون نص الأزرار */
+    --error-color: #e2613d; /* لون رسائل الخطأ */
+    --error-color-rgb: 226, 97, 61; /* قيم RGB للون الخطأ */
+    --accent-color-1-rgb: 226, 97, 61; /* قيم RGB للون المميز */
+    --accent-color-2-rgb: 150, 114, 74; /* RGB للبني الفاتح */
+    --heading-color-rgb: 0, 148, 101; /* RGB للأخضر المائي */
+}
+
+.light-theme { /* Light Theme - الوضع النهاري */
+    --primary-bg-color: #f0f2f5; /* خلفية أساسية فاتحة جداً */
+    --secondary-bg-color: #ffffff; /* خلفية ثانوية للبطاقات/الكونتينرات */
+    --text-color: #333; /* لون النص الرئيسي داكن */
+    --heading-color: #1a223a; /* لون العناوين الرئيسية (أغمق قليلاً) */
+    --accent-color-1: #009465; /* لون مميز/أزرار أساسية (أخضر مائي) */
+    --accent-color-2: #e2613d; /* لون ثانوي/حدود (برتقالي محمر) */
+    --border-color: #96724a; /* لون الحدود/الفواصل (بني فاتح) */
+    --button-text-color: #fff;
+    --error-color: #e2613d;
+    --error-color-rgb: 226, 97, 61;
+    --accent-color-1-rgb: 0, 148, 101; /* RGB للأخضر المائي */
+    --accent-color-2-rgb: 226, 97, 61; /* RGB للبرتقالي المحمر */
+    --heading-color-rgb: 26, 34, 58; /* RGB للأزرق الداكن */
+}
+
+/* Global Styles - استخدام المتغيرات الجديدة */
+body {
+  margin: 0;
+  font-family: 'Cairo', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--primary-bg-color); /* استخدام متغير الخلفية الأساسية */
+  color: var(--text-color); /* استخدام متغير لون النص */
+  direction: rtl;
+  text-align: right;
+  transition: background-color 0.5s ease, color 0.5s ease; /* انتقال سلس عند تغيير الثيم */
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+/* Reset some default styles */
+* {
+    box-sizing: border-box;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--heading-color); /* استخدام متغير لون العناوين */
+    margin-bottom: 15px;
+}
+
+a {
+    color: var(--accent-color-1); /* الروابط بلون مميز */
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+}
+
+button {
+    cursor: pointer;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-family: 'Cairo', sans-serif;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    color: var(--button-text-color);
+}
+
+button:hover {
+    transform: translateY(-2px);
+}

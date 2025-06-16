@@ -1,0 +1,227 @@
+/* Register Page specific styles */
+.register-page {
+    text-align: right; /* محاذاة النص لليمين */
+    /* لون الخلفية العام سيأتي من index.css */
+    color: #f0f2f5; /* لون النص الأساسي */
+}
+
+/* Register Section */
+.register-section {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 80vh;
+    padding: 40px 0;
+}
+
+.register-container {
+    display: flex;
+    gap: 40px;
+    background-color: #1a223a; /* خلفية الكونتينر بلون أفتح */
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    flex-wrap: wrap;
+    max-width: 1000px; /* أقصى عرض للكونتينر */
+    width: 90%;
+}
+
+.register-form-wrapper {
+    flex: 2; /* النموذج يأخذ مساحة أكبر */
+    min-width: 300px;
+    order: 1; /* النموذج على اليسار في RTL */
+}
+
+.register-form-wrapper h2 {
+    color: #009465; /* لون عنوان النموذج */
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+/* Form Steps Indicator - مؤشر التقدم / أزرار الأقسام */
+.form-steps-indicator {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 30px;
+    background-color: #0c142b;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+}
+
+.step-button {
+    background-color: transparent;
+    color: #f0f2f5;
+    border: 1px solid #4b8357;
+    padding: 10px 15px;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    flex: 1;
+    margin: 0 5px;
+    font-weight: bold;
+}
+
+.step-button.active {
+    background-color: #e2613d;
+    color: #fff;
+    border-color: #e2613d;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(226, 97, 61, 0.4);
+}
+
+.step-button:hover:not(.active) {
+    background-color: #4b8357;
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+/* Form Step Content */
+.form-step h3 {
+    color: #96724a; /* عنوان القسم الفرعي بلون بني فاتح */
+    margin-bottom: 20px;
+    text-align: right;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #e0e0e0;
+    font-weight: bold;
+}
+
+.register-form input[type="text"],
+.register-form input[type="email"],
+.register-form input[type="password"],
+.register-form input[type="tel"],
+.register-form select,
+.register-form textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #4b8357;
+    border-radius: 5px;
+    background-color: #0c142b;
+    color: #f0f2f5;
+    font-size: 1em;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.register-form input[type="file"] {
+    color: #f0f2f5;
+    padding-top: 5px;
+}
+
+.register-form input:focus,
+.register-form select:focus,
+.register-form textarea:focus {
+    border-color: #e2613d;
+    box-shadow: 0 0 8px rgba(226, 97, 61, 0.5);
+    outline: none;
+}
+
+/* Style for textarea scrollbar */
+.register-form textarea::-webkit-scrollbar {
+    width: 8px;
+}
+.register-form textarea::-webkit-scrollbar-track {
+    background: #0c142b;
+    border-radius: 10px;
+}
+.register-form textarea::-webkit-scrollbar-thumb {
+    background: #4b8357;
+    border-radius: 10px;
+}
+.register-form textarea::-webkit-scrollbar-thumb:hover {
+    background: #009465;
+}
+
+/* Form Navigation Buttons (Previous/Next) */
+.form-nav-btn {
+    margin-top: 20px;
+    padding: 12px 25px;
+    font-size: 1em;
+    margin-left: 10px; /* مسافة بين الأزرار */
+}
+
+/* Submit Button (Last Step) */
+.submit-btn {
+    width: 100%;
+    padding: 15px;
+    font-size: 1.1em;
+    background-color: #e2613d;
+    color: #fff;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.submit-btn:hover {
+    background-color: #d15631;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(226, 97, 61, 0.4);
+}
+
+/* Has Account Link */
+.has-account-link {
+    margin-top: 25px;
+    text-align: center;
+    color: #e0e0e0;
+}
+
+.has-account-link a {
+    color: #009465;
+    font-weight: bold;
+}
+
+.has-account-link a:hover {
+    color: #e2613d;
+}
+
+/* Right Side Image Wrapper */
+.register-image-wrapper {
+    flex: 1; /* تأخذ مساحة أقل */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-width: 250px;
+    order: 2; /* الصورة على اليمين في تخطيط RTL */
+}
+
+.registration-illustration-img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.image-title {
+    margin-top: 20px;
+    font-size: 1.8em;
+    color: #009465; /* عنوان "طلب إنشاء حساب" على الصورة */
+    font-weight: 700;
+    text-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .register-container {
+        flex-direction: column;
+        padding: 20px;
+    }
+    .register-form-wrapper, .register-image-wrapper {
+        order: initial; /* إلغاء الترتيب الخاص بـ RTL عشان يكونوا فوق بعض عادي */
+    }
+    .form-steps-indicator {
+        flex-wrap: wrap; /* لجعل الأزرار تظهر في أكثر من سطر */
+        gap: 5px;
+    }
+    .step-button {
+        margin: 0;
+        flex-basis: 48%; /* عشان زرارين يظهروا في السطر الواحد */
+        font-size: 0.9em;
+    }
+}

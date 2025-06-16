@@ -1,0 +1,278 @@
+/* General App Container */
+.App {
+  text-align: right;
+}
+
+/* Container for consistent spacing */
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px 0;
+}
+
+/* Header & Navigation Bar */
+.app-header {
+    background-color: var(--primary-bg-color);
+    padding: 15px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar .logo {
+    display: flex;
+    align-items: center;
+}
+
+/* Logo styling */
+.navbar-logo {
+    height: 40px;
+    width: auto;
+    transition: transform 0.3s ease;
+}
+
+.navbar-logo:hover {
+    transform: scale(1.05);
+}
+
+.nav-links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 25px;
+}
+
+.nav-links li a {
+    color: var(--text-color);
+    font-weight: 400;
+    transition: color 0.3s ease;
+}
+
+.nav-links li a:hover {
+    color: var(--accent-color-1);
+    text-decoration: none;
+}
+
+.auth-buttons .btn {
+    margin-right: 10px;
+}
+
+/* Button Styles */
+.btn {
+    cursor: pointer;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-family: 'Cairo', sans-serif;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    color: var(--button-text-color);
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+}
+
+.btn-primary {
+    background-color: var(--accent-color-1);
+    color: var(--button-text-color);
+}
+
+.btn-primary:hover {
+    background-color: rgba(var(--accent-color-1-rgb), 0.8);
+    box-shadow: 0 4px 10px rgba(var(--accent-color-1-rgb), 0.4);
+}
+
+.btn-secondary {
+    background-color: transparent;
+    color: var(--heading-color);
+    border: 1px solid var(--heading-color);
+}
+
+.btn-secondary:hover {
+    background-color: var(--heading-color);
+    color: var(--button-text-color);
+    box-shadow: 0 4px 10px rgba(var(--heading-color-rgb), 0.4);
+}
+
+/* Main Content Styles */
+.main-content {
+    padding: 40px 0;
+}
+
+/* Footer Styles */
+.app-footer {
+    background-color: var(--primary-bg-color);
+    color: var(--text-color);
+    padding: 30px 0;
+    text-align: center;
+    border-top: 1px solid var(--border-color);
+    margin-top: 50px;
+}
+
+.app-footer p {
+    margin-bottom: 15px;
+}
+
+.app-footer .footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.app-footer .footer-links li a {
+    color: var(--text-color);
+    transition: color 0.3s ease;
+}
+
+.app-footer .footer-links li a:hover {
+    color: var(--accent-color-1);
+}
+
+/* Theme Toggle Button */
+.theme-toggle-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    background-color: var(--secondary-bg-color);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-radius: 25px;
+    padding: 10px 15px;
+    font-size: 0.9em;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease, border-color 0.3s ease;
+}
+
+.theme-toggle-button:hover {
+    background-color: var(--accent-color-2);
+    transform: translateY(-2px);
+    border-color: var(--accent-color-1);
+}
+
+/* Common Section Styling (for homepage, dashboards, forms) */
+section.homepage-section, .dashboard-content {
+    padding: 60px 0;
+}
+
+/* Common Form/Container Styles */
+.register-container, .login-container, .teacher-register-container, .team-register-container, .student-register-container,
+.teacher-card, .course-card, .material-section-card { /* level-group-card and level-track-card are in HomePage.css */
+    background-color: var(--secondary-bg-color);
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border-color);
+}
+
+.register-form input[type="text"],
+.register-form input[type="email"],
+.register-form input[type="password"],
+.register-form input[type="tel"],
+.register-form input[type="number"],
+.register-form input[type="url"],
+.register-form select,
+.register-form textarea,
+.login-form input[type="email"],
+.login-form input[type="password"],
+.teacher-register-form input, .teacher-register-form select, .teacher-register-form textarea,
+.student-register-form input, .student-register-form select, .student-register-form textarea,
+.team-register-form input, .team-register-form select, .team-register-form textarea,
+.academic-browse-filters select, .teachers-filter select {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    background-color: var(--primary-bg-color);
+    color: var(--text-color);
+    font-size: 1em;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.register-form input:focus, .login-form input:focus, .teacher-register-form input:focus,
+.student-register-form input:focus, .team-register-form input:focus, select:focus, textarea:focus {
+    border-color: var(--accent-color-1);
+    box-shadow: 0 0 8px rgba(var(--accent-color-1-rgb), 0.5);
+    outline: none;
+}
+
+.error-message, .error-message-box {
+    color: var(--error-color);
+    font-size: 0.9em;
+    margin-top: 5px;
+    display: block;
+}
+
+.error-message-box {
+    background-color: rgba(var(--error-color-rgb), 0.2);
+    padding: 10px 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: bold;
+    border: 1px solid var(--error-color);
+}
+
+/* Responsive adjustments (general) */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        gap: 15px;
+    }
+    .nav-links {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .auth-buttons {
+        margin-top: 15px;
+    }
+    .register-container, .login-container, .teacher-register-container, .team-register-container, .student-register-container {
+        flex-direction: column;
+        padding: 20px;
+    }
+    .register-image-wrapper, .register-form-wrapper, .login-image-wrapper, .login-form-wrapper,
+    .teacher-register-image-wrapper, .teacher-register-form-wrapper, .student-register-image-wrapper, .student-register-form-wrapper,
+    .team-register-image-wrapper, .team-register-form-wrapper {
+        order: initial;
+    }
+    .hero-container, .join-team-container {
+        flex-direction: column;
+        text-align: center;
+    }
+    .hero-content, .hero-image, .join-team-content, .join-team-image {
+        order: initial;
+        text-align: center;
+    }
+    .hero-cta {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .hero-cta .btn {
+        margin-left: 0;
+        width: 80%;
+    }
+    .teachers-filter, .academic-browse-filters {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .teachers-filter select, .teachers-filter .filter-btn, .academic-browse-filters select {
+        width: 100%;
+    }
+    .academic-browse-filters {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .academic-browse-filters select {
+        width: 100%;
+    }
+}

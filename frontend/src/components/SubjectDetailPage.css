@@ -1,0 +1,167 @@
+/* Subject Detail Page specific styles */
+.subject-detail-page {
+    text-align: right;
+    color: var(--text-color);
+}
+
+/* Subject Hero Section */
+.subject-hero-section {
+    background-color: var(--secondary-bg-color);
+    padding: 60px 0;
+    text-align: center;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.subject-hero-section h1 {
+    font-size: 3em;
+    color: var(--heading-color);
+    margin-bottom: 15px;
+}
+
+.subject-hero-section p {
+    font-size: 1.2em;
+    color: var(--text-color);
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Common Section Styling */
+.teachers-for-subject-section, .courses-for-subject-section {
+    padding: 50px 0;
+    background-color: var(--primary-bg-color);
+}
+
+.teachers-for-subject-section h2, .courses-for-subject-section h2 {
+    font-size: 2.2em;
+    color: var(--heading-color);
+    margin-bottom: 40px;
+    text-align: center;
+    position: relative;
+}
+
+.teachers-for-subject-section h2::after, .courses-for-subject-section h2::after {
+    content: '';
+    display: block;
+    width: 80px;
+    height: 4px;
+    background-color: var(--accent-color-1);
+    margin: 10px auto 0;
+    border-radius: 2px;
+}
+
+.teachers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+.teacher-card {
+    background-color: var(--secondary-bg-color);
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid var(--border-color);
+}
+
+.teacher-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+}
+
+.teacher-card .teacher-image {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--heading-color);
+    margin-bottom: 15px;
+}
+
+.teacher-card h3 {
+    color: var(--accent-color-1);
+    font-size: 1.5em;
+    margin-bottom: 10px;
+}
+
+.teacher-card p {
+    color: var(--text-color);
+    font-size: 1em;
+    margin-bottom: 20px;
+    min-height: 40px;
+}
+
+.courses-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+.course-card {
+    background-color: var(--secondary-bg-color);
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid var(--border-color);
+}
+
+.course-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+}
+
+.course-card .course-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    display: block;
+}
+
+.course-card .course-info {
+    padding: 20px;
+    text-align: right;
+}
+
+.course-card h3 {
+    color: var(--heading-color);
+    font-size: 1.6em;
+    margin-bottom: 10px;
+}
+
+.course-card p {
+    color: var(--text-color);
+    font-size: 0.95em;
+    margin-bottom: 20px;
+}
+
+.course-card .btn {
+    background-color: var(--accent-color-1);
+    color: var(--button-text-color);
+    padding: 10px 20px;
+    font-size: 1em;
+    width: 100%;
+}
+
+.subject-detail-content .error-message {
+    color: var(--error-color);
+    font-size: 1.1em;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.teacher-image, .course-image {
+    background-color: var(--border-color);
+}
+
+@media (max-width: 768px) {
+    .subject-hero-section h1 {
+        font-size: 2.5em;
+    }
+    .teachers-grid, .courses-grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+}

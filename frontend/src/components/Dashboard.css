@@ -1,0 +1,43 @@
+/* Dashboard Page Styling */
+.dashboard-page {
+    text-align: right;
+    color: var(--text-color);
+}
+
+.dashboard-content {
+    padding: 50px 0;
+    min-height: 70vh;
+    background-color: var(--secondary-bg-color); /* خلفية محتوى لوحة التحكم */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border-color); /* إضافة حد للداشبورد كونتينر */
+    border-radius: 10px;
+    margin: 40px auto; /* توسيط وإضافة مسافة */
+    max-width: 900px;
+    width: 90%;
+}
+
+.dashboard-content .container {
+    padding: 0; /* إلغاء البادينج الإضافي للكونتينر الداخلي */
+    text-align: center; /* محاذاة المحتوى في المنتصف داخل الكونتينر */
+}
+
+.dashboard-content h2 {
+    font-size: 2.5em;
+    color: var(--heading-color);
+    margin-bottom: 15px;
+}
+
+.dashboard-content h3 {
+    font-size: 1.8em;
+    color: var(--accent-color-1);
+    margin-bottom: 25px;
+}
+
+.dashboard-content p {
+    font-size: 1.1em;
+    color: var(--text-color);
+}
+
+/* يمكنك إضافة المزيد من التنسيقات هنا لمحتوى لوحات التحكم */
