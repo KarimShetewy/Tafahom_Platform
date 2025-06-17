@@ -1,0 +1,102 @@
+.teacher-add-course-page {
+    padding-bottom: 50px; /* لإعطاء مساحة للـ footer */
+}
+
+.teacher-add-course-page .main-content {
+    padding: 40px 20px;
+    background-color: var(--background-color-light); /* استخدم متغيرات الثيم */
+    min-height: calc(100vh - 120px); /* Adjust based on header/footer height */
+}
+
+.teacher-add-course-page .container {
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: var(--card-background-color);
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: var(--box-shadow);
+}
+
+.teacher-add-course-page h2 {
+    text-align: center;
+    color: var(--text-color-primary);
+    margin-bottom: 30px;
+    font-size: 2em;
+}
+
+.course-form .form-group {
+    margin-bottom: 20px;
+}
+
+.course-form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: var(--text-color-secondary);
+}
+
+.course-form input[type="text"],
+.course-form input[type="number"],
+.course-form textarea,
+.course-form select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background-color: var(--input-background-color);
+    color: var(--text-color-primary);
+    font-size: 1em;
+    box-sizing: border-box; /* Ensures padding doesn't increase width */
+}
+
+.course-form textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.course-form input[type="file"] {
+    padding: 5px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background-color: var(--input-background-color);
+    color: var(--text-color-primary);
+}
+
+.course-form .checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.course-form .checkbox-group input[type="checkbox"] {
+    width: auto; /* Override 100% width */
+    margin-right: 5px;
+}
+
+.course-form button.btn-primary {
+    width: 100%;
+    padding: 12px;
+    font-size: 1.1em;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+.alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}

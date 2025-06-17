@@ -1,26 +1,100 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import './TeacherRegistrationPage.css'; // لتطبيق التنسيقات الخاصة بالصفحة
-import TafahomLogo from '../assets/images/tafahom_logo.png'; // استيراد الشعار
-// يمكنك استخدام صورة مدرس مناسبة هنا
+import './TeacherRegistrationPage.css';
+import TafahomLogo from '../assets/images/tafahom_logo.png';
 import TeacherRegIllustration from '../assets/images/teacher_illustration.png'; 
 
-// خيارات الفئات/التخصصات (Category Choices) كما في الـ Backend models
-const CATEGORY_CHOICES = [
-    { value: '', label: 'اختر التخصص/المادة' },
-    { value: 'math', label: 'رياضيات' },
-    { value: 'physics', label: 'فيزياء' },
-    { value: 'chemistry', label: 'كيمياء' },
-    { value: 'arabic', label: 'لغة عربية' },
-    { value: 'english', label: 'لغة إنجليزية' },
-    // ... أضف كل الفئات المتاحة من الـ Backend (من users/models.py)
-];
+import academicStructure from '../constants/academicStructure'; 
 
 const GENDER_CHOICES = [
     { value: '', label: 'اختر الجنس' },
     { value: 'male', label: 'ذكر' },
     { value: 'female', label: 'أنثى' },
 ];
+
+// ****** تم تعديل كيفية بناء ALL_CATEGORIES_FOR_SELECT هنا ******
+// يجب أن تتطابق قيم الـ 'value' مع المفاتيح (keys) في CATEGORY_CHOICES في Django (users/models.py)
+// وليس الـ labels. لذلك، سنقوم بإنشاء خريطة بسيطة من الـ labels إلى الـ values.
+// أفضل طريقة هي استيراد CATEGORY_CHOICES مباشرة من ملف constants مشترك
+// ولكن بما أنك لم ترسل ملف constants منفصل بعد، سنقوم بإنشاء قائمة بناءً على القيم المتوقعة في Django.
+// هذا يتطلب معرفة كيف تم تعريف CATEGORY_CHOICES في users/models.py
+// بناءً على users/models.py الذي أرسلته سابقاً، المفاتيح هي:
+/*
+CATEGORY_CHOICES = (
+    ('arabic_lang', 'اللغة العربية'),
+    ('english_lang', 'اللغة الإنجليزية'),
+    ('french_lang', 'اللغة الفرنسية'),
+    ('german_lang', 'اللغة الألمانية'),
+    ('history', 'التاريخ'),
+    ('math', 'الرياضيات'),
+    ('physics', 'الفيزياء'),
+    ('chemistry', 'الكيمياء'),
+    ('biology', 'الأحياء'),
+    ('philosophy_logic', 'الفلسفة والمنطق'),
+    ('religious_edu', 'التربية الدينية'),
+    ('programming_cs', 'البرمجة وعلوم الحاسب'),
+    ('eg_national_edu', 'EG التربية الوطنية'),
+    ('vocational_edu', 'التربية المهنية'),
+    ('military_edu', 'التربية العسكرية'),
+    ('psychology', 'علم النفس'),
+    ('geography', 'الجغرافيا'),
+    ('sociology', 'علم اجتماع'),
+    ('geology', 'الجيولوجيا'),
+    ('applied_math', 'الرياضيات التطبيقية'),
+    ('solid_geometry', 'الهندسة الفراغية'),
+    ('statistics', 'الإحصاء'),
+    ('environmental_science', 'علوم البيئة'),
+    ('economy', 'الاقتصاد'),
+    ('philosophy', 'فلسفة'),
+    ('logic', 'منطق'),
+    ('civics', 'المواطنة'),
+)
+*/
+// سنقوم بإنشاء هذه القائمة يدوياً هنا لتطابقها:
+const TEACHER_CATEGORY_CHOICES = [
+    { value: '', label: 'اختر التخصص/المادة' },
+    { value: 'arabic_lang', label: 'اللغة العربية' },
+    { value: 'english_lang', label: 'اللغة الإنجليزية' },
+    { value: 'french_lang', label: 'اللغة الفرنسية' },
+    { value: 'german_lang', label: 'اللغة الألمانية' },
+    { value: 'history', label: 'التاريخ' },
+    { value: 'math', label: 'الرياضيات' },
+    { value: 'physics', label: 'الفيزياء' },
+    { value: 'chemistry', label: 'الكيمياء' },
+    { value: 'biology', label: 'الأحياء' },
+    { value: 'philosophy_logic', label: 'الفلسفة والمنطق' },
+    { value: 'religious_edu', label: 'التربية الدينية' },
+    { value: 'programming_cs', label: 'البرمجة وعلوم الحاسب' },
+    { value: 'eg_national_edu', label: 'EG التربية الوطنية' },
+    { value: 'vocational_edu', label: 'التربية المهنية' },
+    { value: 'military_edu', label: 'التربية العسكرية' },
+    { value: 'psychology', label: 'علم النفس' },
+    { value: 'geography', label: 'الجغرافيا' },
+    { value: 'sociology', label: 'علم اجتماع' },
+    { value: 'geology', label: 'الجيولوجيا' },
+    { value: 'applied_math', label: 'الرياضيات التطبيقية' },
+    { value: 'solid_geometry', label: 'الهندسة الفراغية' },
+    { value: 'statistics', label: 'الإحصاء' },
+    { value: 'environmental_science', label: 'علوم البيئة' },
+    { value: 'economy', label: 'الاقتصاد' },
+    { value: 'philosophy', label: 'فلسفة' },
+    { value: 'logic', label: 'منطق' },
+    { value: 'civics', label: 'المواطنة' },
+];
+
+
+const ALL_GOVERNORATES_FOR_SELECT = [
+    { value: '', label: 'اختر المحافظة' },
+    // هذا الجزء تم نسخه من users/models.py
+    { value: 'cairo', label: 'القاهرة' }, { value: 'alexandria', 'label': 'الإسكندرية' }, { value: 'giza', 'label': 'الجيزة' }, { value: 'qalyubia', 'label': 'القليوبية' },
+    { value: 'sharqia', 'label': 'الشرقية' }, { value: 'monufia', 'label': 'المنوفية' }, { value: 'beheira', 'label': 'البحيرة' }, { value: 'gharbia', 'label': 'الغربية' },
+    { value: 'kafr_el_sheikh', 'label': 'كفر الشيخ' }, { value: 'fayoum', 'label': 'الفيوم' }, { value: 'beni_suef', 'label': 'بني سويف' }, { value: 'minya', 'label': 'المنيا' },
+    { value: 'assiut', 'label': 'أسيوط' }, { value: 'sohag', 'label': 'سوهاج' }, { value: 'qena', 'label': 'قنا' }, { value: 'luxor', 'label': 'الأقصر' },
+    { value: 'aswan', 'label': 'أسوان' }, { value: 'red_sea', 'label': 'البحر الأحمر' }, { value: 'new_valley', 'label': 'الوادي الجديد' }, { value: 'matrouh', 'label': 'مطروح' },
+    { value: 'north_sinai', 'label': 'شمال سيناء' }, { value: 'south_sinai', 'label': 'جنوب سيناء' }, { value: 'suez', 'label': 'السويس' },
+    { value: 'ismailia', 'label': 'الإسماعيلية' }, { value: 'port_said', 'label': 'بورسعيد' }, { value: 'damietta', 'label': 'دمياط' },
+];
+
 
 function TeacherRegistrationPage() {
     const [formData, setFormData] = useState({
@@ -29,19 +103,20 @@ function TeacherRegistrationPage() {
         email: '',
         password: '',
         password_confirm: '',
-        user_type: 'teacher', // هنا بنحدد user_type كـ 'teacher' تلقائياً لهذه الفورم
+        user_type: 'teacher',
         gender: '',
         phone_number: '',
+        governorate: '', // تم إضافة حقل المحافظة هنا
         qualifications: '',
         experience: '',
         category_type: '',
         what_will_you_add: '',
-        personal_id_card: null, // صورة البطاقة الشخصية
-        cv_file: null, // ملف السيرة الذاتية (CV)
+        personal_id_card: null,
+        cv_file: null,
     });
 
     const [currentSection, setCurrentSection] = useState(1);
-    const totalSections = 3; // مثلاً: معلومات شخصية، المؤهلات/الخبرة، المستندات
+    const totalSections = 3;
     const [errors, setErrors] = useState({});
 
     const handleChange = (e) => {
@@ -54,11 +129,12 @@ function TeacherRegistrationPage() {
 
     const validateSection = () => {
         let currentErrors = {};
-        // validation logic for each section
         if (currentSection === 1) {
             if (!formData.first_name) currentErrors.first_name = 'الاسم الأول مطلوب';
             if (!formData.last_name) currentErrors.last_name = 'الاسم الأخير مطلوب';
             if (!formData.phone_number) currentErrors.phone_number = 'رقم الهاتف مطلوب';
+            if (!formData.gender) currentErrors.gender = 'الجنس مطلوب'; // الجنس مطلوب
+            if (!formData.governorate) currentErrors.governorate = 'المحافظة مطلوبة'; // المحافظة مطلوبة الآن
             if (!formData.email) currentErrors.email = 'البريد الإلكتروني مطلوب';
             if (!formData.password) currentErrors.password = 'كلمة المرور مطلوبة';
             if (!formData.password_confirm) currentErrors.password_confirm = 'تأكيد كلمة المرور مطلوب';
@@ -71,8 +147,7 @@ function TeacherRegistrationPage() {
             if (!formData.category_type) currentErrors.category_type = 'التخصص مطلوب';
             if (!formData.what_will_you_add) currentErrors.what_will_you_add = 'ماذا ستضيف مطلوب';
         } else if (currentSection === 3) {
-            // can make personal_id_card or cv_file required here
-            // if (!formData.personal_id_card) currentErrors.personal_id_card = 'صورة البطاقة الشخصية مطلوبة';
+            // يمكن جعل personal_id_card أو cv_file مطلوبين هنا إذا أردت
         }
 
         setErrors(currentErrors);
@@ -106,8 +181,10 @@ function TeacherRegistrationPage() {
         const dataToSend = new FormData();
 
         for (const key in formData) {
-            if (formData[key] !== null && key !== 'personal_id_card' && key !== 'cv_file') {
-                dataToSend.append(key, formData[key]);
+            // *** تم حذف 'password_confirm' من الاستثناء هنا ***
+            // يجب أن يتم إرسالها إلى الـ Backend ليتم التحقق من مطابقتها
+            if (formData[key] !== null && formData[key] !== '' && key !== 'personal_id_card' && key !== 'cv_file') {
+                 dataToSend.append(key, formData[key]);
             }
         }
 
@@ -117,7 +194,7 @@ function TeacherRegistrationPage() {
         if (formData.cv_file) {
             dataToSend.append('cv_file', formData.cv_file);
         }
-        dataToSend.append('user_type', 'teacher'); // تأكيد user_type
+        dataToSend.append('user_type', 'teacher');
 
         try {
             const response = await fetch(apiEndpoint, {
@@ -131,8 +208,8 @@ function TeacherRegistrationPage() {
                 alert(responseData.message || 'تم إرسال طلب إنشاء حساب الأستاذ بنجاح. سيتم مراجعته قريباً.');
                 setFormData({ // إعادة تعيين النموذج
                     first_name: '', last_name: '', email: '', password: '', password_confirm: '',
-                    user_type: 'teacher', gender: '', phone_number: '', qualifications: '',
-                    experience: '', category_type: '', what_will_you_add: '',
+                    user_type: 'teacher', gender: '', phone_number: '', governorate: '',
+                    qualifications: '', experience: '', category_type: '', what_will_you_add: '',
                     personal_id_card: null, cv_file: null,
                 });
                 setCurrentSection(1);
@@ -144,7 +221,7 @@ function TeacherRegistrationPage() {
                         const fieldName = {
                             'first_name': 'الاسم الأول', 'last_name': 'الاسم الأخير', 'email': 'البريد الإلكتروني',
                             'password': 'كلمة المرور', 'password_confirm': 'تأكيد كلمة المرور', 'user_type': 'نوع المستخدم',
-                            'gender': 'الجنس', 'phone_number': 'رقم الهاتف',
+                            'gender': 'الجنس', 'phone_number': 'رقم الهاتف', 'governorate': 'المحافظة',
                             'qualifications': 'المؤهلات', 'experience': 'الخبرة', 'category_type': 'التخصص',
                             'what_will_you_add': 'ماذا ستضيف', 'personal_id_card': 'البطاقة الشخصية', 'cv_file': 'ملف السيرة الذاتية',
                             'non_field_errors': ''
@@ -239,6 +316,18 @@ function TeacherRegistrationPage() {
                                             </select>
                                             {errors.gender && <span className="error-message">{errors.gender}</span>}
                                         </div>
+
+                                        {/* *** تم إضافة حقل المحافظة هنا *** */}
+                                        <div className="form-group">
+                                            <label htmlFor="governorate">المحافظة:</label>
+                                            <select id="governorate" name="governorate" value={formData.governorate} onChange={handleChange} required> {/* جعلتها مطلوبة هنا */}
+                                                {ALL_GOVERNORATES_FOR_SELECT.map(option => (
+                                                    <option key={option.value} value={option.value}>{option.label}</option>
+                                                ))}
+                                            </select>
+                                            {errors.governorate && <span className="error-message">{errors.governorate}</span>}
+                                        </div>
+
                                         <div className="form-group">
                                             <label htmlFor="email">البريد الإلكتروني:</label>
                                             <input type="email" id="email" name="email" value={formData.email} onChange={handleChange} required />
@@ -275,7 +364,7 @@ function TeacherRegistrationPage() {
                                         <div className="form-group">
                                             <label htmlFor="category_type">الفئة المطلوبة (التخصص/المادة):</label>
                                             <select id="category_type" name="category_type" value={formData.category_type} onChange={handleChange} required>
-                                                {CATEGORY_CHOICES.map(option => (
+                                                {TEACHER_CATEGORY_CHOICES.map(option => ( // *** استخدام القائمة الصحيحة للتخصصات ***
                                                     <option key={option.value} value={option.value}>{option.label}</option>
                                                 ))}
                                             </select>

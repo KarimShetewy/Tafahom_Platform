@@ -1,43 +1,70 @@
-/* Dashboard Page Styling */
 .dashboard-page {
-    text-align: right;
-    color: var(--text-color);
+    padding-bottom: 50px;
 }
 
-.dashboard-content {
-    padding: 50px 0;
-    min-height: 70vh;
-    background-color: var(--secondary-bg-color); /* خلفية محتوى لوحة التحكم */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid var(--border-color); /* إضافة حد للداشبورد كونتينر */
-    border-radius: 10px;
-    margin: 40px auto; /* توسيط وإضافة مسافة */
-    max-width: 900px;
-    width: 90%;
+.dashboard-page .main-content {
+    padding: 40px 20px;
+    background-color: var(--background-color-light);
+    min-height: calc(100vh - 120px);
 }
 
-.dashboard-content .container {
-    padding: 0; /* إلغاء البادينج الإضافي للكونتينر الداخلي */
-    text-align: center; /* محاذاة المحتوى في المنتصف داخل الكونتينر */
+.dashboard-page .container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
 }
 
-.dashboard-content h2 {
-    font-size: 2.5em;
-    color: var(--heading-color);
-    margin-bottom: 15px;
+.dashboard-page .welcome-message {
+    text-align: center;
+    color: var(--text-color-primary);
+    margin-bottom: 20px;
+    font-size: 2.2em;
 }
 
-.dashboard-content h3 {
-    font-size: 1.8em;
-    color: var(--accent-color-1);
-    margin-bottom: 25px;
-}
-
-.dashboard-content p {
+.dashboard-page .dashboard-intro {
+    text-align: center;
+    color: var(--text-color-secondary);
+    margin-bottom: 40px;
     font-size: 1.1em;
-    color: var(--text-color);
 }
 
-/* يمكنك إضافة المزيد من التنسيقات هنا لمحتوى لوحات التحكم */
+.dashboard-sections-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    justify-content: center;
+}
+
+.dashboard-section-card {
+    background-color: var(--card-background-color);
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: var(--box-shadow);
+    text-align: center;
+    text-decoration: none; /* لإزالة خط الرابط */
+    color: inherit; /* لورث لون النص */
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 150px;
+}
+
+.dashboard-section-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--box-shadow-hover);
+}
+
+.dashboard-section-card h3 {
+    color: var(--text-color-primary);
+    margin-bottom: 10px;
+    font-size: 1.5em;
+}
+
+.dashboard-section-card p {
+    color: var(--text-color-secondary);
+    font-size: 0.95em;
+}
+
+/* يمكنك إضافة تنسيقات إضافية للـ navbar والـ footer المشتركة في App.css */

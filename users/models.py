@@ -1,45 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
-# نموذج المستخدم المخصص (CustomUser)
-class CustomUser(AbstractUser):
-    USER_TYPE_CHOICES = (
-        ('student', 'طالب'),
-        ('teacher', 'أستاذ'),
-        ('team_member', 'عضو فريق عمل'),
-    )
-    user_type = models.CharField(
-        max_length=20,
-        choices=USER_TYPE_CHOICES,
-        default='student',
-        verbose_name='نوع المستخدم'
-    )
-    # لحل مشكلة related_name (مهم جداً)
-    groups = models.ManyToManyField(
-        'auth.Group',
-        verbose_name='groups',
-        blank=True,
-        help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.',
-        related_name="custom_user_set",
-        related_query_name="custom_user",
-    )
-    user_permissions = models.ManyToManyField(
-        'auth.Permission',
-        verbose_name='user permissions',
-        blank=True,
-        help_text='Specific permissions for this user.',
-        related_name="custom_user_permissions_set",
-        related_query_name="custom_user",
-    )
-    # يمكن إضافة حقول إضافية للمستخدم هنا (مثل phone_number أو governorate) لو أردت تخزينها بشكل دائم في ملف المستخدم
-    first_name = models.CharField(max_length=150, blank=True, verbose_name="الاسم الأول")
-    last_name = models.CharField(max_length=150, blank=True, verbose_name="الاسم الأخير")
-
-    class Meta:
-        verbose_name = 'مستخدم'
-        verbose_name_plural = 'مستخدمين'
-
-# خيارات الوظائف لفريق العمل
+# خيارات الوظائف لفريق العمل (تم نقلها للأعلى لتكون متاحة قبل استخدامها)
 JOB_POSITION_CHOICES = (
     ('it_specialist', 'IT Specialist'),
     ('developer', 'Developer'),
@@ -67,43 +29,51 @@ ACADEMIC_LEVEL_CHOICES = (
     ('third_secondary', 'الصف الثالث الثانوي'),
 )
 
-# المسارات الأكاديمية الجديدة (جديد)
+# المسارات الأكاديمية الجديدة
 ACADEMIC_TRACK_CHOICES = (
-    ('general', 'عام (الصف الأول الثانوي)'), #
-    ('scientific_sec_2', 'علمي (الصف الثاني الثانوي)'), #
-    ('literary_sec_2', 'أدبي (الصف الثاني الثانوي)'), #
-    ('science_sec_3', 'علمي علوم (الصف الثالث الثانوي)'), #
-    ('math_sec_3', 'علمي رياضة (الصف الثالث الثانوي)'), #
-    ('literary_sec_3', 'أدبي (الصف الثالث الثانوي)'), #
+    ('general', 'عام (الصف الأول الثانوي)'),
+    ('scientific_sec_2', 'علمي (الصف الثاني الثانوي)'),
+    ('literary_sec_2', 'أدبي (الصف الثاني الثانوي)'),
+    ('science_sec_3', 'علمي علوم (الصف الثالث الثانوي)'),
+    ('math_sec_3', 'علمي رياضة (الصف الثالث الثانوي)'),
+    ('literary_sec_3', 'أدبي (الصف الثالث الثانوي)'),
 )
 
 # جميع المواد (CATEGORY_CHOICES) بناءً على النظام الجديد
-# هذه المواد يمكن استخدامها للأساتذة في التخصص أو كـ Subjects للكورسات
+# تم إضافة المزيد من المواد هنا وتصنيفها
 CATEGORY_CHOICES = (
     # مواد الصف الأول الثانوي (تأسيس)
-    ('arabic_lang', 'اللغة العربية'), # (مشتركة)
-    ('foreign_lang_1', 'اللغة الأجنبية الأولى'), # (مشتركة)
+    ('arabic_lang', 'اللغة العربية'), # (مشتركة) - تم التأكيد على وجودها
+    ('english_lang', 'اللغة الإنجليزية'), # (مشتركة) - تم إضافة توضيح
+    ('french_lang', 'اللغة الفرنسية'), # (مشتركة) - تم إضافة توضيح
+    ('german_lang', 'اللغة الألمانية'), # (مشتركة) - تم إضافة توضيح
     ('history', 'التاريخ'), # (مشتركة)
-    ('math', 'الرياضيات'), #
-    ('physics', 'الفيزياء'), #
-    ('chemistry', 'الكيمياء'), #
-    ('biology', 'الأحياء'), #
-    ('philosophy_logic', 'الفلسفة والمنطق'), #
-    ('religious_edu', 'التربية الدينية'), #
+    ('math', 'الرياضيات'), # (مشتركة)
+    ('physics', 'الفيزياء'), # (مشتركة)
+    ('chemistry', 'الكيمياء'), # (مشتركة)
+    ('biology', 'الأحياء'), # (مشتركة)
+    ('philosophy_logic', 'الفلسفة والمنطق'), # (مشتركة)
+    ('religious_edu', 'التربية الدينية'), # (مشتركة)
 
-    # مواد نجاح ورسوب (الصف الأول)
-    ('foreign_lang_2', 'اللغة الأجنبية الثانية'), #
-    ('programming_cs', 'البرمجة وعلوم الحاسب'), #
-    ('eg_national_edu', 'EG التربية الوطنية'), #
-    ('vocational_edu', 'التربية المهنية'), #
-    ('military_edu', 'التربية العسكرية'), #
+    # مواد نجاح ورسوب / اختيارية (الصف الأول)
+    ('programming_cs', 'البرمجة وعلوم الحاسب'),
+    ('eg_national_edu', 'EG التربية الوطنية'),
+    ('vocational_edu', 'التربية المهنية'),
+    ('military_edu', 'التربية العسكرية'),
     
-    # مواد مسارات الصف الثاني والثالث الثانوي (تكرار للوضوح، قد تكون موجودة بالفعل أعلاه)
-    ('psychology', 'علم النفس'), #
-    ('business_admin', 'إدارة أعمال'), #
-    ('accounting', 'المحاسبة'), #
-    # 'أخرى' للمسارات
-    ('geology', 'الجيولوجيا'), # ممكن تكون تخصص أو مادة
+    # مواد مسارات الصف الثاني والثالث الثانوي
+    ('psychology', 'علم النفس'),
+    ('geography', 'الجغرافيا'), # تم التأكيد على وجودها
+    ('sociology', 'علم اجتماع'), # تم التأكيد على وجودها
+    ('geology', 'الجيولوجيا'), # تم التأكيد على وجودها
+    ('applied_math', 'الرياضيات التطبيقية'), # (علمي رياضة)
+    ('solid_geometry', 'الهندسة الفراغية'), # (علمي رياضة)
+    ('statistics', 'الإحصاء'), # (علمي رياضة)
+    ('environmental_science', 'علوم البيئة'), # (علمي علوم - جزء من الجيولوجيا أو منفصلة)
+    ('economy', 'الاقتصاد'), # (أدبي)
+    ('philosophy', 'فلسفة'), # (أدبي) - تكرار سابق
+    ('logic', 'منطق'), # (أدبي) - تكرار سابق
+    ('civics', 'المواطنة'), # مادة قد تكون مشتركة
     # ... يمكن إضافة أي مواد أخرى
 )
 
@@ -122,6 +92,49 @@ GOVERNORATE_CHOICES = (
 PARENT_PROFESSION_CHOICES = (
     ('doctor', 'طبيب'), ('engineer', 'مهندس'), ('teacher', 'معلم'), ('accountant', 'محاسب'), ('other', 'أخرى'),
 )
+
+# نموذج المستخدم المخصص (CustomUser)
+class CustomUser(AbstractUser):
+    USER_TYPE_CHOICES = (
+        ('student', 'طالب'),
+        ('teacher', 'أستاذ'),
+        ('team_member', 'عضو فريق عمل'),
+        ('admin', 'مسؤول'), # يمكن إضافة نوع 'admin' صريح لتمييزه عن is_staff
+    )
+    user_type = models.CharField(
+        max_length=20,
+        choices=USER_TYPE_CHOICES,
+        default='student',
+        verbose_name='نوع المستخدم'
+    )
+    # لحل مشكلة related_name (مهم جداً)
+    groups = models.ManyToManyField(
+        'auth.Group',
+        verbose_name='groups',
+        blank=True,
+        help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.',
+        related_name="custom_user_set",
+        related_query_name="custom_user",
+    )
+    user_permissions = models.ManyToManyField(
+        'auth.Permission',
+        verbose_name='user permissions',
+        blank=True,
+        help_text='Specific permissions for this user.',
+        related_name="custom_user_permissions_set",
+        related_query_name="custom_user",
+    )
+    # تم إضافة هذه الحقول إلى CustomUser
+    phone_number = models.CharField(max_length=15, blank=True, null=True, verbose_name='رقم الهاتف')
+    gender = models.CharField(max_length=10, choices=GENDER_CHOICES, blank=True, null=True, verbose_name='الجنس')
+    governorate = models.CharField(max_length=50, choices=GOVERNORATE_CHOICES, blank=True, null=True, verbose_name='المحافظة')
+    
+    first_name = models.CharField(max_length=150, blank=True, verbose_name="الاسم الأول")
+    last_name = models.CharField(max_length=150, blank=True, verbose_name="الاسم الأخير")
+
+    class Meta:
+        verbose_name = 'مستخدم'
+        verbose_name_plural = 'مستخدمين'
 
 
 class AccountRequest(models.Model):
@@ -144,8 +157,6 @@ class AccountRequest(models.Model):
         choices=REQUEST_USER_TYPE_CHOICES,
         verbose_name='نوع الحساب المطلوب'
     )
-    # تم نقل first_name و last_name إلى CustomUser لتخزينهم بشكل دائم في بيانات المستخدم
-    # هنا في AccountRequest لتخزينهم مؤقتاً في طلبات التسجيل
     first_name = models.CharField(max_length=100, verbose_name='الاسم الأول')
     last_name = models.CharField(max_length=100, verbose_name='الاسم الأخير')
     phone_number = models.CharField(max_length=15, blank=True, null=True, verbose_name='رقم الهاتف')

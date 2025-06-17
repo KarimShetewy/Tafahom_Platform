@@ -13,6 +13,7 @@ import TeacherDashboard from './components/TeacherDashboard';
 import TeamDashboard from './components/TeamDashboard';
 import ProtectedRoute from './components/ProtectedRoute'; // استيراد مكون الحماية
 import SubjectDetailPage from './components/SubjectDetailPage'; // لتفاصيل المواد
+import TeacherAddCoursePage from './components/TeacherAddCoursePage'; // استيراد المكون الجديد لإضافة الكورس
 
 function App() {
   // حالة الثيم: 'dark' أو 'light'
@@ -49,14 +50,20 @@ function App() {
           <Route path="/register/teacher" element={<TeacherRegistrationPage />} />
           <Route path="/login" element={<LoginPage />} />
           
-          {/* مسار صفحة تفاصيل المادة - مهم جداً أن يكون هنا */}
-          <Route path="/subjects/:level/:subjectName" element={<SubjectDetailPage />} />
+          {/* مسار صفحة تفاصيل المادة - تم تصحيح ":level" إلى ":levelKey" */}
+          <Route path="/subjects/:levelKey/:subjectName" element={<SubjectDetailPage />} />
 
           {/* مسارات لوحات التحكم المحمية */}
-          <Route element={<ProtectedRoute allowedUserTypes={['student', 'teacher', 'team_member']} />}>
+          {/* مسارات الطلاب وأعضاء الفريق */}
+          <Route element={<ProtectedRoute allowedUserTypes={['student', 'team_member']} />}>
             <Route path="/student/dashboard" element={<StudentDashboard />} />
-            <Route path="/teacher/dashboard" element={<TeacherDashboard />} />
             <Route path="/team/dashboard" element={<TeamDashboard />} />
+          </Route>
+          
+          {/* مسارات الأستاذ المحمية */}
+          <Route element={<ProtectedRoute allowedUserTypes={['teacher']} />}>
+            <Route path="/teacher/dashboard" element={<TeacherDashboard />} />
+            <Route path="/teacher/add-course" element={<TeacherAddCoursePage />} /> {/* المسار الجديد لإضافة الكورس */}
           </Route>
 
           {/* يمكن إضافة مسار fallback لأي صفحات غير موجودة (مثل صفحة 404) */}

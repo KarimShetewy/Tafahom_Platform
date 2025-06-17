@@ -18,4 +18,21 @@ class CourseSerializer(serializers.ModelSerializer):
             'academic_level', 'academic_track', 'subject',
             'is_published', 'created_at', 'updated_at'
         ]
-        read_only_fields = ('created_at', 'updated_at')
+        read_only_fields = ('created_at', 'updated_at') # هذه الحقول للقراءة فقط
+
+
+class CourseCreateUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Course
+        fields = [
+            'title', 'description', 'price', 'image',
+            'academic_level', 'academic_track', 'subject',
+            'is_published'
+        ]
+        # حقل 'teacher' سيتم تعيينه تلقائياً في الـ View بناءً على المستخدم الحالي
+        # لذلك لا نحتاج لإدراجه هنا أو جعله للقراءة فقط
+        extra_kwargs = {
+            'image': {'required': False}, # الصورة اختيارية
+            'academic_track': {'required': False}, # المسار الدراسي اختياري
+            'is_published': {'required': False}, # حالة النشر اختيارية عند الإنشاء
+        }
