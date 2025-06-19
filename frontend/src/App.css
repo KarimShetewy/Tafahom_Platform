@@ -1,27 +1,30 @@
+/* frontend/src/App.css */
+
 /* General App Container */
 .App {
   text-align: right;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
-/* Container for consistent spacing */
-.container {
-    width: 90%;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px 0;
-}
-
-/* Header & Navigation Bar */
+/* Header Styling (from previous discussions) */
 .app-header {
     background-color: var(--primary-bg-color);
-    padding: 15px 0;
+    padding: 20px 0;
     border-bottom: 1px solid var(--border-color);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    transition: background-color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
 }
 
 .navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 0 20px;
 }
 
 .navbar .logo {
@@ -29,15 +32,15 @@
     align-items: center;
 }
 
-/* Logo styling */
 .navbar-logo {
-    height: 40px;
+    height: 45px;
     width: auto;
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease, filter 0.3s ease;
 }
 
 .navbar-logo:hover {
-    transform: scale(1.05);
+    transform: scale(1.08);
+    filter: brightness(1.2);
 }
 
 .nav-links {
@@ -45,82 +48,69 @@
     margin: 0;
     padding: 0;
     display: flex;
-    gap: 25px;
+    gap: 30px;
 }
 
 .nav-links li a {
     color: var(--text-color);
-    font-weight: 400;
-    transition: color 0.3s ease;
+    font-weight: 500;
+    padding: 10px 15px;
+    border-radius: 8px;
+    transition: color 0.3s ease, background-color 0.3s ease, transform 0.2s ease;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.nav-links li a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 3px;
+    background-color: var(--accent-color-1);
+    transition: width 0.3s ease-out;
+}
+
+.nav-links li a:hover::after {
+    width: 100%;
 }
 
 .nav-links li a:hover {
     color: var(--accent-color-1);
-    text-decoration: none;
-}
-
-.auth-buttons .btn {
-    margin-right: 10px;
-}
-
-/* Button Styles */
-.btn {
-    cursor: pointer;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    font-family: 'Cairo', sans-serif;
-    font-weight: bold;
-    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-    color: var(--button-text-color);
-}
-
-.btn:hover {
+    background-color: rgba(var(--text-color-rgb), 0.05);
     transform: translateY(-2px);
 }
 
-.btn-primary {
-    background-color: var(--accent-color-1);
-    color: var(--button-text-color);
+.auth-buttons {
+    display: flex;
+    gap: 15px;
 }
 
-.btn-primary:hover {
-    background-color: rgba(var(--accent-color-1-rgb), 0.8);
-    box-shadow: 0 4px 10px rgba(var(--accent-color-1-rgb), 0.4);
-}
-
-.btn-secondary {
-    background-color: transparent;
-    color: var(--heading-color);
-    border: 1px solid var(--heading-color);
-}
-
-.btn-secondary:hover {
-    background-color: var(--heading-color);
-    color: var(--button-text-color);
-    box-shadow: 0 4px 10px rgba(var(--heading-color-rgb), 0.4);
-}
-
-/* Main Content Styles */
+/* Main Content Area */
 .main-content {
-    padding: 40px 0;
+  flex-grow: 1;
+  padding: 40px 0;
 }
 
-/* Footer Styles */
-.app-footer {
+/* Footer Styling */
+footer {
     background-color: var(--primary-bg-color);
     color: var(--text-color);
     padding: 30px 0;
     text-align: center;
     border-top: 1px solid var(--border-color);
-    margin-top: 50px;
+    margin-top: auto;
+    transition: background-color 0.5s ease, color 0.5s ease, border-color 0.5s ease;
 }
 
-.app-footer p {
-    margin-bottom: 15px;
+footer p {
+    margin: 0;
+    font-size: 0.9rem;
 }
 
-.app-footer .footer-links {
+footer .footer-links {
     list-style: none;
     padding: 0;
     margin: 0;
@@ -129,12 +119,12 @@
     gap: 20px;
 }
 
-.app-footer .footer-links li a {
+footer .footer-links li a {
     color: var(--text-color);
     transition: color 0.3s ease;
 }
 
-.app-footer .footer-links li a:hover {
+footer .footer-links li a:hover {
     color: var(--accent-color-1);
 }
 
@@ -165,114 +155,278 @@ section.homepage-section, .dashboard-content {
     padding: 60px 0;
 }
 
-/* Common Form/Container Styles */
-.register-container, .login-container, .teacher-register-container, .team-register-container, .student-register-container,
-.teacher-card, .course-card, .material-section-card { /* level-group-card and level-track-card are in HomePage.css */
-    background-color: var(--secondary-bg-color);
-    padding: 40px;
-    border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    border: 1px solid var(--border-color);
+/* === Common Registration Page Styles === */
+/* هذه الأنماط ستُطبق على Student, Teacher, Team Registration Pages */
+
+.register-section, .teacher-register-section, .student-register-section, .team-register-section {
+    padding: 60px 0;
+    flex-grow: 1; /* لتأخذ المساحة المتبقية وتدفع الفوتر للأسفل */
 }
 
-.register-form input[type="text"],
-.register-form input[type="email"],
-.register-form input[type="password"],
-.register-form input[type="tel"],
-.register-form input[type="number"],
-.register-form input[type="url"],
-.register-form select,
-.register-form textarea,
-.login-form input[type="email"],
-.login-form input[type="password"],
-.teacher-register-form input, .teacher-register-form select, .teacher-register-form textarea,
-.student-register-form input, .student-register-form select, .student-register-form textarea,
-.team-register-form input, .team-register-form select, .team-register-form textarea,
-.academic-browse-filters select, .teachers-filter select {
+.register-container, .teacher-register-container, .student-register-container, .team-register-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* محاذاة أعلى في حالة اختلاف ارتفاع الأقسام */
+    gap: 50px;
+    max-width: 1000px;
+    margin: 0 auto;
+    background-color: var(--secondary-bg-color);
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: var(--box-shadow);
+    border: 1px solid var(--border-color);
+    transition: background-color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
+}
+
+.register-image-wrapper, .teacher-register-image-wrapper, .student-register-image-wrapper, .team-register-image-wrapper {
+    flex: 1;
+    min-width: 250px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: var(--primary-bg-color); /* خلفية Image wrapper */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.5s ease, box-shadow 0.5s ease;
+}
+
+.register-illustration, .teacher-illustration-img, .student-illustration-img, .team-illustration-img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease;
+}
+.register-illustration:hover, .teacher-illustration-img:hover, .student-illustration-img:hover, .team-illustration-img:hover {
+    transform: scale(1.03);
+}
+
+.image-title { /* للعنوان فوق الصورة في صفحات التسجيل */
+    font-size: 1.5em;
+    color: var(--heading-color);
+    margin-top: 20px;
+    margin-bottom: 0;
+    text-align: center;
+}
+
+.image-caption {
+    margin-top: 15px;
+    font-size: 1.1em;
+    color: var(--text-color);
+}
+
+.register-form-wrapper, .teacher-register-form-wrapper, .student-register-form-wrapper, .team-register-form-wrapper {
+    flex: 2;
+    min-width: 300px;
+    text-align: right;
+    padding-left: 20px; /* مسافة عن الصورة */
+}
+
+.register-form h2, .teacher-register-form-wrapper h2, .student-register-form-wrapper h2, .team-register-form-wrapper h2 {
+    font-size: 2.2em;
+    color: var(--heading-color);
+    margin-bottom: 25px;
+    text-align: center;
+    position: relative;
+}
+.register-form h2::after, .teacher-register-form-wrapper h2::after, .student-register-form-wrapper h2::after, .team-register-form-wrapper h2::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 3px;
+    background-color: var(--accent-color-1);
+    margin: 10px auto 0;
+    border-radius: 2px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--text-color);
+}
+.form-group input,
+.form-group select,
+.form-group textarea {
     width: 100%;
     padding: 12px 15px;
+    border-radius: 8px;
     border: 1px solid var(--border-color);
-    border-radius: 5px;
     background-color: var(--primary-bg-color);
     color: var(--text-color);
     font-size: 1em;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.5s ease, color 0.5s ease;
 }
-
-.register-form input:focus, .login-form input:focus, .teacher-register-form input:focus,
-.student-register-form input:focus, .team-register-form input:focus, select:focus, textarea:focus {
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
     border-color: var(--accent-color-1);
-    box-shadow: 0 0 8px rgba(var(--accent-color-1-rgb), 0.5);
+    box-shadow: 0 0 0 0.2rem rgba(var(--accent-color-1-rgb), 0.25);
     outline: none;
 }
-
-.error-message, .error-message-box {
-    color: var(--error-color);
-    font-size: 0.9em;
-    margin-top: 5px;
-    display: block;
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
 }
-
+.checkbox-group input[type="checkbox"] {
+    width: auto;
+    margin-left: 10px;
+}
+.submit-btn {
+    width: 100%;
+    padding: 12px;
+    font-size: 1.1em;
+    border-radius: 8px;
+    margin-top: 15px;
+}
+.register-links, .has-account-link {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 0.95em;
+}
+.register-links .login-link, .has-account-link a {
+    color: var(--accent-color-1);
+    font-weight: bold;
+}
 .error-message-box {
     background-color: rgba(var(--error-color-rgb), 0.2);
-    padding: 10px 15px;
+    color: var(--error-color);
+    border: 1px solid var(--error-color);
+    padding: 10px;
+    margin-bottom: 15px;
     border-radius: 5px;
-    margin-bottom: 20px;
+    font-size: 0.9rem;
     text-align: center;
     font-weight: bold;
-    border: 1px solid var(--error-color);
+}
+.success-message-box {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    text-align: center;
+    font-weight: bold;
 }
 
-/* Responsive adjustments (general) */
+/* Multi-step form navigation */
+.teacher-form-sections-nav, .student-form-sections-nav, .team-form-sections-nav {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 30px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+}
+.section-nav-button {
+    background-color: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    padding: 8px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+.section-nav-button.active {
+    background-color: var(--accent-color-1);
+    color: var(--button-text-color);
+    border-color: var(--accent-color-1);
+}
+.section-nav-button:hover:not(.active) {
+    background-color: var(--primary-bg-color);
+    color: var(--accent-color-1);
+    border-color: var(--accent-color-1);
+}
+
+.form-section-content {
+    display: none; /* يتم إخفاء الأقسام بشكل افتراضي */
+}
+.form-section-content.active-section {
+    display: block; /* يتم إظهار القسم النشط */
+}
+
+.form-nav-btn {
+    width: auto;
+    margin: 10px 5px;
+}
+.form-nav-btn:first-of-type {
+    margin-right: auto; /* يدفع الزر الأول إلى اليمين */
+}
+.form-nav-btn:last-of-type {
+    margin-left: auto; /* يدفع الزر الأخير إلى اليسار */
+}
+.form-section-content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* محاذاة الحقول لليمين */
+}
+.form-section-content h3 {
+    text-align: center;
+    width: 100%;
+    color: var(--accent-color-1);
+    font-size: 1.5em;
+    margin-bottom: 20px;
+}
+
+/* Upload group specific styles */
+.upload-group .btn.upload-btn {
+    width: auto;
+    padding: 8px 20px;
+    font-size: 0.9em;
+    margin-top: 10px;
+    background-color: var(--accent-color-2);
+    color: var(--button-text-color);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+.upload-group .btn.upload-btn:hover {
+    background-color: rgba(var(--accent-color-2-rgb), 0.9);
+}
+
+
+/* Responsive adjustments */
 @media (max-width: 768px) {
-    .navbar {
-        flex-direction: column;
-        gap: 15px;
-    }
-    .nav-links {
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-    .auth-buttons {
-        margin-top: 15px;
-    }
-    .register-container, .login-container, .teacher-register-container, .team-register-container, .student-register-container {
+    .register-container, .teacher-register-container, .student-register-container, .team-register-container {
         flex-direction: column;
         padding: 20px;
+        gap: 20px;
     }
-    .register-image-wrapper, .register-form-wrapper, .login-image-wrapper, .login-form-wrapper,
-    .teacher-register-image-wrapper, .teacher-register-form-wrapper, .student-register-image-wrapper, .student-register-form-wrapper,
-    .team-register-image-wrapper, .team-register-form-wrapper {
+    .register-image-wrapper, .teacher-register-image-wrapper, .student-register-image-wrapper, .team-register-image-wrapper {
         order: initial;
+        padding: 15px;
     }
-    .hero-container, .join-team-container {
-        flex-direction: column;
-        text-align: center;
+    .register-form-wrapper, .teacher-register-form-wrapper, .student-register-form-wrapper, .team-register-form-wrapper {
+        padding-left: 0;
     }
-    .hero-content, .hero-image, .join-team-content, .join-team-image {
-        order: initial;
-        text-align: center;
+    .register-form h2, .teacher-register-form-wrapper h2, .student-register-form-wrapper h2, .team-register-form-wrapper h2 {
+        font-size: 1.8em;
     }
-    .hero-cta {
-        flex-direction: column;
-        gap: 10px;
+    .image-title {
+        font-size: 1.2em;
     }
-    .hero-cta .btn {
-        margin-left: 0;
-        width: 80%;
+    .section-nav-button {
+        flex-grow: 1; /* لجعل الأزرار تمتلئ المساحة */
+        font-size: 0.9em;
+        padding: 6px 10px;
     }
-    .teachers-filter, .academic-browse-filters {
-        flex-direction: column;
-        gap: 10px;
+    .form-nav-btn {
+        width: calc(50% - 10px); /* زرين في السطر */
+        margin: 5px;
     }
-    .teachers-filter select, .teachers-filter .filter-btn, .academic-browse-filters select {
-        width: 100%;
-    }
-    .academic-browse-filters {
-        flex-direction: column;
-        gap: 10px;
-    }
-    .academic-browse-filters select {
-        width: 100%;
+    .form-nav-btn:first-of-type, .form-nav-btn:last-of-type {
+        margin-right: 5px;
+        margin-left: 5px;
     }
 }

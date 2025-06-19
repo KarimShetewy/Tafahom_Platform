@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
-# خيارات الوظائف لفريق العمل (تم نقلها للأعلى لتكون متاحة قبل استخدامها)
+# خيارات الوظائف لفريق العمل
 JOB_POSITION_CHOICES = (
     ('it_specialist', 'IT Specialist'),
     ('developer', 'Developer'),
@@ -29,7 +29,7 @@ ACADEMIC_LEVEL_CHOICES = (
     ('third_secondary', 'الصف الثالث الثانوي'),
 )
 
-# المسارات الأكاديمية الجديدة
+# المسارات الأكاديمية (مستخدمة حالياً في طلبات التسجيل ولكن ليس للفلترة العامة)
 ACADEMIC_TRACK_CHOICES = (
     ('general', 'عام (الصف الأول الثانوي)'),
     ('scientific_sec_2', 'علمي (الصف الثاني الثانوي)'),
@@ -40,41 +40,34 @@ ACADEMIC_TRACK_CHOICES = (
 )
 
 # جميع المواد (CATEGORY_CHOICES) بناءً على النظام الجديد
-# تم إضافة المزيد من المواد هنا وتصنيفها
 CATEGORY_CHOICES = (
-    # مواد الصف الأول الثانوي (تأسيس)
-    ('arabic_lang', 'اللغة العربية'), # (مشتركة) - تم التأكيد على وجودها
-    ('english_lang', 'اللغة الإنجليزية'), # (مشتركة) - تم إضافة توضيح
-    ('french_lang', 'اللغة الفرنسية'), # (مشتركة) - تم إضافة توضيح
-    ('german_lang', 'اللغة الألمانية'), # (مشتركة) - تم إضافة توضيح
-    ('history', 'التاريخ'), # (مشتركة)
-    ('math', 'الرياضيات'), # (مشتركة)
-    ('physics', 'الفيزياء'), # (مشتركة)
-    ('chemistry', 'الكيمياء'), # (مشتركة)
-    ('biology', 'الأحياء'), # (مشتركة)
-    ('philosophy_logic', 'الفلسفة والمنطق'), # (مشتركة)
-    ('religious_edu', 'التربية الدينية'), # (مشتركة)
-
-    # مواد نجاح ورسوب / اختيارية (الصف الأول)
+    ('arabic_lang', 'اللغة العربية'),
+    ('english_lang', 'اللغة الإنجليزية'),
+    ('french_lang', 'اللغة الفرنسية'),
+    ('german_lang', 'اللغة الألمانية'),
+    ('history', 'التاريخ'),
+    ('math', 'الرياضيات'),
+    ('physics', 'الفيزياء'),
+    ('chemistry', 'الكيمياء'),
+    ('biology', 'الأحياء'),
+    ('philosophy_logic', 'الفلسفة والمنطق'),
+    ('religious_edu', 'التربية الدينية'),
     ('programming_cs', 'البرمجة وعلوم الحاسب'),
     ('eg_national_edu', 'EG التربية الوطنية'),
     ('vocational_edu', 'التربية المهنية'),
     ('military_edu', 'التربية العسكرية'),
-    
-    # مواد مسارات الصف الثاني والثالث الثانوي
     ('psychology', 'علم النفس'),
-    ('geography', 'الجغرافيا'), # تم التأكيد على وجودها
-    ('sociology', 'علم اجتماع'), # تم التأكيد على وجودها
-    ('geology', 'الجيولوجيا'), # تم التأكيد على وجودها
-    ('applied_math', 'الرياضيات التطبيقية'), # (علمي رياضة)
-    ('solid_geometry', 'الهندسة الفراغية'), # (علمي رياضة)
-    ('statistics', 'الإحصاء'), # (علمي رياضة)
-    ('environmental_science', 'علوم البيئة'), # (علمي علوم - جزء من الجيولوجيا أو منفصلة)
-    ('economy', 'الاقتصاد'), # (أدبي)
-    ('philosophy', 'فلسفة'), # (أدبي) - تكرار سابق
-    ('logic', 'منطق'), # (أدبي) - تكرار سابق
-    ('civics', 'المواطنة'), # مادة قد تكون مشتركة
-    # ... يمكن إضافة أي مواد أخرى
+    ('geography', 'الجغرافيا'),
+    ('sociology', 'علم اجتماع'),
+    ('geology', 'الجيولوجيا'),
+    ('applied_math', 'الرياضيات التطبيقية'),
+    ('solid_geometry', 'الهندسة الفراغية'),
+    ('statistics', 'الإحصاء'),
+    ('environmental_science', 'علوم البيئة'),
+    ('economy', 'الاقتصاد'),
+    ('philosophy', 'فلسفة'),
+    ('logic', 'منطق'),
+    ('civics', 'المواطنة'),
 )
 
 # المحافظات المصرية
@@ -88,18 +81,17 @@ GOVERNORATE_CHOICES = (
     ('ismailia', 'الإسماعيلية'), ('port_said', 'بورسعيد'), ('damietta', 'دمياط'),
 )
 
-# مهنة ولي الأمر (يمكن إضافة المزيد حسب الحاجة)
+# مهنة ولي الأمر
 PARENT_PROFESSION_CHOICES = (
     ('doctor', 'طبيب'), ('engineer', 'مهندس'), ('teacher', 'معلم'), ('accountant', 'محاسب'), ('other', 'أخرى'),
 )
 
-# نموذج المستخدم المخصص (CustomUser)
 class CustomUser(AbstractUser):
     USER_TYPE_CHOICES = (
         ('student', 'طالب'),
         ('teacher', 'أستاذ'),
         ('team_member', 'عضو فريق عمل'),
-        ('admin', 'مسؤول'), # يمكن إضافة نوع 'admin' صريح لتمييزه عن is_staff
+        ('admin', 'مسؤول'),
     )
     user_type = models.CharField(
         max_length=20,
@@ -107,7 +99,6 @@ class CustomUser(AbstractUser):
         default='student',
         verbose_name='نوع المستخدم'
     )
-    # لحل مشكلة related_name (مهم جداً)
     groups = models.ManyToManyField(
         'auth.Group',
         verbose_name='groups',
@@ -124,13 +115,21 @@ class CustomUser(AbstractUser):
         related_name="custom_user_permissions_set",
         related_query_name="custom_user",
     )
-    # تم إضافة هذه الحقول إلى CustomUser
     phone_number = models.CharField(max_length=15, blank=True, null=True, verbose_name='رقم الهاتف')
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES, blank=True, null=True, verbose_name='الجنس')
     governorate = models.CharField(max_length=50, choices=GOVERNORATE_CHOICES, blank=True, null=True, verbose_name='المحافظة')
     
     first_name = models.CharField(max_length=150, blank=True, verbose_name="الاسم الأول")
     last_name = models.CharField(max_length=150, blank=True, verbose_name="الاسم الأخير")
+
+    specialized_subject = models.CharField(
+        max_length=50, 
+        choices=CATEGORY_CHOICES, 
+        blank=True, 
+        null=True, 
+        verbose_name='المادة المتخصصة'
+    )
+
 
     class Meta:
         verbose_name = 'مستخدم'
@@ -149,7 +148,6 @@ class AccountRequest(models.Model):
         ('team_member', 'عضو فريق عمل'),
     )
 
-    # حقول عامة لكل أنواع الطلبات (أساسية)
     email = models.EmailField(unique=True, verbose_name='البريد الإلكتروني')
     password = models.CharField(max_length=128, verbose_name='كلمة المرور المشفرة')
     user_type = models.CharField(
@@ -163,7 +161,6 @@ class AccountRequest(models.Model):
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES, blank=True, null=True, verbose_name='الجنس')
     governorate = models.CharField(max_length=50, choices=GOVERNORATE_CHOICES, blank=True, null=True, verbose_name='المحافظة')
     
-    # حقول خاصة بالطلاب (user_type='student')
     second_name = models.CharField(max_length=100, blank=True, null=True, verbose_name='الاسم الثاني (الأب)')
     third_name = models.CharField(max_length=100, blank=True, null=True, verbose_name='الاسم الثالث (الجد)')
     parent_father_phone_number = models.CharField(max_length=15, blank=True, null=True, verbose_name='رقم هاتف الأب')
@@ -172,15 +169,13 @@ class AccountRequest(models.Model):
     parent_profession = models.CharField(max_length=50, choices=PARENT_PROFESSION_CHOICES, blank=True, null=True, verbose_name='مهنة ولي الأمر')
     teacher_name_for_student = models.CharField(max_length=255, blank=True, null=True, verbose_name='اسم الأستاذ للطالب')
     academic_level = models.CharField(max_length=50, choices=ACADEMIC_LEVEL_CHOICES, blank=True, null=True, verbose_name='الصف الدراسي')
-    academic_track = models.CharField(max_length=50, choices=ACADEMIC_TRACK_CHOICES, blank=True, null=True, verbose_name='المسار الدراسي') # جديد للطالب
+    academic_track = models.CharField(max_length=50, choices=ACADEMIC_TRACK_CHOICES, blank=True, null=True, verbose_name='المسار الدراسي')
 
-    # حقول خاصة بالأساتذة (user_type='teacher')
     qualifications = models.TextField(blank=True, null=True, verbose_name='المؤهلات (للأستاذ)')
     experience = models.TextField(blank=True, null=True, verbose_name='الخبرة (للأستاذ)')
     category_type = models.CharField(max_length=50, choices=CATEGORY_CHOICES, blank=True, null=True, verbose_name='الفئة المطلوبة (للأستاذ)')
-    what_will_you_add = models.TextField(blank=True, null=True, verbose_name='ما الذي ستضيفه للمنصة؟') # مشترك مع فريق العمل
+    what_will_you_add = models.TextField(blank=True, null=True, verbose_name='ما الذي ستضيفه للمنصة؟')
 
-    # حقول خاصة بفريق العمل (user_type='team_member')
     job_position = models.CharField(max_length=50, choices=JOB_POSITION_CHOICES, blank=True, null=True, verbose_name='الوظيفة المطلوبة (لفريق العمل)')
     expected_salary = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True, verbose_name='الراتب المتوقع')
     address = models.TextField(blank=True, null=True, verbose_name='العنوان بالتفصيل')
@@ -189,11 +184,9 @@ class AccountRequest(models.Model):
     facebook_link = models.URLField(max_length=200, blank=True, null=True, verbose_name='رابط فيسبوك (اختياري)')
     website_link = models.URLField(max_length=200, blank=True, null=True, verbose_name='رابط الموقع الإلكتروني (اختياري)')
     
-    # ملفات مرفوعة (مشتركة لبعض أنواع المستخدمين)
     personal_id_card = models.FileField(upload_to='account_requests/personal_ids/', blank=True, null=True, verbose_name='صورة البطاقة الشخصية')
     cv_file = models.FileField(upload_to='account_requests/cvs/', blank=True, null=True, verbose_name='ملف السيرة الذاتية (CV)')
     
-    # حالة الطلب وتاريخه
     status = models.CharField(
         max_length=10,
         choices=REQUEST_STATUS_CHOICES,

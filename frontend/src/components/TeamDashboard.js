@@ -5,15 +5,13 @@ import './Dashboard.css';
 
 function TeamDashboard() {
     const navigate = useNavigate();
-    // جلب الاسم الأول من localStorage
-    const firstName = localStorage.getItem('firstName') || 'عضو فريق عمل'; // تم التعديل هنا
-    // const userEmail = localStorage.getItem('userEmail');
+    const firstName = sessionStorage.getItem('firstName') || 'عضو فريق عمل'; // تم التوحيد إلى sessionStorage
 
     const handleLogout = () => {
-        localStorage.removeItem('userToken');
-        localStorage.removeItem('userType');
-        localStorage.removeItem('userEmail');
-        localStorage.removeItem('firstName'); // أضف هذا السطر لمسح الاسم الأول
+        sessionStorage.removeItem('userToken');
+        sessionStorage.removeItem('userType');
+        sessionStorage.removeItem('userEmail');
+        sessionStorage.removeItem('firstName');
         navigate('/login');
     };
 
@@ -40,11 +38,9 @@ function TeamDashboard() {
             </header>
             <main className="main-content dashboard-content">
                 <div className="container">
-                    {/* عرض الاسم الأول هنا */}
                     <h2>مرحباً بك يا {firstName}!</h2>
                     <h3>لوحة تحكم فريق العمل</h3>
                     <p>هذه هي صفحة لوحة تحكم فريق العمل المحمية.</p>
-                    {/* هنا سنعرض محتوى خاص بفريق العمل */}
                 </div>
             </main>
         </div>

@@ -1,27 +1,22 @@
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .models import AccountRequest, CustomUser # تأكد من استيراد CustomUser
-from .serializers import AccountRequestSerializer, LoginSerializer # تأكد من استيراد كلا السيريالايزر
-from rest_framework.authtoken.models import Token # لاستيراد Token (للتسجيل الدخول)
-# no need for authenticate here as we use user.check_password directly
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from .models import AccountRequest, CustomUser
+from .serializers import AccountRequestSerializer, LoginSerializer, TeacherProfileSerializer
+from rest_framework.authtoken.models import Token
 
 
-#--------------------------------------------------------------------------------------
-# API View for Account Request Creation (Registration)
-#--------------------------------------------------------------------------------------
 class AccountRequestCreateAPIView(generics.CreateAPIView):
     queryset = AccountRequest.objects.all()
     serializer_class = AccountRequestSerializer
 
-    # تخصيص طريقة الـ POST لرفع الملفات والتأكد من حفظها
     def perform_create(self, serializer):
         serializer.save()
 
-    # تخصيص استجابة الـ POST
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True) # لو فيه أخطاء validation هترجع الأخطاء
+        serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response(
@@ -30,25 +25,50 @@ class AccountRequestCreateAPIView(generics.CreateAPIView):
             headers=headers
         )
 
-#--------------------------------------------------------------------------------------
-# API View for User Login
-#--------------------------------------------------------------------------------------
 class LoginAPIView(APIView):
-    # السماح بالوصول للكل لهذه النقطة (لأن المستخدم غير مسجل الدخول بعد)
-    permission_classes = () 
-    
+    permission_classes = ()
+
     def post(self, request, *args, **kwargs):
         serializer = LoginSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True) # تحقق من صحة البيانات (البريد وكلمة المرور)
+        serializer.is_valid(raise_exception=True)
 
-        # إذا كان الـ serializer صالح، البيانات المطلوبة (email, password, token, user_type, first_name) ستكون موجودة
         token = serializer.validated_data['token']
         user_type = serializer.validated_data['user_type']
-        first_name = serializer.validated_data['first_name'] # <--- هنا يتم استخراج الاسم الأول
-        
-        return Response({
+        first_name = serializer.validated_data['first_name']
+        specialized_subject = serializer.validated_data.get('specialized_subject')
+
+        response_data = {
             'token': token,
             'user_type': user_type,
-            'first_name': first_name, # <--- هنا يتم إرجاع الاسم الأول في الاستجابة
+            'first_name': first_name,
             'message': 'تم تسجيل الدخول بنجاح!'
-        }, status=status.HTTP_200_OK)
+        }
+        if specialized_subject:
+            response_data['specialized_subject'] = specialized_subject
+
+        return Response(response_data, status=status.HTTP_200_OK)
+
+
+class TeacherProfileAPIView(generics.RetrieveAPIView):
+    serializer_class = TeacherProfileSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+
+# NEW: View لجلب بيانات مستخدم واحد (مثل ملف تعريف المدرس) بواسطة ID
+class CustomUserRetrieveAPIView(generics.RetrieveAPIView):
+    queryset = CustomUser.objects.all()
+    serializer_class = TeacherProfileSerializer # يمكن استخدام TeacherProfileSerializer لأنه يغطي بيانات المدرس
+    permission_classes = [AllowAny] # يمكن لأي شخص رؤية الملف الشخصي للمدرس
+    lookup_field = 'pk' # لجلب المستخدم باستخدام ID (primary key)
+
+    def get_queryset(self):
+        # التأكد من أن المستخدم الذي يتم جلبه هو 'teacher' فقط إذا كانت هذه نقطة نهاية مخصصة للمدرسين
+        # إذا كنت تريد أن يكون ملف تعريف المستخدم عاماً، يمكنك إزالة هذا الفلتر
+        return CustomUser.objects.filter(user_type='teacher')

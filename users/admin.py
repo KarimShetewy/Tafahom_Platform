@@ -1,9 +1,24 @@
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
 from .models import CustomUser, AccountRequest
-from django.contrib.auth.hashers import make_password
+
+class CustomUserAdmin(UserAdmin):
+    list_display = ('email', 'first_name', 'last_name', 'user_type', 'is_staff', 'specialized_subject')
+    list_filter = ('user_type', 'is_staff', 'is_active', 'specialized_subject')
+    search_fields = ('email', 'first_name', 'last_name', 'phone_number')
+    ordering = ('email',)
+
+    fieldsets = UserAdmin.fieldsets + (
+        (None, {'fields': ('user_type', 'phone_number', 'gender', 'governorate', 'specialized_subject')}),
+    )
+    add_fieldsets = UserAdmin.add_fieldsets + (
+        (None, {'fields': ('user_type', 'phone_number', 'gender', 'governorate', 'specialized_subject')}),
+    )
+
+admin.site.register(CustomUser, CustomUserAdmin)
+
 
 class AccountRequestAdmin(admin.ModelAdmin):
-    # تعديل list_display لعرض الحقول الأساسية المشتركة في قائمة الطلبات
     list_display = (
         'first_name',
         'last_name',
@@ -12,12 +27,11 @@ class AccountRequestAdmin(admin.ModelAdmin):
         'status',
         'request_date',
         'governorate',
-        'academic_level', # جديد
-        'academic_track', # جديد
+        'academic_level',
+        'academic_track',
         'job_position',
-        'category_type', # جديد
+        'category_type',
     )
-    # فلاتر البحث والترشيح في لوحة Admin
     list_filter = ('user_type', 'status', 'governorate', 'academic_level', 'academic_track', 'job_position', 'category_type')
     search_fields = (
         'first_name', 'last_name', 'email', 'phone_number',
@@ -27,7 +41,6 @@ class AccountRequestAdmin(admin.ModelAdmin):
     )
     readonly_fields = ('request_date',)
 
-    # تخصيص طريقة عرض الحقول في صفحة التفاصيل (add/change view)
     fieldsets = (
         ('معلومات الحساب الأساسية', {
             'fields': ('user_type', 'email', 'password',
@@ -36,7 +49,7 @@ class AccountRequestAdmin(admin.ModelAdmin):
         }),
         ('معلومات الطالب (إذا كان نوع المستخدم طالب)', {
             'fields': ('parent_father_phone_number', 'parent_mother_phone_number', 'school_name',
-                       'parent_profession', 'teacher_name_for_student', 'academic_level', 'academic_track'), # academic_track جديد
+                       'parent_profession', 'teacher_name_for_student', 'academic_level', 'academic_track'),
             'classes': ('collapse',),
         }),
         ('معلومات الأستاذ (إذا كان نوع المستخدم أستاذ)', {
@@ -83,10 +96,10 @@ class AccountRequestAdmin(admin.ModelAdmin):
                         first_name=req.first_name,
                         last_name=req.last_name,
                         user_type=req.user_type,
-                        # يمكنك إضافة الحقول المشتركة التي تريد حفظها في CustomUser هنا
                         gender=req.gender,
                         phone_number=req.phone_number,
                         governorate=req.governorate,
+                        specialized_subject=req.category_type if req.user_type == 'teacher' else None,
                     )
                     req.status = 'approved'
                     req.save()
@@ -106,5 +119,4 @@ class AccountRequestAdmin(admin.ModelAdmin):
         self.message_user(request, f"{updated_count} طلب تم رفضه بنجاح.")
     reject_requests.short_description = "رفض الطلبات المحددة"
 
-admin.site.register(CustomUser)
 admin.site.register(AccountRequest, AccountRequestAdmin)

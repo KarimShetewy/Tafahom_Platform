@@ -1,13 +1,10 @@
 from django.urls import path
-from .views import AccountRequestCreateAPIView, LoginAPIView
+from .views import AccountRequestCreateAPIView, LoginAPIView, TeacherProfileAPIView # تأكد من استيراد TeacherProfileAPIView
+from .views import CustomUserRetrieveAPIView # NEW: استيراد View لـ retrieve user by ID
 
 urlpatterns = [
-    # مسار لإنشاء طلبات الحساب الجديدة (للطلاب أو فريق العمل أو الأساتذة)
-    path('account-requests/create/', AccountRequestCreateAPIView.as_view(), name='create-account-request'),
-
-    # مسار لتسجيل دخول المستخدمين
+    path('register/', AccountRequestCreateAPIView.as_view(), name='register-request'),
     path('login/', LoginAPIView.as_view(), name='login'),
-
-    # يمكن إضافة مسار عام لـ "تسجيل الأستاذ" هنا إذا أردت نقطة نهاية API مختلفة للأستاذ
-    # ولكننا سنستخدم نفس AccountRequestCreateAPIView من الـ frontend بتحديد user_type = 'teacher'
+    path('profile/', TeacherProfileAPIView.as_view(), name='user-profile'),
+    path('profile/<int:pk>/', CustomUserRetrieveAPIView.as_view(), name='user-profile-detail'), # NEW: مسار لملف تعريف المستخدم حسب ID
 ]

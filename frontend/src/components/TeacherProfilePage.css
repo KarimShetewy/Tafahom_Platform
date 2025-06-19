@@ -1,0 +1,202 @@
+/* frontend/src/components/TeacherProfilePage.css */
+
+.teacher-profile-page {
+    background-color: var(--primary-bg-color);
+    color: var(--text-color);
+    min-height: 100vh;
+    transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+.teacher-profile-page .main-content {
+    padding-top: 40px;
+    padding-bottom: 60px;
+}
+
+.loading-message-container, .error-message-container {
+    text-align: center;
+    padding: 50px 0;
+    font-size: 1.2em;
+}
+.error-message-container .error-message-box {
+    margin: 20px auto;
+    max-width: 500px;
+}
+.error-message-container .btn {
+    margin-top: 20px;
+}
+
+
+.teacher-profile-hero-section {
+    /* الخلفية الرئيسية للقسم الذي يحتوي الصورة والاسم */
+    background-color: var(--secondary-bg-color); /* يمكن أن يكون هذا اللون أيضاً */
+    padding: 0; /* تم إزالة padding هنا ليتم وضعه داخل teacher-profile-hero-container */
+    border-radius: 15px;
+    box-shadow: var(--box-shadow);
+    margin-bottom: 40px;
+    border: 1px solid var(--border-color);
+    transition: background-color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
+}
+
+.teacher-profile-hero-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    padding: 50px 20px 30px 20px; /* NEW: إضافة padding هنا بدلاً من .teacher-profile-hero-section */
+    /* NEW: الخلفية الخضراء الرئيسية لهذا القسم */
+    background: linear-gradient(135deg, rgba(var(--heading-color-rgb), 0.8), rgba(var(--heading-color-rgb), 1)); /* تدرج أخضر أكثر وضوحاً */
+    color: var(--button-text-color); /* لجعل النص فاتحاً فوق الخلفية الداكنة الجديدة */
+    border-radius: 15px; /* لضمان تطابق الحواف مع القسم الأم */
+    overflow: hidden; /* لمنع أي تجاوزات */
+}
+
+/* NEW: لكي يرث h1 و p اللون الأبيض من الـ container الجديد */
+.teacher-profile-hero-container h1,
+.teacher-profile-hero-container .teacher-specialty {
+    color: inherit; /* ليرث اللون من العنصر الأب (الأبيض) */
+}
+
+
+/* الخلفية الزخرفية (الأشكال) خلف الصورة - عنصر جديد */
+.teacher-profile-hero-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* NEW: استخدام نمط أخضر فاتح جداً كخلفية شفافة */
+    background: radial-gradient(circle at top left, rgba(255,255,255,0.05), transparent 50%),
+                radial-gradient(circle at bottom right, rgba(255,255,255,0.05), transparent 50%);
+    background-size: 200px 200px; /* حجم النمط */
+    background-position: top left, bottom right;
+    opacity: 1; /* جعلها مرئية أكثر */
+    z-index: 0; /* خلف المحتوى */
+    border-radius: 15px;
+}
+
+
+/* قسم صورة البروفايل - لكي تكون مربعة بحواف دائرية ومع خلفية زخرفية */
+.profile-image-section {
+    width: 300px; /* **تم تكبير الحجم** */
+    height: 300px; /* **تم تكبير الحجم** */
+    position: relative;
+    overflow: hidden;
+    border-radius: 15px;
+    border: 5px solid var(--accent-color-1);
+    margin-bottom: 25px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+    transition: border-color 0.5s ease, box-shadow 0.3s ease;
+    z-index: 1; /* لجعلها فوق الخلفية الزخرفية */
+    /* NEW: خلفية الهالة حول الصورة لتكون بلون فاتح من الثيم */
+    background: radial-gradient(circle at center, var(--secondary-bg-color) 0%, transparent 70%); /* هالة بلون secondary-bg */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* الصورة نفسها داخل حاوية البروفايل */
+.teacher-profile-image {
+    width: 90%;
+    height: 90%;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 10px;
+    z-index: 2;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.teacher-profile-image:hover {
+    transform: scale(1.03);
+}
+
+
+.profile-details-section h1 {
+    font-size: 2.8em;
+    color: var(--button-text-color); /* تم تغيير لون الاسم ليتناسق مع الخلفية الخضراء الداكنة */
+    margin-bottom: 10px;
+}
+
+.teacher-specialty {
+    font-size: 1.4em;
+    color: var(--button-text-color); /* تم تغيير لون التخصص ليتناسق مع الخلفية الخضراء الداكنة */
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+.teacher-bio {
+    font-size: 1.1em;
+    color: var(--text-color);
+    line-height: 1.8;
+    max-width: 800px;
+    margin: 0 auto 15px auto;
+}
+
+
+.teacher-courses-section, .separate-courses-section {
+    background-color: var(--primary-bg-color);
+    padding: 40px 0;
+    text-align: center;
+}
+
+.teacher-courses-section h2, .separate-courses-section h2 {
+    font-size: 2.2em;
+    color: var(--heading-color);
+    margin-bottom: 40px;
+    position: relative;
+}
+
+.teacher-courses-section h2::after, .separate-courses-section h2::after {
+    content: '';
+    display: block;
+    width: 70px;
+    height: 3px;
+    background-color: var(--accent-color-1);
+    margin: 10px auto 0;
+    border-radius: 2px;
+}
+
+/* إعادة استخدام أنماط الـ courses-grid والـ course-card من HomePage.css */
+/* لضمان تناسق التصميم */
+
+
+/* Responsive adjustments */
+@media (min-width: 768px) {
+    .teacher-profile-hero-container {
+        flex-direction: row;
+        text-align: right;
+        gap: 50px;
+        align-items: flex-start;
+    }
+    .profile-image-section {
+        flex-shrink: 0;
+        margin-bottom: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .teacher-profile-hero-section {
+        padding: 30px 15px;
+    }
+    .profile-image-section {
+        width: 180px; /* أصغر قليلاً على الموبايل */
+        height: 180px;
+    }
+    .profile-details-section h1 {
+        font-size: 2.2em;
+    }
+    .teacher-specialty {
+        font-size: 1.2em;
+    }
+    .teacher-bio {
+        font-size: 1em;
+    }
+    .teachers-for-subject-section h2, .courses-for-subject-section h2, .teacher-courses-section h2, .separate-courses-section h2 {
+        font-size: 1.8em;
+    }
+    .teachers-grid, .courses-grid {
+        grid-template-columns: 1fr;
+    }
+}

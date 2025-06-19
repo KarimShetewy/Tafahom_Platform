@@ -1,7 +1,9 @@
+/* frontend/src/HomePage.css */
+
 /* HomePage specific styles */
 .home-page {
     text-align: right;
-    color: var(--text-color);
+    color: var(--text-color); /* استخدام متغير الثيم */
 }
 
 /* Section Common Styles */
@@ -11,8 +13,9 @@
 
 /* Hero Section */
 .hero-section {
-    background-color: var(--primary-bg-color);
+    background-color: var(--primary-bg-color); /* استخدام متغير الثيم */
     padding: 80px 0;
+    transition: background-color 0.5s ease; /* انتقال سلس للثيم */
 }
 
 .hero-container {
@@ -32,14 +35,16 @@
 .hero-content h1 {
     font-size: 3.5em;
     margin-bottom: 10px;
-    color: var(--heading-color);
+    color: var(--heading-color); /* استخدام متغير الثيم */
     line-height: 1.2;
+    transition: color 0.5s ease; /* انتقال سلس للثيم */
 }
 
 .hero-content h3 {
     font-size: 1.8em;
-    color: var(--accent-color-1);
+    color: var(--accent-color-1); /* استخدام متغير الثيم */
     margin-bottom: 30px;
+    transition: color 0.5s ease; /* انتقال سلس للثيم */
 }
 
 .hero-image {
@@ -53,6 +58,7 @@
     height: auto;
     border-radius: 15px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    transition: box-shadow 0.5s ease; /* انتقال سلس للثيم */
 }
 
 .hero-cta .btn {
@@ -64,16 +70,18 @@
 
 /* Teachers Section */
 .teachers-section {
-    background-color: var(--secondary-bg-color);
+    background-color: var(--secondary-bg-color); /* استخدام متغير الثيم */
     text-align: center;
+    transition: background-color 0.5s ease; /* انتقال سلس للثيم */
 }
 
 .teachers-section h2, .courses-section h2, .academic-levels-section h2 {
     font-size: 2.5em;
     margin-bottom: 40px;
-    color: var(--heading-color);
+    color: var(--heading-color); /* استخدام متغير الثيم */
     text-align: center;
     position: relative;
+    transition: color 0.5s ease; /* انتقال سلس للثيم */
 }
 
 .teachers-section h2::after, .courses-section h2::after, .academic-levels-section h2::after {
@@ -81,9 +89,10 @@
     display: block;
     width: 80px;
     height: 4px;
-    background-color: var(--accent-color-1);
+    background-color: var(--accent-color-1); /* استخدام متغير الثيم */
     margin: 10px auto 0;
     border-radius: 2px;
+    transition: background-color 0.5s ease; /* انتقال سلس للثيم */
 }
 
 .teachers-filter {
@@ -97,15 +106,16 @@
 .teachers-filter select, .teachers-filter .filter-btn {
     padding: 10px 15px;
     border-radius: 5px;
-    border: 1px solid var(--border-color);
-    background-color: var(--primary-bg-color);
-    color: var(--text-color);
+    border: 1px solid var(--border-color); /* استخدام متغير الثيم */
+    background-color: var(--primary-bg-color); /* استخدام متغير الثيم */
+    color: var(--text-color); /* استخدام متغير الثيم */
     font-family: 'Cairo', sans-serif;
     font-size: 1em;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.5s ease, color 0.5s ease; /* انتقال سلس */
 }
 
 .teachers-filter select:focus {
-    border-color: var(--accent-color-1);
+    border-color: var(--accent-color-1); /* استخدام متغير الثيم */
     outline: none;
 }
 
@@ -116,65 +126,137 @@
     margin-bottom: 40px;
 }
 
+/* تحسين بطاقات المعلمين - التصميم النهائي من الصورة image_648e27.png */
 .teacher-card {
-    background-color: var(--primary-bg-color);
-    padding: 25px;
-    border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    background-color: var(--secondary-bg-color); /* لون خلفية البطاقة (أبيض في النهاري، أغمق قليلا في الليلي) */
+    padding: 0; /* لا يوجد padding مباشر هنا */
+    border-radius: 15px; /* حواف مستديرة للبطاقة ككل */
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15); /* ظل أنيق وواضح */
     text-align: center;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    border: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    max-width: 300px; /* تحديد أقصى عرض للبطاقة لكي تكون متناسبة */
+    width: 100%; /* تأكد أنها تستجيب */
+    margin: 0 auto; /* توسيط البطاقة في الخلية إذا كانت أضيق من الخلية */
+    height: 100%; /* لضمان تساوي الارتفاعات في الـ grid */
+    overflow: hidden; /* مهم جداً لقص الصورة وتأثيراتها */
+    transition: transform 0.3s ease-out, box-shadow 0.3s ease-out, background-color 0.5s ease, border-color 0.5s ease; /* حركات سلسة للبطاقة */
+    border: 1px solid var(--border-color); /* إطار رقيق حول البطاقة */
 }
 
 .teacher-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+    transform: translateY(-10px); /* رفع البطاقة للأعلى عند التمرير */
+    box-shadow: var(--box-shadow-hover); /* ظل أكبر وأكثر وضوحاً عند الهوفر */
 }
 
+/* حاوية الصورة لتحديد الأبعاد ونسبة العرض إلى الارتفاع والخلفية الزرقاء/التي حول الصورة */
+.teacher-image-container { /* هذا الاسم هو المستخدم في HomePage.js */
+    position: relative; /* للسماح بوضع العناصر المطلقة داخله (الصورة والهالة) */
+    width: 100%; /* تأخذ العرض الكامل للبطاقة */
+    padding-bottom: 75%; /* نسبة عرض إلى ارتفاع 4:3 للحاوية (75% من العرض) */
+    overflow: hidden; /* لقص الصورة إذا خرجت عن الحدود */
+    border-radius: 15px 15px 0 0; /* حواف مستديرة في الأعلى فقط للحاوية */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* ظل خفيف تحت الصورة ليفصلها عن المحتوى السفلي */
+    transition: border-radius 0.4s ease, box-shadow 0.4s ease; /* انتقال سلس لتغيرات الهوفر */
+    background: radial-gradient(circle at center, rgba(var(--heading-color-rgb), 0.2) 0%, rgba(var(--heading-color-rgb), 0.05) 70%); /* هالة زرقاء خفيفة */
+    display: flex; /* لمركزة الصورة داخلها */
+    justify-content: center;
+    align-items: center;
+}
+
+/* الصورة نفسها داخل الحاوية */
 .teacher-card .teacher-image {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 3px solid var(--heading-color);
-    margin-bottom: 15px;
+    display: block; /* مهم لضمان التعامل الصحيح معها ككتلة */
+    width: 160px; /* حجم الصورة الفعلية لكي تكون مربعة ومناسبة (تم تصغيرها قليلاً) */
+    height: 160px; /* حجم الصورة الفعلية */
+    object-fit: cover; /* لضمان تغطية الصورة للمساحة دون تشويه */
+    object-position: center; /* لمركزة الوجه في الصورة */
+    border-radius: 15px; /* حواف دائرية خفيفة للصورة نفسها - هذا هو الذي سيجعلها غير دائرية تماماً */
+    border: 4px solid var(--accent-color-1); /* إطار بلون مميز حول الصورة */
+    transition: transform 0.4s ease, border-radius 0.4s ease, border-color 0.4s ease; /* حركة سلسة للتكبير والتحول */
+    z-index: 2; /* لجعلها فوق أي خلفية/هالة */
+    box-shadow: 0 0 15px rgba(0,0,0,0.2); /* ظل خفيف للصورة نفسها */
 }
 
-.teacher-card h3 {
-    color: var(--accent-color-1);
-    font-size: 1.5em;
-    margin-bottom: 10px;
+/* تأثير التكبير والتحول الدائري عند الهوفر على البطاقة كلها */
+.teacher-card:hover .teacher-image {
+    transform: scale(1.05); /* تكبير الصورة قليلاً لجذب الانتباه */
+    border-radius: 50%; /* التحول إلى دائرة عند الهوفر */
+    border-color: var(--heading-color); /* تغيير لون الإطار عند الهوفر */
 }
 
-.teacher-card p {
-    color: var(--text-color);
-    font-size: 1em;
-    margin-bottom: 20px;
-    min-height: 40px;
+
+/* معلومات المدرس داخل البطاقة */
+.teacher-info-content {
+    padding: 20px; /* Padding للمحتوى النصي والزر */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* توسيط العناصر أفقياً */
+    justify-content: center; /* توسيط العناصر عمودياً */
+    flex-grow: 1; /* لملء المساحة المتبقية ودفع الزر للأسفل */
+}
+
+.teacher-info-content h3 {
+    color: var(--heading-color); /* لون الاسم (الأخضر المائي) */
+    font-size: 1.5em; /* حجم أكبر للاسم */
+    margin-bottom: 5px;
+    font-weight: 700;
+    transition: color 0.5s ease; /* انتقال سلس للثيم */
+}
+
+.teacher-info-content p {
+    color: var(--text-color); /* لون التخصص (نص عادي) */
+    font-size: 0.95em;
+    margin-bottom: 25px; /* مسافة قبل الزر */
+    min-height: 20px; /* لتجنب انهيار التخطيط إذا كان التخصص قصيراً */
+    transition: color 0.5s ease; /* انتقال سلس للثيم */
 }
 
 .teacher-card .btn {
-    background-color: var(--accent-color-1);
-    color: var(--button-text-color);
-    padding: 8px 18px;
-    font-size: 0.9em;
+    background-color: var(--accent-color-1); /* لون الزر (البرتقالي المحمر) */
+    color: var(--button-text-color); /* لون نص الزر (أبيض) */
+    padding: 10px 20px;
+    font-size: 0.95em;
+    border-radius: 8px; /* حواف مستديرة للزر */
+    width: calc(100% - 40px); /* عرض كامل تقريبا مع padding جانبي (20px من كل جهة) */
+    box-shadow: 0 4px 10px rgba(var(--accent-color-1-rgb), 0.2); /* ظل للزر */
+}
+
+.teacher-card .btn:hover {
+    background-color: rgba(var(--accent-color-1-rgb), 0.9); /* درجة أغمق قليلاً عند الهوفر */
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(var(--accent-color-1-rgb), 0.4);
+}
+
+
+.view-more-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.view-more-container .btn {
+    font-size: 1.1em;
+    padding: 12px 30px;
+    border-radius: 8px;
 }
 
 /* Join as Teacher CTA */
 .join-as-teacher-cta {
-    background-color: var(--primary-bg-color);
+    background-color: var(--primary-bg-color); /* استخدام متغير الثيم */
     padding: 40px;
     border-radius: 10px;
     margin-top: 50px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    box-shadow: var(--box-shadow); /* استخدام متغير الثيم */
     text-align: center;
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--border-color); /* استخدام متغير الثيم */
+    transition: background-color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease; /* انتقال سلس */
 }
 
 .join-as-teacher-cta h2 {
-    color: var(--heading-color);
+    color: var(--heading-color); /* استخدام متغير الثيم */
     font-size: 2em;
     margin-bottom: 20px;
+    transition: color 0.5s ease; /* انتقال سلس */
 }
 
 .join-as-teacher-cta .btn {
@@ -185,15 +267,17 @@
 
 /* Courses Section */
 .courses-section {
-    background-color: var(--primary-bg-color);
+    background-color: var(--primary-bg-color); /* استخدام متغير الثيم */
     text-align: center;
+    transition: background-color 0.5s ease; /* انتقال سلس */
 }
 
 .courses-section .section-description {
     max-width: 700px;
     margin: 0 auto 50px;
-    color: var(--text-color);
+    color: var(--text-color); /* استخدام متغير الثيم */
     font-size: 1.1em;
+    transition: color 0.5s ease; /* انتقال سلس */
 }
 
 .courses-grid {
@@ -203,114 +287,203 @@
     margin-bottom: 40px;
 }
 
+/* تصميم بطاقة الكورس الجديدة من الصورة image_d4d82b.jpg */
 .course-card {
-    background-color: var(--secondary-bg-color);
-    border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    border: 1px solid var(--border-color);
+    background-color: var(--secondary-bg-color); /* لون خلفية البطاقة */
+    border-radius: 15px; /* حواف مستديرة للبطاقة ككل */
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15); /* ظل أنيق وواضح */
+    overflow: hidden; /* مهم لقص الصورة وأي عناصر تخرج عن الحدود */
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* لضمان تساوي الارتفاعات في الـ grid */
+    transition: transform 0.3s ease-out, box-shadow 0.3s ease-out, background-color 0.5s ease, border-color 0.5s ease; /* حركات سلسة للبطاقة */
+    border: 1px solid var(--border-color); /* إطار رقيق حول البطاقة */
 }
 
 .course-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+    transform: translateY(-10px); /* رفع البطاقة للأعلى عند التمرير */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25); /* ظل أكبر وأكثر وضوحاً عند الهوفر */
 }
 
-.course-card .course-image {
+.course-image-container-new {
+    position: relative; /* لجعل الشارة (badge) تظهر عليه */
     width: 100%;
-    height: 200px;
-    object-fit: cover;
+    padding-bottom: 56.25%; /* نسبة عرض إلى ارتفاع 16:9 للفيديو أو الصورة العريضة */
+    overflow: hidden;
+    background-color: var(--primary-bg-color); /* لون خلفية في حالة عدم تحميل الصورة */
+    border-radius: 15px 15px 0 0; /* حواف مستديرة في الأعلى فقط */
+}
+
+.course-image-new {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* تغطية المساحة بالكامل */
+    object-position: center;
     display: block;
 }
 
-.course-card .course-info {
+.course-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background-color: rgba(var(--accent-color-1-rgb), 0.85); /* لون الشارة (برتقالي محمر) */
+    color: var(--button-text-color);
+    padding: 5px 12px;
+    border-radius: 5px;
+    font-size: 0.85em;
+    font-weight: bold;
+    z-index: 10;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.course-info-new {
     padding: 20px;
     text-align: right;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
-.course-card h3 {
-    color: var(--heading-color);
+.course-info-new h3 {
+    color: var(--heading-color); /* لون عنوان الكورس (أخضر مائي) */
     font-size: 1.6em;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
+    line-height: 1.3;
 }
 
-.course-card p {
+.course-note {
     color: var(--text-color);
     font-size: 0.95em;
+    margin-bottom: 15px;
+    line-height: 1.5;
+}
+
+.course-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 20px;
+    font-size: 0.9em;
+    color: var(--accent-color-2); /* لون ثانوي (بني فاتح) */
 }
 
-.course-card .btn {
-    background-color: var(--accent-color-1);
+.course-price-new {
+    font-weight: bold;
+    color: var(--accent-color-1); /* سعر بلون مميز */
+    font-size: 1.1em;
+}
+
+.course-teacher-name {
+    /* أنماط اسم الأستاذ داخل الميتا */
+}
+
+.course-actions-new {
+    display: flex;
+    gap: 10px;
+    margin-top: auto; /* لدفع الأزرار للأسفل */
+}
+
+.course-actions-new .btn {
+    flex-grow: 1; /* لجعل الأزرار تمتلئ المساحة */
+    padding: 10px 15px;
+    font-size: 0.9em;
+    border-radius: 8px;
+}
+
+.course-action-btn { /* زر الدخول للكورس - primary */
+    background-color: var(--heading-color); /* لون أخضر مائي */
     color: var(--button-text-color);
-    padding: 10px 20px;
-    font-size: 1em;
-    width: 100%;
+}
+.course-action-btn:hover {
+    background-color: rgba(var(--heading-color-rgb), 0.9);
 }
 
-/* Academic Levels Section - قسم "مواد تفاهم" */
+.course-action-btn-outline { /* زر الدخول للكورس - secondary outline */
+    background-color: transparent;
+    color: var(--heading-color);
+    border: 2px solid var(--heading-color);
+}
+.course-action-btn-outline:hover {
+    background-color: var(--heading-color);
+    color: var(--button-text-color);
+}
+
+.subscribe-btn { /* زر اشترك الآن */
+    background-color: var(--accent-color-1); /* لون برتقالي محمر */
+    color: var(--button-text-color);
+}
+.subscribe-btn:hover {
+    background-color: rgba(var(--accent-color-1-rgb), 0.9);
+}
+
+/* Academic Levels Section */
 .academic-levels-section {
     background-color: var(--secondary-bg-color);
     text-align: center;
+    transition: background-color 0.5s ease;
 }
 
-/* Full Materials Grid - العرض الجديد لجميع المواد */
-.all-levels-materials-grid { /* <--- تم تغيير اسم الكلاس هنا */
+/* Full Materials Grid */
+.all-levels-materials-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* لتقسيم الصفوف */
-    gap: 40px; /* مسافة بين الصفوف */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 40px;
     margin-top: 40px;
 }
 
-.level-group-card { /* بطاقة للصف بأكمله (مثل الصف الأول الثانوي) */
+.level-group-card {
     background-color: var(--primary-bg-color);
     padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    border-radius: 15px;
+    box-shadow: var(--box-shadow);
     border: 1px solid var(--border-color);
     text-align: right;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    min-height: 350px; /* ارتفاع أدنى للبطاقة عشان المحتوى يكون متناسق */
-    transition: transform 0.3s ease, box-shadow 0.3s ease; /* إضافة تأثير للحركة الديناميكية */
+    min-height: 380px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.5s ease, border-color 0.5s ease;
 }
 
-.level-group-card:hover { /* تأثير ديناميكي عند التمرير */
-    transform: translateY(-8px); /* يتحرك لأعلى أكثر */
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5); /* ظل أكبر */
+.level-group-card:hover {
+    transform: translateY(-10px);
+    box-shadow: var(--box-shadow-hover);
 }
 
-.level-group-card h3 { /* عنوان الصف (مثلاً الصف الأول الثانوي) */
-    color: var(--heading-color); /* يمكن تغيير هذا اللون ليتماشى مع صورة bassthalik.com */
-    font-size: 2em;
+.level-group-card h3 {
+    color: var(--heading-color);
+    font-size: 2.2em;
     margin-bottom: 25px;
     text-align: center;
     position: relative;
 }
 
-.level-group-card h3::after { /* الخط تحت العنوان */
+.level-group-card h3::after {
     content: '';
     display: block;
-    width: 60px;
-    height: 3px;
+    width: 70px;
+    height: 4px;
     background-color: var(--accent-color-1);
     margin: 10px auto 0;
     border-radius: 2px;
+    transition: background-color 0.5s ease;
 }
 
-.level-materials-container { /* حاوية للمواد داخل الصف */
+.level-materials-container {
     flex-grow: 1;
-    overflow: hidden; /* إخفاء المحتوى الزائد في البداية */
-    max-height: 250px; /* ارتفاع أقصى للمحتوى الأصلي (أول 3 مواد) */
-    transition: max-height 0.5s ease-out; /* انتقال سلس لـ max-height */
-    padding-right: 10px; /* مسافة عشان السكرول بار */
+    overflow: hidden;
+    max-height: 250px;
+    transition: max-height 0.5s ease-out;
+    padding-right: 10px;
 }
 
-.level-materials-container.show-all { /* عندما يتم عرض كل المواد */
-    max-height: 1000px; /* ارتفاع كبير كافي لعرض كل المواد */
-    overflow-y: auto; /* إظهار السكرول بار إذا لزم الأمر */
+.level-materials-container.show-all {
+    max-height: 1000px;
+    overflow-y: auto;
 }
 
 /* ستايل السكرول بار */
@@ -338,7 +511,7 @@
 }
 
 .level-group-card .subject-list li {
-    padding: 5px 0;
+    padding: 8px 0;
     border-bottom: 1px dotted rgba(var(--border-color-rgb), 0.5);
     text-align: center;
 }
@@ -349,13 +522,13 @@
 
 .level-group-card .subject-list li a {
     color: var(--text-color);
-    font-size: 0.95em;
+    font-size: 1.05em;
     transition: color 0.3s ease, text-decoration 0.3s ease;
     display: block;
 }
 
 .level-group-card .subject-list li a:hover {
-    color: var(--heading-color);
+    color: var(--accent-color-1);
     text-decoration: underline;
 }
 
@@ -364,27 +537,25 @@
     margin-top: 15px;
     background-color: var(--accent-color-2);
     color: var(--button-text-color);
-    padding: 8px 15px;
-    font-size: 0.9em;
-    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 1em;
+    border-radius: 8px;
     width: 100%;
-    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease; /* إضافة تأثيرات ديناميكية */
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
 }
 
 .view-more-materials-btn:hover {
-    background-color: rgba(var(--accent-color-2-rgb), 0.8);
-    transform: translateY(-3px); /* حركة لأعلى عند الهوفر */
-    box-shadow: 0 5px 10px rgba(var(--accent-color-2-rgb), 0.4); /* ظل عند الهوفر */
+    background-color: rgba(var(--accent-color-2-rgb), 0.9);
+    transform: translateY(-3px);
+    box-shadow: 0 5px 10px rgba(var(--accent-color-2-rgb), 0.5);
 }
-
-/* زر "عرض كل مواد الصف" (الزر السفلي) - تم حذفه من الكود */
-/* .level-group-card .view-level-btn { ... } */
 
 /* Join Team Section */
 .join-team-section {
     background-color: var(--primary-bg-color);
     padding: 60px 0;
     margin-top: 40px;
+    transition: background-color 0.5s ease;
 }
 
 .join-team-container {
@@ -394,13 +565,14 @@
     max-width: 1000px;
     width: 90%;
     margin: 0 auto;
-    padding: 30px;
+    padding: 40px;
     background-color: var(--secondary-bg-color);
     border-radius: 15px;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+    box-shadow: var(--box-shadow);
     flex-wrap: wrap;
     order: 1;
     border: 1px solid var(--border-color);
+    transition: background-color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
 }
 
 .join-team-content {
@@ -411,30 +583,32 @@
 
 .join-team-content h2 {
     color: var(--accent-color-1);
-    font-size: 2.2em;
-    margin-bottom: 15px;
+    font-size: 2.5em;
+    margin-bottom: 18px;
+    transition: color 0.5s ease;
 }
 
 .join-team-content p {
     color: var(--text-color);
-    line-height: 1.7;
+    line-height: 1.8;
     margin-bottom: 30px;
     font-size: 1.1em;
+    transition: color 0.5s ease;
 }
 
 .join-team-btn {
     background-color: var(--heading-color);
     color: var(--button-text-color);
-    padding: 15px 30px;
+    padding: 15px 35px;
     font-size: 1.1em;
     border-radius: 8px;
     transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
 }
 
 .join-team-btn:hover {
-    background-color: rgba(var(--heading-color-rgb), 0.8);
+    background-color: rgba(var(--heading-color-rgb), 0.9);
     transform: translateY(-3px);
-    box-shadow: 0 6px 15px rgba(var(--heading-color-rgb), 0.5);
+    box-shadow: 0 8px 20px rgba(var(--heading-color-rgb), 0.6);
 }
 
 .join-team-image {
@@ -446,52 +620,24 @@
 .join-team-image img {
     max-width: 100%;
     height: auto;
-    border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-}
-
-/* Footer (General, but duplicated here for clarity) */
-.app-footer {
-    background-color: var(--primary-bg-color);
-    color: var(--text-color);
-    padding: 30px 0;
-    text-align: center;
-    border-top: 1px solid var(--border-color);
-    margin-top: 50px;
-}
-
-.app-footer p {
-    margin-bottom: 15px;
-}
-
-.app-footer .footer-links {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-}
-
-.app-footer .footer-links li a {
-    color: var(--text-color);
-    transition: color 0.3s ease;
-}
-
-.app-footer .footer-links li a:hover {
-    color: var(--accent-color-1);
+    border-radius: 12px;
+    box-shadow: var(--box-shadow-hover);
+    transition: box-shadow 0.5s ease;
 }
 
 /* Responsive adjustments for HomePage */
 @media (max-width: 992px) {
     .hero-section h1 {
-        font-size: 3em;
+        font-size: 2.8em;
     }
     .hero-content h3 {
-        font-size: 1.5em;
+        font-size: 1.4em;
     }
-    .teachers-grid, .courses-grid, .levels-grid, .selected-materials-display {
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    .teachers-grid, .courses-grid, .all-levels-materials-grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
+    .level-group-card {
+        min-height: 350px;
     }
 }
 
@@ -526,17 +672,19 @@
     .academic-browse-filters select {
         width: 100%;
     }
-    /* New responsive for all-levels-materials-grid */
     .all-levels-materials-grid {
-        grid-template-columns: 1fr; /* عمود واحد في الشاشات الصغيرة */
+        grid-template-columns: 1fr;
     }
     .level-group-card {
         min-height: auto;
         margin-bottom: 20px;
     }
     .level-materials-container {
-        max-height: none; /* إلغاء الـ max-height في الشاشات الصغيرة */
-        overflow-y: visible; /* إلغاء السكرول بار */
+        max-height: none;
+        overflow-y: visible;
         padding-right: 0;
+    }
+    .subject-list li {
+        padding: 6px 0;
     }
 }

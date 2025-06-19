@@ -1,42 +1,36 @@
-import React, { useState, useEffect } from 'react'; // استيراد useEffect و useState
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import TafahomLogo from '../assets/images/tafahom_logo.png';
-import './Dashboard.css'; // سنستخدم ملف CSS مشترك للـ Dashboards
+import './Dashboard.css';
 
 function StudentDashboard() {
     const navigate = useNavigate();
     const [firstName, setFirstName] = useState('');
     const [userType, setUserType] = useState('');
-    const [token, setToken] = useState(''); // لتخزين التوكن في حالة المكون
+    const [token, setToken] = useState('');
 
     useEffect(() => {
-        // جلب بيانات المستخدم من Local Storage
-        const storedFirstName = localStorage.getItem('firstName');
-        const storedUserType = localStorage.getItem('userType');
-        const storedToken = localStorage.getItem('token'); // *** تغيير هنا: استخدام 'token' ***
+        const storedFirstName = sessionStorage.getItem('firstName'); // تم التوحيد إلى sessionStorage
+        const storedUserType = sessionStorage.getItem('userType'); // تم التوحيد إلى sessionStorage
+        const storedToken = sessionStorage.getItem('userToken'); // تم التوحيد إلى sessionStorage
 
-        // التحقق من صلاحية المستخدم
         if (storedUserType === 'student' && storedToken) {
             setFirstName(storedFirstName);
             setUserType(storedUserType);
-            setToken(storedToken); // تحديث حالة التوكن في المكون
+            setToken(storedToken);
         } else {
-            // إذا لم يكن مسجل دخول كطالب، أعد التوجيه إلى صفحة تسجيل الدخول
             navigate('/login');
         }
-    }, [navigate]); // navigate في مصفوفة الاعتمادات لـ useEffect
+    }, [navigate]);
 
     const handleLogout = () => {
-        // مسح بيانات المستخدم من Local Storage
-        localStorage.removeItem('token'); // *** تغيير هنا: استخدام 'token' ***
-        localStorage.removeItem('userType');
-        localStorage.removeItem('firstName');
-        localStorage.removeItem('userEmail'); // لتنظيف كامل
-        // إعادة التوجيه إلى الصفحة الرئيسية أو صفحة تسجيل الدخول
+        sessionStorage.removeItem('userToken');
+        sessionStorage.removeItem('userType');
+        sessionStorage.removeItem('firstName');
+        sessionStorage.removeItem('userEmail');
         navigate('/login');
     };
 
-    // عرض رسالة تحميل أو إعادة توجيه إذا لم يتم التحقق بعد
     if (!token || userType !== 'student') {
         return <p>جاري التحقق من الصلاحيات...</p>; 
     }
@@ -64,11 +58,9 @@ function StudentDashboard() {
             </header>
             <main className="main-content dashboard-content">
                 <div className="container">
-                    {/* عرض الاسم الأول هنا */}
                     <h2>مرحباً بك يا {firstName}!</h2>
                     <h3>لوحة تحكم الطالب</h3>
                     <p>هذه هي صفحة لوحة تحكم الطالب المحمية.</p>
-                    {/* هنا سنعرض محتوى خاص بالطلاب مثل الكورسات المسجل فيها، الواجبات، الدرجات */}
                 </div>
             </main>
             <footer>

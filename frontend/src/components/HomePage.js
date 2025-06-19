@@ -1,5 +1,5 @@
-import academicStructure from '../constants/academicStructure'; 
-import React, { useState } from 'react';
+import academicStructure from '../constants/academicStructure';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './HomePage.css';
 
@@ -7,40 +7,106 @@ import TafahomLogo from '../assets/images/tafahom_logo.png';
 import StudentHeroImage from '../assets/images/student_hero.png';
 import JoinUsIllustration from '../assets/images/join_us_illustration.png';
 
-import Teacher1 from '../assets/images/teacher1.jpg';
-import Teacher2 from '../assets/images/teacher2.jpg';
-import Teacher3 from '../assets/images/teacher3.jpg';
-import Course1 from '../assets/images/course1.jpg';
-import Course2 from '../assets/images/course2.jpg';
-import Course3 from '../assets/images/course3.jpg';
-
-const teachersData = [
-    { id: 1, name: 'أ/ مايكل ماهر', specialty: 'مدرس علوم متكاملة', image: Teacher1 },
-    { id: 2, name: 'أ/ أحمد الشرقاوي', specialty: 'أستاذ اللغة الألمانية', image: Teacher2 },
-    { id: 3, name: 'أ/ عبدالله حامد', specialty: 'أستاذ الجيولوجيا', image: Teacher3 },
-];
-
-const coursesData = [
-    { id: 1, title: 'الشهر الثالث', description: 'الصف الثاني الثانوي', image: Course1 },
-    { id: 2, title: 'البرنامج المراجعة', description: 'الصف الثالث الثانوي', image: Course2 },
-    { id: 3, title: 'برنامج التحفيز', description: 'الصف الثالث الثانوي', image: Course3 },
-];
+// صور Placeholder
+import Teacher1 from '../assets/images/teacher1.jpg'; // تأكد من وجود هذه الصورة
+import Course1 from '../assets/images/course1.jpg'; // تأكد من وجود هذه الصورة
 
 
 function HomePage() {
     const [selectedLevel, setSelectedLevel] = useState('');
-    const [selectedTrack, setSelectedTrack] = useState('');
+    const [selectedSubject, setSelectedSubject] = useState('');
     const [showAllMaterialsForLevel, setShowAllMaterialsForLevel] = useState({});
+    const [teachersData, setTeachersData] = useState([]);
+    const [coursesData, setCoursesData] = useState([]);
+    const [loadingTeachers, setLoadingTeachers] = useState(false);
+    const [loadingCourses, setLoadingCourses] = useState(false);
+    const [teachersError, setTeachersError] = useState(null);
+    const [coursesError, setCoursesError] = useState(null);
+
+    const handleImageError = (e) => {
+        // إذا فشل تحميل الصورة، استبدلها بـ placeholder عام أو قم بتسجيل الخطأ
+        console.error("Failed to load image:", e.target.src);
+        e.target.src = 'https://via.placeholder.com/180/CCCCCC/808080?text=No+Image';
+    };
+
+    const fetchTeachers = async () => {
+        setLoadingTeachers(true);
+        setTeachersError(null);
+        let apiUrl = 'http://127.0.0.1:8000/api/courses/teachers/'; // مسار API للمدرسين
+        const params = new URLSearchParams();
+
+        if (selectedLevel) {
+            params.append('level', selectedLevel);
+        }
+        if (selectedSubject) {
+            params.append('subject', selectedSubject);
+        }
+        
+        if (params.toString()) {
+            apiUrl += `?${params.toString()}`;
+        }
+
+        try {
+            const response = await fetch(apiUrl);
+            if (!response.ok) {
+                throw new Error('فشل جلب بيانات المدرسين.');
+            }
+            const data = await response.json();
+            setTeachersData(data);
+        } catch (error) {
+            console.error('Error fetching teachers:', error);
+            setTeachersError('فشل تحميل المدرسين. يرجى المحاولة لاحقاً.');
+        } finally {
+            setLoadingTeachers(false);
+        }
+    };
+
+    const fetchCourses = async () => {
+        setLoadingCourses(true);
+        setCoursesError(null);
+        // مسار API للكورسات: /api/courses/
+        let apiUrl = 'http://127.0.0.1:8000/api/courses/'; // <--- مسار API الصحيح للكورسات
+        const params = new URLSearchParams();
+
+        if (selectedLevel) {
+            params.append('level', selectedLevel);
+        }
+        if (selectedSubject) {
+            params.append('subject', selectedSubject);
+        }
+
+        if (params.toString()) {
+            apiUrl += `?${params.toString()}`;
+        }
+        
+        try {
+            const response = await fetch(apiUrl);
+            if (!response.ok) {
+                throw new Error('فشل جلب بيانات الكورسات.');
+            }
+            const data = await response.json();
+            setCoursesData(data);
+        } catch (error) {
+            console.error('Error fetching courses:', error);
+            setCoursesError('فشل تحميل الكورسات. يرجى المحاولة لاحقاً.');
+        } finally {
+            setLoadingCourses(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchTeachers();
+        fetchCourses();
+    }, [selectedLevel, selectedSubject]);
 
     const handleLevelChange = (e) => {
         const level = e.target.value;
         setSelectedLevel(level);
-        setSelectedTrack('');
+        setSelectedSubject('');
     };
 
-    const handleTrackChange = (e) => {
-        const track = e.target.value;
-        setSelectedTrack(track);
+    const handleSubjectChange = (e) => {
+        setSelectedSubject(e.target.value);
     };
 
     const toggleShowAllMaterials = (levelKey) => {
@@ -50,6 +116,11 @@ function HomePage() {
         }));
     };
 
+    const getAvailableSubjects = () => {
+        if (!selectedLevel) return [];
+        const levelData = academicStructure[selectedLevel];
+        return levelData ? levelData.all_materials : [];
+    };
 
     return (
         <div className="home-page">
@@ -106,28 +177,53 @@ function HomePage() {
                                 ))}
                             </select>
 
-                            {selectedLevel && academicStructure[selectedLevel].tracks && Object.keys(academicStructure[selectedLevel].tracks).length > 0 && (
-                                <select onChange={handleTrackChange} value={selectedTrack}>
-                                    <option value="">اختر المسار</option>
-                                    {Object.keys(academicStructure[selectedLevel].tracks).map(trackKey => (
-                                        <option key={trackKey} value={trackKey}>
-                                            {academicStructure[selectedLevel].tracks[trackKey].label}
+                            {selectedLevel && (
+                                <select onChange={handleSubjectChange} value={selectedSubject}>
+                                    <option value="">اختر المادة</option>
+                                    {getAvailableSubjects().map(subjectValue => (
+                                        <option key={subjectValue} value={subjectValue}>
+                                            {academicStructure.allSubjectsMap[subjectValue]?.label || subjectValue}
                                         </option>
                                     ))}
                                 </select>
                             )}
-                            <button className="btn btn-secondary filter-btn">تصفية</button>
+
+                            <button className="btn btn-secondary filter-btn" onClick={() => { fetchTeachers(); fetchCourses(); }}>تصفية</button>
                         </div>
-                        <div className="teachers-grid">
-                            {teachersData.map(teacher => (
-                                <div key={teacher.id} className="teacher-card">
-                                    <img src={teacher.image} alt={teacher.name} className="teacher-image" />
-                                    <h3>{teacher.name}</h3>
-                                    <p>{teacher.specialty}</p>
-                                    <button className="btn btn-primary">عرض الملف الشخصي</button>
+
+                        {loadingTeachers ? (
+                            <p>جاري تحميل المدرسين...</p>
+                        ) : teachersError ? (
+                            <p className="error-message-box">{teachersError}</p>
+                        ) : (
+                            teachersData.length > 0 ? (
+                                <div className="teachers-grid">
+                                    {teachersData.map(teacher => (
+                                        <div key={teacher.id} className="teacher-card">
+                                            <Link to={`/teachers/${teacher.id}`}> 
+                                                <div className="teacher-image-container">
+                                                    <img 
+                                                        src={Teacher1} 
+                                                        alt={teacher.first_name || "صورة المدرس"} 
+                                                        className="teacher-image" 
+                                                        onError={handleImageError} 
+                                                    />
+                                                </div>
+                                            </Link>
+                                            <div className="teacher-info-content">
+                                                <Link to={`/teachers/${teacher.id}`}>
+                                                    <h3>أ/ {teacher.first_name} {teacher.last_name}</h3>
+                                                </Link>
+                                                {/* استخدام specialized_subject_display مباشرة لعرض التخصص */}
+                                                <p>أستاذ {teacher.specialized_subject_display || 'تخصص غير محدد'}</p>
+                                            </div>
+                                        </div>
+                                    ))}
                                 </div>
-                            ))}
-                        </div>
+                            ) : (
+                                <p>لا يوجد مدرسون متاحون حالياً بالمعايير المختارة.</p>
+                            )
+                        )}
                         <div className="view-more-container">
                             <Link to="/teachers-list" className="btn btn-secondary view-more-btn">عرض المزيد من المدرسين</Link>
                         </div>
@@ -144,20 +240,44 @@ function HomePage() {
                         <p className="section-description">
                             مجموعة مختارة من أفضل الكورسات التي تساعدك على فهم المنهج وتحقيق التفوق.
                         </p>
-                        <div className="courses-grid">
-                            {coursesData.map(course => (
-                                <div key={course.id} className="course-card">
-                                    <img src={course.image} alt={course.title} className="course-image" />
-                                    <div className="course-info">
-                                        <h3>{course.title}</h3>
-                                        <p>{course.description}</p>
-                                        <p className="course-teacher">الأستاذ: {course.teacher_name} {course.teacher_last_name}</p>
-                                        <p className="course-price">السعر: {course.price} جنيه</p>
-                                        <button className="btn btn-primary">اشترك الآن</button>
-                                    </div>
+                        {loadingCourses ? (
+                            <p>جاري تحميل الكورسات...</p>
+                        ) : coursesError ? (
+                            <p className="error-message-box">{coursesError}</p>
+                        ) : (
+                            coursesData.length > 0 ? (
+                                <div className="courses-grid">
+                                    {coursesData.map(course => (
+                                        <div key={course.id} className="course-card">
+                                            <div className="course-image-container-new">
+                                                <img src={course.image || Course1} alt={course.title} className="course-image-new" />
+                                                <div className="course-badge">كورس مثبت</div>
+                                            </div>
+                                            <div className="course-info-new">
+                                                <h3 title={course.title}>{course.title}</h3>
+                                                <p className="course-note">{course.description ? course.description.substring(0, 100) + '...' : 'لا يوجد وصف.'}</p>
+                                                <div className="course-meta">
+                                                    <span className="course-price-new">{course.price} جنيه</span>
+                                                    <span className="course-teacher-name">أ/ {course.teacher_name}</span>
+                                                </div>
+                                                <div className="course-actions-new">
+                                                    {(course.is_enrolled || course.is_teacher_owner) ? (
+                                                        <Link to={`/course/${course.id}`} className="btn btn-primary course-action-btn">الدخول للكورس</Link>
+                                                    ) : (
+                                                        <>
+                                                            <Link to={`/course/${course.id}`} className="btn btn-secondary course-action-btn-outline">الدخول للكورس</Link>
+                                                            <button className="btn btn-primary subscribe-btn">اشترك الآن</button>
+                                                        </>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
                                 </div>
-                            ))}
-                        </div>
+                            ) : (
+                                <p>لا توجد كورسات متاحة حالياً بالمعايير المختارة.</p>
+                            )
+                        )}
                         <div className="view-more-container">
                             <Link to="/courses" className="btn btn-secondary view-more-btn">عرض المزيد من الكورسات</Link>
                         </div>
@@ -167,25 +287,27 @@ function HomePage() {
                 <section className="academic-levels-section homepage-section">
                     <div className="container">
                         <h2>مواد تفاهم</h2>
-                        
+
                         <div className="all-levels-materials-grid">
-                            {Object.keys(academicStructure).map(levelKey => (
+                            {Object.keys(academicStructure).filter(key => key !== 'allSubjectsMap').map(levelKey => (
                                 <div key={levelKey} className="level-group-card">
                                     <h3>{academicStructure[levelKey].label}</h3>
                                     <div className={`level-materials-container ${showAllMaterialsForLevel[levelKey] ? 'show-all' : ''}`}>
                                         <ul className="subject-list">
-                                            {(showAllMaterialsForLevel[levelKey] ? academicStructure[levelKey].all_materials : academicStructure[levelKey].all_materials.slice(0, 3)).map((item, itemIdx) => (
+                                            {(academicStructure[levelKey] && academicStructure[levelKey].all_materials && Array.isArray(academicStructure[levelKey].all_materials) ? 
+                                                (showAllMaterialsForLevel[levelKey] ? academicStructure[levelKey].all_materials : academicStructure[levelKey].all_materials.slice(0, 3)) : []
+                                            ).map((subjectValue, itemIdx) => (
                                                 <li key={itemIdx}>
-                                                    <Link to={`/subjects/${levelKey}/${encodeURIComponent(item)}`}>
-                                                        {item}
+                                                    <Link to={`/subjects/${levelKey}/${encodeURIComponent(subjectValue)}`}>
+                                                        {academicStructure.allSubjectsMap[subjectValue]?.label || subjectValue}
                                                     </Link>
                                                 </li>
                                             ))}
                                         </ul>
                                     </div>
-                                    {academicStructure[levelKey].all_materials.length > 3 && (
-                                        <button 
-                                            onClick={() => toggleShowAllMaterials(levelKey)} 
+                                    {academicStructure[levelKey] && academicStructure[levelKey].all_materials && academicStructure[levelKey].all_materials.length > 3 && (
+                                        <button
+                                            onClick={() => toggleShowAllMaterials(levelKey)}
                                             className="btn btn-primary view-more-materials-btn"
                                         >
                                             {showAllMaterialsForLevel[levelKey] ? 'عرض أقل' : 'عرض المزيد'}
@@ -196,7 +318,6 @@ function HomePage() {
                         </div>
                     </div>
                 </section>
-
 
                 <section className="join-team-section homepage-section">
                 <div className="container join-team-container">
@@ -229,6 +350,6 @@ function HomePage() {
             </main>
         </div>
     );
-    }
+}
 
-    export default HomePage;
+export default HomePage;

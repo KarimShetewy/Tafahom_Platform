@@ -1,89 +1,298 @@
-/* Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
+/* Import Google Font - Cairo for Arabic text support and modern look */
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
 
-/* Colors Variables */
-:root { /* Dark Theme (Default) - الوضع الليلي (الوضع الافتراضي) */
-    --primary-bg-color: #0c142b; /* خلفية أساسية داكنة جداً */
-    --secondary-bg-color: #1a223a; /* خلفية ثانوية أفتح قليلاً للبطاقات/الكونتينرات */
+/* Colors Variables - Dark Theme (Default) - الوضع الليلي (الوضع الافتراضي) */
+:root {
+    --primary-bg-color: #0c142b; /* خلفية أساسية داكنة جداً */ /* cite: 2 */
+    --secondary-bg-color: #1a223a; /* خلفية ثانوية أفتح قليلاً للبطاقات/الكونتينرات */ /* cite: 2 */
     --text-color: #f0f2f5; /* لون النص الرئيسي فاتح */
-    --heading-color: #009465; /* لون العناوين الرئيسية (أخضر مائي) */
-    --accent-color-1: #e2613d; /* لون مميز/أزرار أساسية (برتقالي محمر) */
-    --accent-color-2: #96724a; /* لون ثانوي/حدود (بني فاتح) */
-    --border-color: #4b8357; /* لون الحدود/الفواصل (أخضر داكن) */
+    --heading-color: #009465; /* لون العناوين الرئيسية (أخضر مائي) */ /* cite: 2 */
+    --accent-color-1: #e2613d; /* لون مميز/أزرار أساسية (برتقالي محمر) */ /* cite: 2 */
+    --accent-color-2: #96724a; /* لون ثانوي/حدود (بني فاتح) */ /* cite: 2 */
+    --border-color: #4b8357; /* لون الحدود/الفواصل (أخضر داكن) */ /* cite: 2 */
     --button-text-color: #fff; /* لون نص الأزرار */
-    --error-color: #e2613d; /* لون رسائل الخطأ */
+    --error-color: #e2613d; /* لون رسائل الخطأ */ /* cite: 2 */
     --error-color-rgb: 226, 97, 61; /* قيم RGB للون الخطأ */
     --accent-color-1-rgb: 226, 97, 61; /* قيم RGB للون المميز */
     --accent-color-2-rgb: 150, 114, 74; /* RGB للبني الفاتح */
     --heading-color-rgb: 0, 148, 101; /* RGB للأخضر المائي */
+    --input-background-color: #0c142b; /* لون خلفية المدخلات في الوضع الليلي */ /* cite: 2 */
+    --card-background-color: #1a223a; /* لون خلفية البطاقات في الوضع الليلي */ /* cite: 2 */
+    --background-color-light: #0c142b; /* للوحة التحكم */ /* cite: 2 */
+    --box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* ظل داكن */
+    --box-shadow-hover: 0 10px 25px rgba(0, 0, 0, 0.4); /* ظل داكن أغمق للهوفر */
 }
 
-.light-theme { /* Light Theme - الوضع النهاري */
+/* Light Theme - الوضع النهاري */
+.light-theme {
     --primary-bg-color: #f0f2f5; /* خلفية أساسية فاتحة جداً */
     --secondary-bg-color: #ffffff; /* خلفية ثانوية للبطاقات/الكونتينرات */
     --text-color: #333; /* لون النص الرئيسي داكن */
     --heading-color: #1a223a; /* لون العناوين الرئيسية (أغمق قليلاً) */
-    --accent-color-1: #009465; /* لون مميز/أزرار أساسية (أخضر مائي) */
-    --accent-color-2: #e2613d; /* لون ثانوي/حدود (برتقالي محمر) */
-    --border-color: #96724a; /* لون الحدود/الفواصل (بني فاتح) */
+    --accent-color-1: #009465; /* لون مميز/أزرار أساسية (أخضر مائي) */ /* cite: 2 */
+    --accent-color-2: #e2613d; /* لون ثانوي/حدود (برتقالي محمر) */ /* cite: 2 */
+    --border-color: #96724a; /* لون الحدود/الفواصل (بني فاتح) */ /* cite: 2 */
     --button-text-color: #fff;
     --error-color: #e2613d;
     --error-color-rgb: 226, 97, 61;
     --accent-color-1-rgb: 0, 148, 101; /* RGB للأخضر المائي */
     --accent-color-2-rgb: 226, 97, 61; /* RGB للبرتقالي المحمر */
     --heading-color-rgb: 26, 34, 58; /* RGB للأزرق الداكن */
+    --input-background-color: #ffffff; /* لون خلفية المدخلات في الوضع النهاري */
+    --card-background-color: #ffffff; /* لون خلفية البطاقات في الوضع النهاري */
+    --background-color-light: #f0f2f5; /* للوحة التحكم */
+    --box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); /* ظل فاتح */
+    --box-shadow-hover: 0 10px 25px rgba(0, 0, 0, 0.15); /* ظل فاتح أغمق للهوفر */
 }
 
-/* Global Styles - استخدام المتغيرات الجديدة */
+/* General Box-sizing for all elements */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* Base body styles */
 body {
   margin: 0;
-  font-family: 'Cairo', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  padding: 0;
+  font-family: 'Cairo', sans-serif; /* Set Cairo as the primary font */
   background-color: var(--primary-bg-color); /* استخدام متغير الخلفية الأساسية */
   color: var(--text-color); /* استخدام متغير لون النص */
-  direction: rtl;
-  text-align: right;
+  direction: rtl; /* Set text direction to right-to-left for Arabic */
+  text-align: right; /* Align text to the right by default */
+  line-height: 1.6; /* Improve readability */
   transition: background-color 0.5s ease, color 0.5s ease; /* انتقال سلس عند تغيير الثيم */
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+/* Base styles for root HTML element (useful for global font-size, etc.) */
+html {
+  font-size: 16px; /* Base font size */
 }
 
-/* Reset some default styles */
-* {
-    box-sizing: border-box;
-}
-
+/* Headings styles (H1, H2, H3, etc.) */
 h1, h2, h3, h4, h5, h6 {
-    color: var(--heading-color); /* استخدام متغير لون العناوين */
-    margin-bottom: 15px;
+  color: var(--heading-color); /* استخدام متغير لون العناوين */
+  margin-top: 0;
+  margin-bottom: 0.5em;
+  line-height: 1.2;
+  transition: color 0.5s ease; /* انتقال سلس عند تغيير الثيم */
 }
 
+/* Paragraph styles */
+p {
+  margin-bottom: 1em;
+}
+
+/* General button styles - enhance hover effects */
+.btn {
+  padding: 12px 25px; /* Slightly more padding for better touch targets */
+  border: none;
+  border-radius: 8px; /* Slightly more rounded corners */
+  cursor: pointer;
+  font-size: 1.05rem; /* Slightly larger font size */
+  font-weight: 600;
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease, color 0.3s ease; /* Smooth transition for all properties */
+  text-decoration: none; /* For button-like links */
+  display: inline-block; /* Ensure padding works for links */
+  text-align: center;
+  box-shadow: var(--box-shadow); /* استخدام متغير الظل */
+  color: var(--button-text-color); /* استخدام متغير لون نص الزر */
+}
+
+.btn-primary {
+  background-color: var(--accent-color-1); /* استخدام متغير accent-color-1 */
+}
+
+.btn-primary:hover {
+  /* تأثريات Hover مع الحفاظ على درجة اللون */
+  background-color: rgba(var(--accent-color-1-rgb), 0.9); /* درجة أغمق قليلاً من اللون الأساسي */
+  transform: translateY(-2px); /* Slight lift effect */
+  box-shadow: var(--box-shadow-hover); /* استخدام متغير الظل الأكبر */
+}
+
+.btn-secondary {
+  background-color: transparent; /* زر ثانوي شفاف */
+  color: var(--heading-color); /* لون الخط بنفس لون العناوين */
+  border: 1px solid var(--heading-color); /* حدود بنفس لون العناوين */
+}
+
+.btn-secondary:hover {
+  background-color: var(--heading-color); /* لون الخلفية عند الهوفر يصبح لون العناوين */
+  color: var(--button-text-color); /* لون النص عند الهوفر يصبح أبيض */
+  transform: translateY(-2px); /* Slight lift effect */
+  box-shadow: var(--box-shadow-hover); /* استخدام متغير الظل الأكبر */
+}
+
+/* Adjust for outline buttons if you have them - good for secondary actions */
+.btn-outline-primary {
+    background-color: transparent;
+    color: var(--accent-color-1);
+    border: 2px solid var(--accent-color-1);
+    box-shadow: none; /* Remove default shadow for outline */
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--accent-color-1);
+    color: var(--button-text-color);
+    transform: translateY(-2px);
+    box-shadow: var(--box-shadow); /* Add subtle shadow on hover */
+}
+
+
+/* General link styles - enhance hover effects */
 a {
-    color: var(--accent-color-1); /* الروابط بلون مميز */
-    text-decoration: none;
+  color: var(--accent-color-1); /* لون الروابط الافتراضي (يمكن أن يكون لون الـ primary) */
+  text-decoration: none;
+  transition: color 0.3s ease, transform 0.3s ease; /* Smooth transition for color and transform */
 }
 
 a:hover {
-    text-decoration: underline;
-    opacity: 0.8;
-    transition: opacity 0.3s ease;
+  color: var(--heading-color); /* تغيير لون الرابط عند الهوفر إلى لون العناوين */
+  text-decoration: underline; /* Add underline on hover for clarity */
+  transform: translateY(-1px); /* Slight lift */
 }
 
-button {
+/* Navbar specific links/buttons if they have their own classes */
+.navbar .nav-links li a {
+  padding: 8px 15px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+}
+
+.navbar .nav-links li a:hover {
+  background-color: var(--secondary-bg-color); /* لون خلفية خفيف عند Hover */
+  color: var(--accent-color-1); /* لون الخط عند Hover */
+}
+
+.navbar .auth-buttons .btn {
+  margin-left: 10px; /* Adjust spacing between auth buttons */
+}
+
+
+/* Form inputs focus effect */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="tel"], /* Added tel type */
+input[type="number"],
+input[type="url"], /* Added url type */
+textarea,
+select {
+  border: 1px solid var(--border-color); /* استخدام متغير لون الحدود */
+  border-radius: 8px; /* Consistent rounded corners */
+  padding: 12px 15px; /* More padding */
+  width: 100%;
+  font-size: 1rem;
+  color: var(--text-color); /* استخدام متغير لون النص */
+  background-color: var(--input-background-color); /* استخدام متغير لون خلفية المدخلات */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="tel"]:focus,
+input[type="number"]:focus,
+input[type="url"]:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--accent-color-1); /* استخدام لون الـ accent-color-1 هنا */
+  box-shadow: 0 0 0 0.2rem rgba(var(--accent-color-1-rgb), 0.25); /* Subtle glow effect using accent color */
+  outline: none; /* Remove default outline */
+}
+
+/* Basic container for content centering */
+.container {
+  max-width: 1200px; /* Max width for content */
+  margin: 0 auto; /* Center the container */
+  padding: 0 20px; /* Horizontal padding */
+}
+
+/* Utility classes for spacing (can be expanded) */
+.mb-1 { margin-bottom: 0.5rem; }
+.mb-2 { margin-bottom: 1rem; }
+.mb-3 { margin-bottom: 1.5rem; }
+.mt-1 { margin-top: 0.5rem; }
+/* ... and so on for other margins/paddings if needed */
+
+/* Basic flexbox utility (can be expanded) */
+.d-flex { display: flex; }
+.justify-content-center { justify-content: center; }
+.align-items-center { align-items: center; }
+
+/* Alert/Message Box styles */
+.alert {
+  padding: 15px;
+  margin-bottom: 1rem;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  transition: all 0.3s ease-in-out; /* Smooth transition for appearance */
+  opacity: 0; /* Start hidden for animation */
+  transform: translateY(-10px); /* Start slightly above */
+  animation: fadeInDown 0.5s forwards; /* Animation on load */
+}
+
+.alert-success {
+  /* الألوان الأصلية لرسائل النجاح */
+  color: #155724;
+  background-color: #d4edda;
+  border-color: #c3e6cb;
+}
+
+.alert-danger {
+  /* الألوان الأصلية لرسائل الخطأ */
+  color: #721c24;
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
+}
+
+/* Keyframes for simple fade-in-down animation */
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Error message box specific to forms, if different from general alerts */
+.error-message-box {
+  background-color: rgba(var(--error-color-rgb), 0.2); /* استخدم لون الخطأ من المتغيرات */
+  color: var(--error-color);
+  border: 1px solid var(--error-color);
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  text-align: center;
+  font-weight: bold;
+}
+
+/* --- Theme Toggle Button --- */
+.theme-toggle-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    background-color: var(--secondary-bg-color);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-radius: 25px;
+    padding: 10px 15px;
+    font-size: 0.9em;
     cursor: pointer;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    font-family: 'Cairo', sans-serif;
-    font-weight: bold;
-    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-    color: var(--button-text-color);
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease, border-color 0.3s ease;
 }
 
-button:hover {
+.theme-toggle-button:hover {
+    background-color: var(--accent-color-2);
     transform: translateY(-2px);
+    border-color: var(--accent-color-1);
 }
+
+/*
+  Add more specific component styles here if they are not in their own CSS files.
+*/

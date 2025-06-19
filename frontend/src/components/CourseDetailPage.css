@@ -1,0 +1,384 @@
+/* frontend/src/components/CourseDetailPage.css */
+
+.course-detail-page {
+    background-color: var(--primary-bg-color);
+    color: var(--text-color);
+    min-height: 100vh;
+    transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+.course-detail-page .main-content {
+    padding-top: 0;
+    padding-bottom: 60px;
+}
+
+/* --- Course Hero Section (الجزء العلوي - يشبه بسطتهالك) --- */
+.course-hero-section {
+    background-color: var(--secondary-bg-color); /* لون احتياطي */
+    padding: 0; /* لا يوجد padding هنا، الـ padding سيكون داخل .course-hero-content */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    margin-bottom: 40px;
+    position: relative;
+    overflow: hidden;
+    transition: background-color 0.5s ease, box-shadow 0.5s ease;
+    /* NEW: خلفية الصورة الرئيسية للكورس */
+    background-size: cover;
+    background-position: center;
+    color: var(--button-text-color); /* لون النصوص داخل هذا القسم ليكون فاتحاً */
+}
+
+.course-hero-overlay { /* طبقة شفافة فوق الصورة لجعل النص مقروءاً */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to right, rgba(var(--primary-bg-color-rgb), 0.9) 0%, rgba(var(--primary-bg-color-rgb), 0.7) 100%); /* تدرج داكن */
+    z-index: 0;
+}
+
+.course-hero-content {
+    position: relative; /* ليكون فوق الـ overlay */
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end; /* محاذاة لليمين */
+    text-align: right; /* محاذاة النص لليمين */
+    padding: 50px 20px; /* padding داخلي */
+    max-width: 1200px; /* نفس عرض الـ container */
+    margin: 0 auto;
+}
+
+.course-hero-badge {
+    position: absolute; /* مكان الشارة على اليمين */
+    top: 20px;
+    right: 20px;
+    background-color: rgba(var(--accent-color-1-rgb), 0.85); /* لون الشارة */
+    color: var(--button-text-color);
+    padding: 5px 12px;
+    border-radius: 5px;
+    font-size: 0.85em;
+    font-weight: bold;
+    z-index: 10;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.course-hero-title {
+    font-size: 3em; /* حجم العنوان */
+    color: var(--button-text-color); /* لون الاسم أبيض */
+    margin-bottom: 10px;
+    line-height: 1.2;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5); /* ظل للنص لجعله أوضح */
+}
+
+.course-hero-teacher {
+    font-size: 1.5em;
+    color: var(--button-text-color); /* لون الأستاذ أبيض */
+    margin-bottom: 5px;
+}
+
+.course-hero-meta {
+    font-size: 1.1em;
+    color: rgba(var(--button-text-color-rgb), 0.8); /* لون فاتح وشفاف للميتا */
+    margin-bottom: 20px;
+}
+
+.course-hero-description {
+    font-size: 1.1em;
+    color: rgba(var(--button-text-color-rgb), 0.9);
+    line-height: 1.6;
+    margin-bottom: 30px;
+    max-width: 800px; /* لجعل الوصف لا يمتد كثيراً */
+}
+
+.course-hero-actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap; /* للأجهزة الصغيرة */
+    justify-content: flex-end; /* محاذاة لليمين */
+    width: 100%; /* ليمتد على كامل العرض */
+}
+
+.course-hero-price {
+    font-size: 2em;
+    color: var(--button-text-color); /* سعر أبيض */
+    font-weight: bold;
+}
+
+.course-hero-subscribe-btn, .course-hero-action-btn {
+    padding: 15px 35px;
+    font-size: 1.2em;
+    border-radius: 8px;
+    background-color: var(--accent-color-1);
+    color: var(--button-text-color);
+    box-shadow: 0 4px 10px rgba(var(--accent-color-1-rgb), 0.4);
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+}
+.course-hero-subscribe-btn:hover, .course-hero-action-btn:hover {
+    background-color: rgba(var(--accent-color-1-rgb), 0.9);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(var(--accent-color-1-rgb), 0.6);
+}
+
+/* --- Course Meta Details Section (معلومات إضافية تحت الـ Hero) --- */
+.course-meta-details-section {
+    background-color: var(--primary-bg-color);
+    padding: 20px 0;
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: background-color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
+}
+.course-meta-details-section .container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-color);
+    font-size: 0.95em;
+}
+.meta-icon {
+    font-size: 1.5em;
+    color: var(--heading-color);
+}
+.meta-label {
+    font-weight: bold;
+}
+.meta-value {
+    /* لون القيمة */
+}
+
+
+/* --- Course Content Section (محتوى الكورس - الأكورديون) --- */
+.course-content-section {
+    padding: 40px 0;
+    background-color: var(--primary-bg-color);
+}
+
+.section-title {
+    font-size: 2.2em;
+    color: var(--heading-color);
+    margin-bottom: 40px;
+    text-align: center;
+    position: relative;
+}
+
+.section-title::after {
+    content: '';
+    display: block;
+    width: 70px;
+    height: 3px;
+    background-color: var(--accent-color-1);
+    margin: 10px auto 0;
+    border-radius: 2px;
+}
+
+.lectures-accordion {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.lecture-item {
+    background-color: var(--secondary-bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    margin-bottom: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.5s ease, border-color 0.5s ease, box-shadow 0.3s ease;
+}
+
+.lecture-item.expanded {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.lecture-header {
+    padding: 18px 25px;
+    background-color: var(--primary-bg-color);
+    color: var(--text-color);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.lecture-item.expanded .lecture-header {
+    background-color: var(--accent-color-2); /* لون مختلف عند الفتح */
+    color: var(--button-text-color);
+    border-bottom: none;
+}
+
+.lecture-header h4 {
+    margin: 0;
+    font-size: 1.3em;
+    color: inherit; /* ليرث اللون من الـ header */
+}
+
+.lecture-header .lecture-toggle-icon {
+    font-size: 1.2em;
+    font-weight: bold;
+    transition: transform 0.3s ease;
+}
+
+.lecture-item.expanded .lecture-header .lecture-toggle-icon {
+    transform: rotate(180deg);
+}
+
+.lecture-materials-list {
+    padding: 15px 25px;
+    background-color: var(--secondary-bg-color);
+}
+
+.material-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    margin-bottom: 8px;
+    background-color: var(--primary-bg-color);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
+    position: relative; /* للسماح بتفاصيل المادة الموسعة */
+}
+
+.material-item:hover {
+    background-color: rgba(var(--text-color-rgb), 0.1);
+    transform: translateX(5px);
+}
+
+.material-item.locked-content { /* أنماط للمحتوى المقفل */
+    opacity: 0.6;
+    cursor: not-allowed;
+    background-color: var(--primary-bg-color);
+    filter: grayscale(80%); /* لجعلها باهتة */
+}
+.material-item.locked-content:hover {
+    transform: translateX(0); /* إلغاء حركة الهوفر */
+    background-color: var(--primary-bg-color);
+}
+
+.material-icon {
+    font-size: 1.2em;
+    margin-left: 15px;
+    color: var(--accent-color-1); /* لون الأيقونات */
+    flex-shrink: 0;
+}
+
+.material-item.locked-content .material-icon {
+    color: var(--text-color); /* لون الأيقونة المقفلة يكون أغمق */
+}
+
+
+.material-title {
+    flex-grow: 1;
+    font-size: 1.1em;
+    color: var(--text-color);
+}
+
+.material-item.locked-content .material-title {
+    color: var(--text-color); /* لون العنوان المقفل يكون أغمق */
+}
+
+.lock-icon {
+    font-size: 1.1em;
+    margin-right: 10px;
+    color: var(--error-color); /* لون أحمر للقفل */
+}
+
+/* تفاصيل المادة الموسعة */
+.material-details-expanded {
+    background-color: rgba(var(--primary-bg-color-rgb), 0.8); /* خلفية شبه شفافة */
+    padding: 15px 20px;
+    border-radius: 8px;
+    margin-top: -8px; /* لتظهر فوق حدود المادة */
+    margin-bottom: 10px;
+    font-size: 0.9em;
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
+}
+.material-details-expanded p {
+    margin-bottom: 5px;
+}
+.material-details-expanded pre {
+    white-space: pre-wrap; /* للحفاظ على التنسيق مع التفاف النص */
+    word-break: break-all; /* لكسر الكلمات الطويلة */
+    background-color: rgba(var(--primary-bg-color-rgb), 0.5);
+    padding: 10px;
+    border-radius: 5px;
+}
+.material-details-expanded a {
+    color: var(--accent-color-1);
+    text-decoration: underline;
+}
+
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+    .course-hero-card {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    .course-hero-image-container {
+        width: 100%;
+        border-radius: 15px 15px 0 0;
+    }
+    .course-hero-details {
+        padding: 20px;
+    }
+    .course-hero-title {
+        font-size: 2em;
+    }
+    .course-hero-pricing {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .course-hero-subscribe-btn {
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .course-hero-section {
+        padding: 20px 0;
+        margin-bottom: 20px;
+    }
+    .course-hero-card {
+        border-radius: 10px;
+    }
+    .course-hero-details {
+        padding: 15px;
+    }
+    .course-hero-title {
+        font-size: 1.8em;
+    }
+    .lecture-header {
+        padding: 15px 20px;
+        font-size: 1.1em;
+    }
+    .lecture-materials-list {
+        padding: 10px 20px;
+    }
+    .material-item {
+        padding: 10px;
+        font-size: 0.9em;
+    }
+    .course-meta-details-section .container {
+        flex-direction: column;
+        align-items: center;
+    }
+    .meta-item {
+        width: 100%;
+        justify-content: center;
+    }
+}

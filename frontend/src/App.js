@@ -1,35 +1,35 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import './App.css'; // لتنسيقات الـ header والـ navbar المشتركة
-
-// استيراد جميع المكونات (الصفحات) التي تم إنشاؤها
 import HomePage from './components/HomePage';
+import LoginPage from './components/LoginPage';
 import StudentRegistrationPage from './components/StudentRegistrationPage';
 import TeacherRegistrationPage from './components/TeacherRegistrationPage';
 import TeamRegistrationPage from './components/TeamRegistrationPage';
-import LoginPage from './components/LoginPage';
-import StudentDashboard from './components/StudentDashboard';
 import TeacherDashboard from './components/TeacherDashboard';
+import StudentDashboard from './components/StudentDashboard';
 import TeamDashboard from './components/TeamDashboard';
-import ProtectedRoute from './components/ProtectedRoute'; // استيراد مكون الحماية
-import SubjectDetailPage from './components/SubjectDetailPage'; // لتفاصيل المواد
-import TeacherAddCoursePage from './components/TeacherAddCoursePage'; // استيراد المكون الجديد لإضافة الكورس
+import TeacherAddCoursePage from './components/TeacherAddCoursePage';
+import TeacherMyCoursesPage from './components/TeacherMyCoursesPage';
+import SubjectDetailPage from './components/SubjectDetailPage';
+import TeacherManageCourseContentPage from './components/TeacherManageCourseContentPage';
+import TeacherProfilePage from './components/TeacherProfilePage';
+import CourseDetailPage from './components/CourseDetailPage'; // NEW IMPORT
+import ProtectedRoute from './components/ProtectedRoute';
+
+import './App.css';
+import './index.css';
 
 function App() {
-  // حالة الثيم: 'dark' أو 'light'
   const [theme, setTheme] = useState(() => {
-    // جلب الثيم من localStorage عند تحميل التطبيق، أو استخدام 'dark' كافتراضي
     const savedTheme = localStorage.getItem('appTheme');
-    return savedTheme || 'dark'; // الوضع الليلي هو الافتراضي
+    return savedTheme || 'dark';
   });
 
-  // تأثير لاستخدام الثيم على عنصر <body> في الـ HTML
   useEffect(() => {
     document.body.className = theme === 'dark' ? '' : 'light-theme';
-    localStorage.setItem('appTheme', theme); // حفظ الثيم في localStorage
+    localStorage.setItem('appTheme', theme);
   }, [theme]);
 
-  // دالة التبديل بين الثيمات
   const toggleTheme = () => {
     setTheme((prevTheme) => (prevTheme === 'dark' ? 'light' : 'dark'));
   };
@@ -37,37 +37,42 @@ function App() {
   return (
     <Router>
       <div className="App">
-        {/* زر التبديل للثيم - يمكن وضعه في أي مكان يناسبك في الـ Header أو Footer */}
         <button className="theme-toggle-button" onClick={toggleTheme}>
           {theme === 'dark' ? 'الوضع النهاري ☀️' : 'الوضع الليلي 🌙'}
         </button>
 
         <Routes>
-          {/* المسارات العامة (غير المحمية) */}
           <Route path="/" element={<HomePage />} />
-          <Route path="/register/student" element={<StudentRegistrationPage />} />
-          <Route path="/register/team" element={<TeamRegistrationPage />} />
-          <Route path="/register/teacher" element={<TeacherRegistrationPage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/register/student" element={<StudentRegistrationPage />} />
+          <Route path="/register/teacher" element={<TeacherRegistrationPage />} />
+          <Route path="/register/team" element={<TeamRegistrationPage />} />
           
-          {/* مسار صفحة تفاصيل المادة - تم تصحيح ":level" إلى ":levelKey" */}
           <Route path="/subjects/:levelKey/:subjectName" element={<SubjectDetailPage />} />
+          <Route path="/teachers/:teacherId" element={<TeacherProfilePage />} />
+          <Route path="/course/:id" element={<CourseDetailPage />} /> {/* NEW ROUTE */}
 
-          {/* مسارات لوحات التحكم المحمية */}
-          {/* مسارات الطلاب وأعضاء الفريق */}
-          <Route element={<ProtectedRoute allowedUserTypes={['student', 'team_member']} />}>
+          <Route element={<ProtectedRoute allowedUserTypes={['student']} />}>
             <Route path="/student/dashboard" element={<StudentDashboard />} />
-            <Route path="/team/dashboard" element={<TeamDashboard />} />
           </Route>
-          
-          {/* مسارات الأستاذ المحمية */}
+
           <Route element={<ProtectedRoute allowedUserTypes={['teacher']} />}>
             <Route path="/teacher/dashboard" element={<TeacherDashboard />} />
-            <Route path="/teacher/add-course" element={<TeacherAddCoursePage />} /> {/* المسار الجديد لإضافة الكورس */}
+            <Route path="/teacher/add-course" element={<TeacherAddCoursePage />} />
+            <Route path="/teacher/my-courses" element={<TeacherMyCoursesPage />} />
+            <Route path="/teacher/courses/:courseId/manage-content" element={<TeacherManageCourseContentPage />} />
           </Route>
 
-          {/* يمكن إضافة مسار fallback لأي صفحات غير موجودة (مثل صفحة 404) */}
-          {/* <Route path="*" element={<NotFoundPage />} /> */}
+          <Route element={<ProtectedRoute allowedUserTypes={['team_member']} />}>
+            <Route path="/team/dashboard" element={<TeamDashboard />} />
+          </Route>
+
+          <Route path="/about" element={<p>About Page Content</p>} />
+          <Route path="/teachers-list" element={<p>Teachers List Page Content</p>} />
+          <Route path="/courses" element={<p>Courses List Page Content</p>} />
+          <Route path="/contact" element={<p>Contact Page Content</p>} />
+
+          <Route path="*" element={<p>404 Not Found</p>} />
         </Routes>
       </div>
     </Router>

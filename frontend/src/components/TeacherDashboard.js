@@ -10,28 +10,25 @@ function TeacherDashboard() {
     const [token, setToken] = useState('');
 
     useEffect(() => {
-        // جلب بيانات المستخدم من Local Storage
-        const storedFirstName = localStorage.getItem('firstName');
-        const storedUserType = localStorage.getItem('userType');
-        const storedToken = localStorage.getItem('token'); // *** تغيير هنا: استخدام 'token' ***
+        const storedFirstName = sessionStorage.getItem('firstName'); // تم التوحيد إلى sessionStorage
+        const storedUserType = sessionStorage.getItem('userType'); // تم التوحيد إلى sessionStorage
+        const storedToken = sessionStorage.getItem('userToken'); // تم التوحيد إلى sessionStorage
 
         if (storedUserType === 'teacher' && storedToken) {
             setFirstName(storedFirstName);
             setUserType(storedUserType);
             setToken(storedToken);
         } else {
-            // إذا لم يكن مسجل دخول كأستاذ، أعد التوجيه إلى صفحة تسجيل الدخول
             navigate('/login');
         }
     }, [navigate]);
 
     const handleLogout = () => {
-        // مسح بيانات المستخدم من Local Storage
-        localStorage.removeItem('token'); // *** تغيير هنا: استخدام 'token' ***
-        localStorage.removeItem('userType');
-        localStorage.removeItem('firstName');
-        localStorage.removeItem('userEmail');
-        // إعادة التوجيه إلى الصفحة الرئيسية أو صفحة تسجيل الدخول
+        sessionStorage.removeItem('userToken');
+        sessionStorage.removeItem('userType');
+        sessionStorage.removeItem('firstName');
+        sessionStorage.removeItem('userEmail');
+        sessionStorage.removeItem('specializedSubject');
         navigate('/login');
     };
 
