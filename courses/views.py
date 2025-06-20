@@ -9,9 +9,12 @@ from .serializers import (
     QuizOrAssignmentSerializer, QuestionSerializer, ChoiceSerializer,
     SubmissionSerializer, StudentAnswerSerializer
 )
+# NEW: استيراد TeacherProfileSerializer من users.serializers
+from users.serializers import TeacherProfileSerializer # <--- هذا هو التعديل
+
 from django.db.models import Q
-from users.models import CustomUser
-from users.serializers import TeacherProfileSerializer
+from users.models import CustomUser 
+
 
 class IsTeacherOwnerOrAdmin(BasePermission):
     def has_object_permission(self, request, view, obj):
@@ -53,7 +56,7 @@ class CourseListAPIView(generics.ListAPIView):
         academic_level = self.request.query_params.get('level')
         subject = self.request.query_params.get('subject')
         teacher_id = self.request.query_params.get('teacher_id')
-        course_type = self.request.query_params.get('course_type') # NEW: فلتر حسب نوع الكورس
+        course_type = self.request.query_params.get('course_type')
 
         if academic_level:
             queryset = queryset.filter(academic_level=academic_level)
@@ -61,7 +64,7 @@ class CourseListAPIView(generics.ListAPIView):
             queryset = queryset.filter(subject=subject)
         if teacher_id:
             queryset = queryset.filter(teacher__id=teacher_id)
-        if course_type: # تطبيق فلتر نوع الكورس
+        if course_type:
             queryset = queryset.filter(course_type=course_type)
         
         return queryset
@@ -84,7 +87,16 @@ class CourseCreateAPIView(generics.CreateAPIView):
         return {'request': self.request}
 
     def perform_create(self, serializer):
-        serializer.save(teacher=self.request.user)
+        # تعيين المادة والمسار الدراسي تلقائياً بناءً على تخصص المدرس
+        if self.request.user.user_type == 'teacher' and self.request.user.specialized_subject:
+            serializer.save(
+                teacher=self.request.user,
+                subject=self.request.user.specialized_subject,
+                academic_track=None # لأن النظام الجديد لا يحتوي على مسارات
+            )
+        else:
+            return Response({"detail": "تخصص المدرس غير محدد."}, status=status.HTTP_400_BAD_REQUEST)
+
 
 class CourseUpdateAPIView(generics.RetrieveUpdateAPIView):
     queryset = Course.objects.all()
@@ -113,20 +125,20 @@ class TeacherMyCoursesListView(generics.ListAPIView):
         queryset = Course.objects.filter(teacher=self.request.user)
         academic_level = self.request.query_params.get('level')
         subject = self.request.query_params.get('subject')
-        course_type = self.request.query_params.get('course_type') # NEW: فلتر نوع الكورس لكورسات المدرس
+        course_type = self.request.query_params.get('course_type')
         
         if academic_level:
             queryset = queryset.filter(academic_level=academic_level)
         if subject:
             queryset = queryset.filter(subject=subject)
-        if course_type: # تطبيق فلتر نوع الكورس
+        if course_type:
             queryset = queryset.filter(course_type=course_type)
             
         return queryset
 
 class TeacherListAPIView(generics.ListAPIView):
     queryset = CustomUser.objects.filter(user_type='teacher')
-    serializer_class = TeacherProfileSerializer
+    serializer_class = TeacherProfileSerializer # <--- هنا يتم استخدام السيريالايزر
     permission_classes = [AllowAny]
 
     def get_queryset(self):

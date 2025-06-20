@@ -65,13 +65,13 @@ class CourseSerializer(serializers.ModelSerializer):
             'id', 'title', 'description', 'price', 'image',
             'teacher', 'teacher_name', 'teacher_last_name', 'teacher_email', 'teacher_id',
             'teacher_specialized_subject_display',
-            'academic_level', 'academic_track', 'subject',
+            'academic_level', 'academic_track', 'subject', # ابقِ هذه الحقول هنا للعرض
             'course_type', 
             'course_type_display', 
             'is_published', 'created_at', 'updated_at',
             'lectures',
-            'is_enrolled', # تم تضمينه بالفعل
-            'is_teacher_owner' # تم تضمينه بالفعل
+            'is_enrolled', 
+            'is_teacher_owner' 
         ]
         read_only_fields = ('created_at', 'updated_at')
 
@@ -93,27 +93,25 @@ class CourseCreateUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
         fields = [
+            'id', # <--- تأكد من وجود 'id' هنا لكي يتم إرجاعه في الاستجابة
             'title', 'description', 'price', 'image',
-            'academic_level', 'academic_track', 'subject',
+            'academic_level', 
+            # NEW: أزل 'academic_track' و 'subject' من هنا لأن الواجهة الأمامية لن ترسلها
             'course_type',
             'is_published'
         ]
         extra_kwargs = {
             'image': {'required': False},
-            'academic_track': {'required': False},
+            'academic_track': {'required': False}, # هذا يجب أن يبقى، حتى لو أزلته من fields، ليقبل None
+            'subject': {'required': False}, # هذا يجب أن يبقى، حتى لو أزلته من fields، ليقبل None
             'is_published': {'required': False},
             'course_type': {'required': False},
         }
 
-    def validate(self, data):
-        request = self.context.get('request', None)
-        if request and request.user.is_authenticated and request.user.user_type == 'teacher':
-            if request.user.specialized_subject and data.get('subject') != request.user.specialized_subject:
-                specialized_subject_label = request.user.get_specialized_subject_display()
-                raise serializers.ValidationError({
-                    "subject": f"لا يمكنك إنشاء كورس في هذه المادة. تخصصك هو {specialized_subject_label}."
-                })
-        return data
+    # NEW: أزل دالة validate بأكملها
+    # لأننا سنقوم بتعيين subject تلقائياً في الـ View
+    # وإزالة التحقق الذي كان يتسبب في مشاكل
+    pass # استخدم 'pass' أو احذف الدالة بالكامل
 
 
 class StudentAnswerSerializer(serializers.ModelSerializer):

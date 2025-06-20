@@ -2,16 +2,19 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from tafahom_project.views import home_page_view # تأكد أن هذا الاستيراد موجود
 
-from users.views import AccountRequestCreateAPIView, LoginAPIView, TeacherProfileAPIView
+# لا نحتاج لاستيراد الـ views الفردية هنا، فقط الـ include
+# from users.views import AccountRequestCreateAPIView, LoginAPIView, TeacherProfileAPIView
+# from users.views import CustomUserRetrieveAPIView
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api/users/', include('users.urls')),
-    # NEW: استخدام الطريقة المباشرة لتضمين مسارات التطبيق لتجنب أي مشاكل في namespace
-    path('api/courses/', include('courses.urls', namespace='courses')), # تم تغيير اسم namespace إلى 'courses' ليكون أقصر وأكثر وضوحاً
-    
-    # لا نربط مسار الـ '/' هنا، سيتولى React التوجيه للصفحة الرئيسية على localhost:3000
+    path('admin/', admin.site.urls), # <--- أزل التعليق عن هذا السطر
+    path('api/users/', include('users.urls')), # <--- أزل التعليق عن هذا السطر
+    path('api/courses/', include('courses.urls', namespace='courses')), # <--- أزل التعليق عن هذا السطر
+
+    # مسار لخدمة صفحة HTML البسيطة عند الوصول للـ root URL في وضع التطوير
+    path('', home_page_view, name='home'),
 ]
 
 if settings.DEBUG:

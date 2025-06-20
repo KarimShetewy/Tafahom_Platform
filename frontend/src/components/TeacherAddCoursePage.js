@@ -2,56 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import TafahomLogo from '../assets/images/tafahom_logo.png';
-import RegisterTeacherIllustration from '../assets/images/teacher_illustration.png'; 
 import academicStructure from '../constants/academicStructure'; 
 
-const GENDER_CHOICES = [
-    { value: '', label: 'اختر الجنس' },
-    { value: 'male', label: 'ذكر' },
-    { value: 'female', label: 'أنثى' },
-];
-
-const ALL_GOVERNORATES_FOR_SELECT = [
-    { value: '', label: 'اختر المحافظة' },
-    { value: 'cairo', label: 'القاهرة' }, { value: 'alexandria', label: 'الإسكندرية' }, { value: 'giza', label: 'الجيزة' }, { value: 'qalyubia', label: 'القليوبية' },
-    { value: 'sharqia', label: 'الشرقية' }, { value: 'monufia', label: 'المنوفية' }, { value: 'beheira', label: 'البحيرة' }, { value: 'gharbia', label: 'الغربية' },
-    { value: 'kafr_el_sheikh', label: 'كفر الشيخ' }, { value: 'fayoum', label: 'الفيوم' }, { value: 'beni_suef', label: 'بني سويف' }, { value: 'minya', label: 'المنيا' },
-    { value: 'assiut', label: 'أسيوط' }, { value: 'sohag', 'label': 'سوهاج' }, { value: 'qena', label: 'قنا' }, { value: 'luxor', label: 'الأقصر' },
-    { value: 'aswan', label: 'أسوان' }, { value: 'red_sea', label: 'البحر الأحمر' }, { value: 'new_valley', label: 'الوادي الجديد' }, { value: 'matrouh', label: 'مطروح' },
-    { value: 'north_sinai', label: 'شمال سيناء' }, { value: 'south_sinai', label: 'جنوب سيناء' }, { value: 'suez', label: 'السويس' },
-    { value: 'ismailia', label: 'الإسماعيلية' }, { value: 'port_said', label: 'بورسعيد' }, { value: 'damietta', label: 'دمياط' },
-];
-
-const TEACHER_CATEGORY_CHOICES = [
-    { value: '', label: 'اختر التخصص/المادة' },
-    { value: 'arabic_lang', label: 'اللغة العربية' },
-    { value: 'english_lang', label: 'اللغة الإنجليزية' },
-    { value: 'french_lang', label: 'اللغة الفرنسية' },
-    { value: 'german_lang', label: 'اللغة الألمانية' },
-    { value: 'history', label: 'التاريخ' },
-    { value: 'math', label: 'الرياضيات' },
-    { value: 'physics', label: 'الفيزياء' },
-    { value: 'chemistry', label: 'الكيمياء' },
-    { value: 'biology', label: 'الأحياء' },
-    { value: 'philosophy_logic', label: 'الفلسفة والمنطق' },
-    { value: 'religious_edu', label: 'التربية الدينية' },
-    { value: 'programming_cs', label: 'البرمجة وعلوم الحاسب' },
-    { value: 'eg_national_edu', label: 'EG التربية الوطنية' },
-    { value: 'vocational_edu', label: 'التربية المهنية' },
-    { value: 'military_edu', label: 'التربية العسكرية' },
-    { value: 'psychology', label: 'علم النفس' },
-    { value: 'geography', label: 'الجغرافيا' },
-    { value: 'sociology', label: 'علم اجتماع' },
-    { value: 'geology', label: 'الجيولوجيا' },
-    { value: 'applied_math', label: 'الرياضيات التطبيقية' },
-    { value: 'solid_geometry', label: 'الهندسة الفراغية' },
-    { value: 'statistics', label: 'الإحصاء' },
-    { value: 'environmental_science', label: 'علوم البيئة' },
-    { value: 'economy', label: 'الاقتصاد' },
-    { value: 'philosophy', label: 'فلسفة' },
-    { value: 'logic', label: 'منطق' },
-    { value: 'civics', label: 'المواطنة' },
-];
+// يمكنك إزالة هذه الثوابت إذا لم تعد تستخدمها في هذه الصفحة
+// const GENDER_CHOICES = [ ... ];
+// const ALL_GOVERNORATES_FOR_SELECT = [ ... ];
+// const TEACHER_CATEGORY_CHOICES = [ ... ];
 
 function TeacherAddCoursePage() {
   const navigate = useNavigate();
@@ -61,8 +17,7 @@ function TeacherAddCoursePage() {
     price: '',
     image: null,
     academic_level: '',
-    academic_track: '',
-    subject: '',
+    // NEW: أزل academic_track و subject من الحالة الأولية للنموذج
     course_type: 'regular',
     is_published: false,
   });
@@ -97,10 +52,11 @@ function TeacherAddCoursePage() {
                       setSpecializedSubjectLabelDisplay(specializedSubjectLabel);
                       setTeacherSpecializedSubject(specializedSubjectValue);
                       
-                      setFormData(prevData => ({
-                          ...prevData,
-                          subject: specializedSubjectValue
-                      }));
+                      // NEW: لم نعد نعين subject في formData هنا لأنها ستأتي من Backend
+                      // setFormData(prevData => ({
+                      //     ...prevData,
+                      //     subject: specializedSubjectValue
+                      // }));
                   } else {
                       setError("تخصص الأستاذ غير معروف في الهيكل الأكاديمي. يرجى الاتصال بالمسؤول.");
                   }
@@ -138,19 +94,11 @@ function TeacherAddCoursePage() {
     setError(null);
     setSuccessMessage(null);
 
-    if (!teacherSpecializedSubject) {
-        setError("لم يتم تحديد تخصص الأستاذ. لا يمكن إضافة كورس.");
-        setLoading(false);
-        return;
-    }
+    // NEW: لم نعد بحاجة للتحقق من teacherSpecializedSubject هنا، لأن الـ Backend سيتولى التعيين
+    // if (!teacherSpecializedSubject) { ... }
 
-    if (formData.subject !== teacherSpecializedSubject) {
-        const selectedSubjectLabel = academicStructure.allSubjectsMap[formData.subject]?.label || formData.subject;
-        const specializedSubjectLabel = academicStructure.allSubjectsMap[teacherSpecializedSubject]?.label || teacherSpecializedSubject;
-        setError(`حدث خطأ داخلي: المادة المختارة (${selectedSubjectLabel}) لا تتطابق مع تخصصك (${specializedSubjectLabel}).`);
-        setLoading(false);
-        return;
-    }
+    // NEW: أزل هذا التحقق بالكامل
+    // if (formData.subject !== teacherSpecializedSubject) { ... }
 
     const data = new FormData();
     for (const key in formData) {
@@ -162,14 +110,13 @@ function TeacherAddCoursePage() {
             data.append(key, formData[key]);
         }
     }
-    if (!formData.academic_track) {
-        data.append('academic_track', '');
-    }
+    // NEW: ليس هناك حاجة لإضافة academic_track فارغاً هنا، لأن الـ Backend سيتولى تعيينه None
+    // if (!formData.academic_track) { data.append('academic_track', ''); }
 
 
     try {
         const response = await axios.post(
-            'http://127.0.0.1:8000/api/courses/create/', // <--- هذا هو الـ API URL الذي يرسل إليه الطلب
+            'http://127.0.0.1:8000/api/courses/create/',
             data,
             {
                 headers: {
@@ -179,9 +126,8 @@ function TeacherAddCoursePage() {
             }
         );
         setSuccessMessage('تم إضافة الكورس بنجاح!');
-        const newCourseId = response.data.id; // تأكد من استخراج الـ ID بشكل صحيح
+        const newCourseId = response.data.id;
 
-        // NEW: التأكد من التوجيه الصحيح بالـ ID
         navigate(`/teacher/courses/${newCourseId}/manage-content`);
 
     } catch (err) {
@@ -306,6 +252,8 @@ function TeacherAddCoursePage() {
                           </select>
                       </div>
 
+                      {/* NEW: تم إزالة حقل المسار الدراسي */}
+                      {/*
                       <div className="form-group">
                           <label htmlFor="academic_track">المسار الدراسي (اختياري):</label>
                           <select
@@ -324,8 +272,9 @@ function TeacherAddCoursePage() {
                               }
                           </select>
                       </div>
+                      */}
 
-                      {/* حقل المادة للقراءة فقط */}
+                      {/* حقل المادة للقراءة فقط (معروض لتوضيح التخصص) */}
                       {specializedSubjectLabelDisplay && (
                           <div className="form-group">
                               <label htmlFor="subject-auto">المادة (تخصصك):</label>
@@ -336,11 +285,14 @@ function TeacherAddCoursePage() {
                                   readOnly
                                   className="read-only-field"
                               />
-                              <input // حقل مخفي لإرسال القيمة الفنية للمادة
+                              {/* NEW: لم نعد نرسل حقل hidden باسم 'subject' من هنا، لأن الـ Backend سيتولى تعيينه */}
+                              {/*
+                              <input
                                   type="hidden"
                                   name="subject"
                                   value={teacherSpecializedSubject}
                               />
+                              */}
                               <p className="subject-restriction-message">
                                   <small>سيتم إنشاء الكورس تلقائياً في مادة <strong>{specializedSubjectLabelDisplay}</strong>.</small>
                               </p>

@@ -35,7 +35,6 @@ function TeacherManageCourseContentPage() {
             return;
         }
 
-        // NEW: إضافة فحص لـ courseId
         if (!courseId || courseId === 'undefined') {
             setError("لم يتم تحديد الكورس. يرجى العودة لصفحة إضافة الكورس أو لوحة التحكم.");
             setLoading(false);
@@ -47,13 +46,11 @@ function TeacherManageCourseContentPage() {
             setLoading(true);
             setError(null);
             try {
-                // جلب تفاصيل الكورس (للعرض في رأس الصفحة)
                 const courseResponse = await axios.get(`http://127.0.0.1:8000/api/courses/${courseId}/`, {
                     headers: { 'Authorization': `Token ${userToken}` }
                 });
                 setCourse(courseResponse.data);
 
-                // جلب المحاضرات الموجودة لهذا الكورس
                 const lecturesResponse = await axios.get(`http://127.0.0.1:8000/api/courses/${courseId}/lectures/`, {
                     headers: { 'Authorization': `Token ${userToken}` }
                 });
@@ -150,7 +147,9 @@ function TeacherManageCourseContentPage() {
                     order: materialData.order || 0,
                     is_published: materialData.is_published || false,
                 }, {
-                    headers: { 'Authorization': `Token ${userToken}` }
+                    headers: { 'Authorization': `Token ${userToken}`,
+                    'Content-Type': 'multipart/form-data', // للمواد التي قد تحتوي على ملفات
+                }
                 });
             }
 
@@ -256,9 +255,17 @@ function TeacherManageCourseContentPage() {
             formDataToSubmit.append('type', newMaterialData.type);
             formDataToSubmit.append('order', newMaterialData.order);
             formDataToSubmit.append('is_published', newMaterialData.is_published);
-            if (newMaterialData.url) formDataToSubmit.append('url', newMaterialData.url);
-            if (newMaterialData.text_content) formDataToSubmit.append('text_content', newMaterialData.text_content);
-            if (newMaterialData.file) formDataToSubmit.append('file', newMaterialData.file);
+            // NEW: أضف الحقول بناءً على النوع
+            if (newMaterialData.type === 'video') { // لرفع الفيديو كملف
+                if (newMaterialData.file) formDataToSubmit.append('file', newMaterialData.file);
+            } else if (newMaterialData.type === 'pdf') { // لرفع PDF كملف
+                if (newMaterialData.file) formDataToSubmit.append('file', newMaterialData.file);
+            } else if (newMaterialData.type === 'link') { // للرابط الخارجي
+                if (newMaterialData.url) formDataToSubmit.append('url', newMaterialData.url);
+            } else if (newMaterialData.type === 'text') { // للمحتوى النصي
+                if (newMaterialData.text_content) formDataToSubmit.append('text_content', newMaterialData.text_content);
+            }
+            // بقية الأنواع (quiz, exam, branch) لا تحتاج حقول إضافية هنا لإنشائها مبدئياً
 
             await axios.post(`http://127.0.0.1:8000/api/lectures/${lectureId}/materials/`, formDataToSubmit, {
                 headers: {
@@ -319,7 +326,7 @@ function TeacherManageCourseContentPage() {
                 <main className="main-content dashboard-content">
                     <div className="container error-message-container">
                         <p className="error-message-box">{error}</p>
-                        <Link to="/" className="btn btn-primary">العودة للصفحة الرئيسية</Link>
+                        <Link to="/teacher/my-courses" className="btn btn-primary">العودة لإدارة كورساتي</Link>
                     </div>
                 </main>
             </div>
@@ -509,11 +516,12 @@ function TeacherManageCourseContentPage() {
                                                         {/* حقول خاصة بأنواع مواد معينة */}
                                                         {newMaterialForms[lecture.id].type === 'video' && (
                                                             <div className="form-group">
-                                                                <label>رابط الفيديو (URL):</label>
+                                                                <label>ملف الفيديو (MP4, MOV, etc.):</label> {/* <--- تم تغيير هذا النص ليوضح أنه رفع ملف */}
+                                                                {/* <--- تحديد أنواع الملفات المقبولة للفيديو */}
                                                                 <input
-                                                                    type="url"
-                                                                    value={newMaterialForms[lecture.id].url}
-                                                                    onChange={(e) => handleNewMaterialInputChange(lecture.id, 'url', e.target.value)}
+                                                                    type="file"
+                                                                    accept="video/*"
+                                                                    onChange={(e) => handleNewMaterialFileChange(lecture.id, e.target.files[0])}
                                                                 />
                                                             </div>
                                                         )}
@@ -556,7 +564,6 @@ function TeacherManageCourseContentPage() {
                                                                 />
                                                             </div>
                                                         )}
-                                                        {/* الواجبات والامتحانات ستكون أكثر تعقيداً هنا */}
                                                         {(newMaterialForms[lecture.id].type === 'quiz' || newMaterialForms[lecture.id].type === 'exam') && (
                                                             <div className="form-group">
                                                                 <p className="note-message">
@@ -593,7 +600,7 @@ function TeacherManageCourseContentPage() {
                                             <button 
                                                 onClick={() => handleSaveLecture(lecture.id, 
                                                     { title: lecture.title, description: lecture.description, is_published: lecture.is_published, order: lecture.order }, 
-                                                    [] // المواد الجديدة تم التعامل معها في handleCreateNewMaterial
+                                                    []
                                                 )} 
                                                 className="btn btn-primary save-lecture-btn"
                                                 disabled={loading}

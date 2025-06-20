@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
-import os # استوردنا os عشان هنحتاجه لبعض المسارات
+import os 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -33,7 +33,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'corsheaders', # لتمكين Cross-Origin Resource Sharing
-    'django.contrib.admin',
+    'django.contrib.admin', # <--- أزل التعليق عن هذا السطر
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -45,8 +45,8 @@ INSTALLED_APPS = [
     'rest_framework.authtoken', # لتمكين Token Authentication
     
     # تطبيقاتنا الخاصة (My apps)
-    'users',           # تطبيق المستخدمين
-    'courses',         # تطبيق الكورسات الجديد
+    'users',           # <--- أزل التعليق عن هذا السطر
+    'courses',         # <--- أزل التعليق عن هذا السطر
 ]
 
 MIDDLEWARE = [
@@ -118,8 +118,8 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
-LANGUAGE_CODE = 'ar' # تم تغييرها إلى 'ar' لدعم اللغة العربية
-TIME_ZONE = 'Africa/Cairo' # تم تحديثها إلى توقيت القاهرة
+LANGUAGE_CODE = 'ar'
+TIME_ZONE = 'Africa/Cairo'
 USE_I18N = True
 USE_TZ = True
 
@@ -155,6 +155,6 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny', # للسماح بالدخول قبل تسجيل الدخول
+        'rest_framework.permissions.AllowAny',
     ]
 }

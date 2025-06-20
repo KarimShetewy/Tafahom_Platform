@@ -1,90 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-
-# خيارات الوظائف لفريق العمل
-JOB_POSITION_CHOICES = (
-    ('it_specialist', 'IT Specialist'),
-    ('developer', 'Developer'),
-    ('videographer_editor', 'Videographer/Editor'),
-    ('social_media_specialist', 'Social Media Specialist'),
-    ('print_designer', 'Print Designer'),
-    ('moderator', 'Moderator'),
-    ('arabic_english_translator', 'مترجم عربي/إنجليزي'),
-    ('accountant', 'محاسب'),
-    ('story_teller', 'راوي قصص'),
-    ('content_creator', 'صانع محتوى'),
-    ('sales_admin_assistant', 'مساعد مبيعات/إدارة'),
-    ('other', 'أخرى'),
+# NEW: استيراد الخيارات من ملف constants الجديد
+from tafahom_project.constants import (
+    JOB_POSITION_CHOICES, GENDER_CHOICES, ACADEMIC_LEVEL_CHOICES,
+    ACADEMIC_TRACK_CHOICES, CATEGORY_CHOICES, GOVERNORATE_CHOICES,
+    PARENT_PROFESSION_CHOICES
 )
 
-GENDER_CHOICES = (
-    ('male', 'ذكر'),
-    ('female', 'أنثى'),
-)
-
-# الصفوف الدراسية (مرحلة الثانوي فقط)
-ACADEMIC_LEVEL_CHOICES = (
-    ('first_secondary', 'الصف الأول الثانوي'),
-    ('second_secondary', 'الصف الثاني الثانوي'),
-    ('third_secondary', 'الصف الثالث الثانوي'),
-)
-
-# المسارات الأكاديمية (مستخدمة حالياً في طلبات التسجيل ولكن ليس للفلترة العامة)
-ACADEMIC_TRACK_CHOICES = (
-    ('general', 'عام (الصف الأول الثانوي)'),
-    ('scientific_sec_2', 'علمي (الصف الثاني الثانوي)'),
-    ('literary_sec_2', 'أدبي (الصف الثاني الثانوي)'),
-    ('science_sec_3', 'علمي علوم (الصف الثالث الثانوي)'),
-    ('math_sec_3', 'علمي رياضة (الصف الثالث الثانوي)'),
-    ('literary_sec_3', 'أدبي (الصف الثالث الثانوي)'),
-)
-
-# جميع المواد (CATEGORY_CHOICES) بناءً على النظام الجديد
-CATEGORY_CHOICES = (
-    ('arabic_lang', 'اللغة العربية'),
-    ('english_lang', 'اللغة الإنجليزية'),
-    ('french_lang', 'اللغة الفرنسية'),
-    ('german_lang', 'اللغة الألمانية'),
-    ('history', 'التاريخ'),
-    ('math', 'الرياضيات'),
-    ('physics', 'الفيزياء'),
-    ('chemistry', 'الكيمياء'),
-    ('biology', 'الأحياء'),
-    ('philosophy_logic', 'الفلسفة والمنطق'),
-    ('religious_edu', 'التربية الدينية'),
-    ('programming_cs', 'البرمجة وعلوم الحاسب'),
-    ('eg_national_edu', 'EG التربية الوطنية'),
-    ('vocational_edu', 'التربية المهنية'),
-    ('military_edu', 'التربية العسكرية'),
-    ('psychology', 'علم النفس'),
-    ('geography', 'الجغرافيا'),
-    ('sociology', 'علم اجتماع'),
-    ('geology', 'الجيولوجيا'),
-    ('applied_math', 'الرياضيات التطبيقية'),
-    ('solid_geometry', 'الهندسة الفراغية'),
-    ('statistics', 'الإحصاء'),
-    ('environmental_science', 'علوم البيئة'),
-    ('economy', 'الاقتصاد'),
-    ('philosophy', 'فلسفة'),
-    ('logic', 'منطق'),
-    ('civics', 'المواطنة'),
-)
-
-# المحافظات المصرية
-GOVERNORATE_CHOICES = (
-    ('cairo', 'القاهرة'), ('alexandria', 'الإسكندرية'), ('giza', 'الجيزة'), ('qalyubia', 'القليوبية'),
-    ('sharqia', 'الشرقية'), ('monufia', 'المنوفية'), ('beheira', 'البحيرة'), ('gharbia', 'الغربية'),
-    ('kafr_el_sheikh', 'كفر الشيخ'), ('fayoum', 'الفيوم'), ('beni_suef', 'بني سويف'), ('minya', 'المنيا'),
-    ('assiut', 'أسيوط'), ('sohag', 'سوهاج'), ('qena', 'قنا'), ('luxor', 'الأقصر'),
-    ('aswan', 'أسوان'), ('red_sea', 'البحر الأحمر'), ('new_valley', 'الوادي الجديد'), ('matrouh', 'مطروح'),
-    ('north_sinai', 'شمال سيناء'), ('south_sinai', 'جنوب سيناء'), ('suez', 'السويس'),
-    ('ismailia', 'الإسماعيلية'), ('port_said', 'بورسعيد'), ('damietta', 'دمياط'),
-)
-
-# مهنة ولي الأمر
-PARENT_PROFESSION_CHOICES = (
-    ('doctor', 'طبيب'), ('engineer', 'مهندس'), ('teacher', 'معلم'), ('accountant', 'محاسب'), ('other', 'أخرى'),
-)
 
 class CustomUser(AbstractUser):
     USER_TYPE_CHOICES = (
@@ -118,7 +40,7 @@ class CustomUser(AbstractUser):
     phone_number = models.CharField(max_length=15, blank=True, null=True, verbose_name='رقم الهاتف')
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES, blank=True, null=True, verbose_name='الجنس')
     governorate = models.CharField(max_length=50, choices=GOVERNORATE_CHOICES, blank=True, null=True, verbose_name='المحافظة')
-    
+
     first_name = models.CharField(max_length=150, blank=True, verbose_name="الاسم الأول")
     last_name = models.CharField(max_length=150, blank=True, verbose_name="الاسم الأخير")
 
@@ -160,7 +82,7 @@ class AccountRequest(models.Model):
     phone_number = models.CharField(max_length=15, blank=True, null=True, verbose_name='رقم الهاتف')
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES, blank=True, null=True, verbose_name='الجنس')
     governorate = models.CharField(max_length=50, choices=GOVERNORATE_CHOICES, blank=True, null=True, verbose_name='المحافظة')
-    
+
     second_name = models.CharField(max_length=100, blank=True, null=True, verbose_name='الاسم الثاني (الأب)')
     third_name = models.CharField(max_length=100, blank=True, null=True, verbose_name='الاسم الثالث (الجد)')
     parent_father_phone_number = models.CharField(max_length=15, blank=True, null=True, verbose_name='رقم هاتف الأب')
@@ -183,10 +105,10 @@ class AccountRequest(models.Model):
     instagram_link = models.URLField(max_length=200, blank=True, null=True, verbose_name='رابط انستجرام (اختياري)')
     facebook_link = models.URLField(max_length=200, blank=True, null=True, verbose_name='رابط فيسبوك (اختياري)')
     website_link = models.URLField(max_length=200, blank=True, null=True, verbose_name='رابط الموقع الإلكتروني (اختياري)')
-    
+
     personal_id_card = models.FileField(upload_to='account_requests/personal_ids/', blank=True, null=True, verbose_name='صورة البطاقة الشخصية')
     cv_file = models.FileField(upload_to='account_requests/cvs/', blank=True, null=True, verbose_name='ملف السيرة الذاتية (CV)')
-    
+
     status = models.CharField(
         max_length=10,
         choices=REQUEST_STATUS_CHOICES,
@@ -195,7 +117,7 @@ class AccountRequest(models.Model):
     )
     rejection_reason = models.TextField(blank=True, null=True, verbose_name='سبب الرفض (إن وجد)')
     request_date = models.DateTimeField(auto_now_add=True, verbose_name='تاريخ الطلب')
-    
+
     def __str__(self):
         return f"طلب {self.get_user_type_display()} من {self.first_name} {self.last_name} ({self.status})"
 
