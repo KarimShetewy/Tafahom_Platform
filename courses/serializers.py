@@ -2,31 +2,102 @@ from rest_framework import serializers
 from .models import Course, Lecture, Material, QuizOrAssignment, Question, Choice, Submission, StudentAnswer
 from users.models import CustomUser
 
-# Serializer للخيارات
+# Serializer للخيارات (للقراءة فقط عند عرض السؤال)
 class ChoiceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Choice
         fields = '__all__'
 
-# Serializer للأسئلة، يتضمن الخيارات (nested)
+# Serializer للأسئلة، يتضمن الخيارات (للقراءة فقط عند عرض الواجب/الامتحان)
 class QuestionSerializer(serializers.ModelSerializer):
-    choices = ChoiceSerializer(many=True, read_only=True) # لعرض الخيارات مع السؤال
+    choices = ChoiceSerializer(many=True, read_only=True)
 
     class Meta:
         model = Question
         fields = '__all__'
 
-# Serializer للواجبات/الاختبارات، يتضمن الأسئلة (nested)
+# Serializer للواجبات/الاختبارات (للقراءة فقط)
 class QuizOrAssignmentSerializer(serializers.ModelSerializer):
-    questions = QuestionSerializer(many=True, read_only=True) # لعرض الأسئلة مع الواجب/الاختبار
+    questions = QuestionSerializer(many=True, read_only=True)
 
     class Meta:
         model = QuizOrAssignment
         fields = '__all__'
 
+# NEW: Nested Serializers for Quiz/Exam Creation
+# هذا Serializer سيكون لكتابة (إنشاء) الواجب/الامتحان مع أسئلته وخياراته
+class ChoiceNestedSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Choice
+        fields = ['choice_text', 'is_correct']
+
+class QuestionNestedSerializer(serializers.ModelSerializer):
+    choices = ChoiceNestedSerializer(many=True) # يسمح بإنشاء خيارات متعددة مع السؤال
+
+    class Meta:
+        model = Question
+        fields = ['question_text', 'points', 'order', 'choices'] # 'order' سيكون مطلوباً أو يمكن توليده تلقائياً
+        extra_kwargs = {
+            'order': {'required': False} # يمكن جعل الترتيب اختياري و التعامل معه في الـ view أو الكلاينت
+        }
+
+class QuizOrAssignmentCreateSerializer(serializers.ModelSerializer):
+    questions = QuestionNestedSerializer(many=True) # يسمح بإنشاء أسئلة متعددة مع الواجب/الامتحان
+
+    class Meta:
+        model = QuizOrAssignment
+        fields = ['id', 'title', 'type', 'duration_minutes', 'passing_score_percentage', 'questions']
+        extra_kwargs = {
+            'duration_minutes': {'required': False}, # المؤقت اختياري (للامتحانات فقط)
+            'passing_score_percentage': {'required': False}, # نسبة النجاح اختيارية
+        }
+
+    # Custom create method to handle nested questions and choices
+    def create(self, validated_data):
+        questions_data = validated_data.pop('questions')
+        quiz_assignment = QuizOrAssignment.objects.create(**validated_data)
+
+        for q_data in questions_data:
+            choices_data = q_data.pop('choices')
+            question = Question.objects.create(quiz_or_assignment=quiz_assignment, **q_data)
+            for c_data in choices_data:
+                Choice.objects.create(question=question, **c_data)
+        return quiz_assignment
+
+    # Custom update method (إذا أردت السماح بتعديل الأسئلة والخيارات من هنا)
+    # هذا سيكون أكثر تعقيداً، ويمكننا تركه لاحقاً إذا أردت تعديل الأسئلة من لوحة الإدارة فقط
+    def update(self, instance, validated_data):
+        questions_data = validated_data.pop('questions', [])
+        
+        # تحديث حقول QuizOrAssignment الأساسية
+        instance.title = validated_data.get('title', instance.title)
+        instance.type = validated_data.get('type', instance.type)
+        instance.duration_minutes = validated_data.get('duration_minutes', instance.duration_minutes)
+        instance.passing_score_percentage = validated_data.get('passing_score_percentage', instance.passing_score_percentage)
+        instance.save()
+
+        # التعامل مع تحديث/إنشاء/حذف الأسئلة والخيارات
+        # هذا الجزء يمكن أن يكون معقداً وقد يتطلب منطقاً إضافياً
+        # حالياً، سنبسطه أو نعتبر أن التعديل يتم من لوحة الإدارة
+        # (أو سنبنيه لاحقاً في الواجهة الأمامية)
+
+        # مثال بسيط: حذف الأسئلة القديمة وإعادة إنشاء الجديدة (ليس مثالياً لكنه يعمل)
+        instance.questions.all().delete() # حذف كل الأسئلة القديمة
+        for q_data in questions_data:
+            choices_data = q_data.pop('choices')
+            question = Question.objects.create(quiz_or_assignment=instance, **q_data)
+            for c_data in choices_data:
+                Choice.objects.create(question=question, **c_data)
+
+        return instance
+
 
 # Serializer للمواد التعليمية
 class MaterialSerializer(serializers.ModelSerializer):
+    # NEW: إضافة QuizOrAssignmentSerializer كـ nested serializer للقراءة
+    # لكي يعود الواجب/الامتحان كاملاً مع أسئلته وخياراته عند جلب المادة
+    quiz_assignment = QuizOrAssignmentSerializer(read_only=True) 
+
     class Meta:
         model = Material
         fields = '__all__'
@@ -35,11 +106,14 @@ class MaterialSerializer(serializers.ModelSerializer):
             'url': {'required': False},
             'text_content': {'required': False},
             'description': {'required': False},
+            'quiz_assignment': {'required': False}, # Quiz assignment سيكون اختياري عند الإنشاء/التعديل
         }
 
-# Serializer للمحاضرات، يتضمن المواد التعليمية (nested)
+
 class LectureSerializer(serializers.ModelSerializer):
-    materials = MaterialSerializer(many=True, read_only=True)
+    materials = MaterialSerializer(many=True, read_only=True) # لعرض المواد مع المحاضرة
+    # NEW: لجلب تفاصيل الواجب/الامتحان المطلوب لفتح المحاضرة
+    required_quiz_or_exam = QuizOrAssignmentSerializer(read_only=True) 
 
     class Meta:
         model = Lecture
@@ -65,7 +139,7 @@ class CourseSerializer(serializers.ModelSerializer):
             'id', 'title', 'description', 'price', 'image',
             'teacher', 'teacher_name', 'teacher_last_name', 'teacher_email', 'teacher_id',
             'teacher_specialized_subject_display',
-            'academic_level', 'academic_track', 'subject', # ابقِ هذه الحقول هنا للعرض
+            'academic_level', 'academic_track', 'subject',
             'course_type', 
             'course_type_display', 
             'is_published', 'created_at', 'updated_at',
@@ -79,7 +153,10 @@ class CourseSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         if request and request.user.is_authenticated and request.user.user_type == 'student':
             # هذا Placeholder: في التطبيق الحقيقي، ستحتاج للتحقق من نموذج Enrollment
-            return True
+            # مؤقتاً، يمكننا افتراض أن الطالب مسجل إذا كان لديه أي Submissions
+            # أو إذا كان ID الطالب موجوداً في السياق
+            # لتبسيط الاختبار حالياً:
+            return True # افتراض أن الطالب مسجل
         return False
 
     def get_is_teacher_owner(self, obj):
@@ -93,25 +170,23 @@ class CourseCreateUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
         fields = [
-            'id', # <--- تأكد من وجود 'id' هنا لكي يتم إرجاعه في الاستجابة
+            'id', 
             'title', 'description', 'price', 'image',
             'academic_level', 
-            # NEW: أزل 'academic_track' و 'subject' من هنا لأن الواجهة الأمامية لن ترسلها
+            # 'academic_track', 'subject', # تم إزالة هذه الحقول سابقاً من الفورم
             'course_type',
             'is_published'
         ]
         extra_kwargs = {
             'image': {'required': False},
-            'academic_track': {'required': False}, # هذا يجب أن يبقى، حتى لو أزلته من fields، ليقبل None
-            'subject': {'required': False}, # هذا يجب أن يبقى، حتى لو أزلته من fields، ليقبل None
+            'academic_track': {'required': False}, 
+            'subject': {'required': False}, 
             'is_published': {'required': False},
             'course_type': {'required': False},
         }
 
-    # NEW: أزل دالة validate بأكملها
-    # لأننا سنقوم بتعيين subject تلقائياً في الـ View
-    # وإزالة التحقق الذي كان يتسبب في مشاكل
-    pass # استخدم 'pass' أو احذف الدالة بالكامل
+    # دالة validate فارغة لأننا نتعامل مع subject في الـ View
+    pass 
 
 
 class StudentAnswerSerializer(serializers.ModelSerializer):

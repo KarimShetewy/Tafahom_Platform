@@ -1,3 +1,4 @@
+import json # NEW: لاستيراد json
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -7,13 +8,13 @@ from .serializers import (
     CourseSerializer, CourseCreateUpdateSerializer,
     LectureSerializer, MaterialSerializer,
     QuizOrAssignmentSerializer, QuestionSerializer, ChoiceSerializer,
-    SubmissionSerializer, StudentAnswerSerializer
+    SubmissionSerializer, StudentAnswerSerializer,
+    # NEW: استيراد السيريالايزر المتداخل للإنشاء
+    QuizOrAssignmentCreateSerializer 
 )
-# NEW: استيراد TeacherProfileSerializer من users.serializers
-from users.serializers import TeacherProfileSerializer # <--- هذا هو التعديل
-
 from django.db.models import Q
-from users.models import CustomUser 
+from users.models import CustomUser
+from users.serializers import TeacherProfileSerializer 
 
 
 class IsTeacherOwnerOrAdmin(BasePermission):
@@ -28,6 +29,9 @@ class IsTeacherOwnerOrAdmin(BasePermission):
             elif isinstance(obj, Lecture):
                 return obj.course.teacher == request.user
             elif isinstance(obj, Material):
+                # إذا كانت المادة مرتبطة بواجب/امتحان، تحقق من ملكية الكورس الأصلية
+                if obj.quiz_assignment:
+                    return obj.quiz_assignment.lecture.course.teacher == request.user
                 return obj.lecture.course.teacher == request.user
             elif isinstance(obj, QuizOrAssignment):
                 return obj.lecture.course.teacher == request.user
@@ -87,12 +91,11 @@ class CourseCreateAPIView(generics.CreateAPIView):
         return {'request': self.request}
 
     def perform_create(self, serializer):
-        # تعيين المادة والمسار الدراسي تلقائياً بناءً على تخصص المدرس
         if self.request.user.user_type == 'teacher' and self.request.user.specialized_subject:
             serializer.save(
                 teacher=self.request.user,
                 subject=self.request.user.specialized_subject,
-                academic_track=None # لأن النظام الجديد لا يحتوي على مسارات
+                academic_track=None 
             )
         else:
             return Response({"detail": "تخصص المدرس غير محدد."}, status=status.HTTP_400_BAD_REQUEST)
@@ -138,7 +141,7 @@ class TeacherMyCoursesListView(generics.ListAPIView):
 
 class TeacherListAPIView(generics.ListAPIView):
     queryset = CustomUser.objects.filter(user_type='teacher')
-    serializer_class = TeacherProfileSerializer # <--- هنا يتم استخدام السيريالايزر
+    serializer_class = TeacherProfileSerializer
     permission_classes = [AllowAny]
 
     def get_queryset(self):
@@ -185,13 +188,70 @@ class MaterialListCreateAPIView(generics.ListCreateAPIView):
         lecture_id = self.kwargs['lecture_id']
         return Material.objects.filter(lecture_id=lecture_id, lecture__course__teacher=self.request.user).order_by('order')
 
-    def perform_create(self, serializer):
+    def create(self, request, *args, **kwargs):
+        material_type = request.data.get('type')
         lecture_id = self.kwargs['lecture_id']
+
         try:
-            lecture = Lecture.objects.get(id=lecture_id, course__teacher=self.request.user)
+            lecture = Lecture.objects.get(id=lecture_id, course__teacher=request.user)
         except Lecture.DoesNotExist:
             return Response({"detail": "المحاضرة غير موجودة أو لا تملك صلاحية الوصول إليها."}, status=status.HTTP_404_NOT_FOUND)
-        serializer.save(lecture=lecture)
+
+        if material_type in ['quiz', 'exam']:
+            # إذا كان نوع المادة واجب أو امتحان، سننشئ QuizOrAssignment أولاً
+            quiz_details_str = request.data.get('quiz_details')
+            if not quiz_details_str:
+                return Response({"quiz_details": "تفاصيل الواجب/الامتحان مطلوبة لهذا النوع من المواد."}, status=status.HTTP_400_BAD_REQUEST)
+            
+            try:
+                quiz_details = json.loads(quiz_details_str) # تحليل الـ JSON string
+            except json.JSONDecodeError:
+                return Response({"quiz_details": "صيغة تفاصيل الواجب/الامتحان غير صحيحة."}, status=status.HTTP_400_BAD_REQUEST)
+
+            # تحضير بيانات QuizOrAssignment
+            quiz_data = {
+                'lecture': lecture.id,
+                'title': quiz_details.get('title', f"{material_type} جديد"), # يمكن أن يكون العنوان من المادة
+                'type': material_type, # نوع الواجب/الامتحان
+                'duration_minutes': quiz_details.get('duration_minutes'),
+                'passing_score_percentage': quiz_details.get('passing_score_percentage'),
+                'questions': quiz_details.get('questions', []) # الأسئلة والخيارات
+            }
+            
+            # استخدام QuizOrAssignmentCreateSerializer لإنشاء الواجب/الامتحان والأسئلة والخيارات
+            quiz_serializer = QuizOrAssignmentCreateSerializer(data=quiz_data, context={'request': request})
+            if quiz_serializer.is_valid():
+                quiz_instance = quiz_serializer.save(lecture=lecture) # حفظ الواجب/الامتحان
+
+                # الآن ننشئ المادة Material ونربطها بالواجب/الامتحان الذي تم إنشاؤه
+                material_data = {
+                    'lecture': lecture.id,
+                    'title': request.data.get('title'),
+                    'type': material_type,
+                    'order': request.data.get('order', 0),
+                    'is_published': request.data.get('is_published', False),
+                    'description': request.data.get('description'),
+                    'quiz_assignment': quiz_instance.id # ربط المادة بالواجب/الامتحان الذي تم إنشاؤه
+                }
+                material_serializer = self.get_serializer(data=material_data)
+                material_serializer.is_valid(raise_exception=True)
+                material_serializer.save(lecture=lecture) # حفظ المادة
+
+                # إذا كانت المحاضرة ستُقفل بهذا الواجب/الامتحان
+                if quiz_details.get('locks_next_lecture'):
+                    lecture.is_locked = True
+                    lecture.required_quiz_or_exam = quiz_instance
+                    lecture.save()
+
+                return Response(material_serializer.data, status=status.HTTP_201_CREATED)
+            else:
+                return Response(quiz_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            # للأنواع الأخرى من المواد (فيديو، PDF، نص، رابط)
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save(lecture=lecture)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 class MaterialRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = MaterialSerializer
@@ -286,7 +346,7 @@ class SubmissionDetailAPIView(generics.RetrieveAPIView):
 
     def get_queryset(self):
         if self.request.user.user_type == 'student':
-            return Submission.objects.filter(student=self.request.user)
+            return Submission.objects.filter(quiz_or_assignment__lecture__course__students_enrolled=self.request.user) # Placeholder
         elif self.request.user.user_type == 'teacher':
             return Submission.objects.filter(quiz_or_assignment__lecture__course__teacher=self.request.user)
         return Submission.objects.none()

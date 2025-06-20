@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import TafahomLogo from '../assets/images/tafahom_logo.png';
-import CoursePlaceholder from '../assets/images/course_placeholder.jpg'; // صورة placeholder للكورس
+// NEW: تصحيح مسار الصور
+import TafahomLogo from '../assets/images/tafahom_logo.png'; // تم التصحيح
+import CoursePlaceholder from '../assets/images/course_placeholder.jpg'; // تم التصحيح
 import academicStructure from '../constants/academicStructure';
 
 // أيقونات (يمكن استبدالها لاحقاً بـ Lucide React أو FontAwesome)
@@ -30,6 +31,8 @@ function CourseDetailPage() {
     const userType = sessionStorage.getItem('userType');
     const isStudent = userType === 'student';
     const isTeacher = userType === 'teacher';
+    const currentUserId = parseInt(sessionStorage.getItem('userId')); // تأكد من تخزين userId في sessionStorage عند تسجيل الدخول
+
 
     useEffect(() => {
         const fetchCourseDetails = async () => {
@@ -73,11 +76,10 @@ function CourseDetailPage() {
             handleToggleMaterial(material.id); 
 
             // إذا كان نوع المادة يمكن تشغيله مباشرة، يمكنك إضافة منطق لفتحه في نافذة جديدة
-            // حالياً، سنعتمد على عرض التفاصيل أسفل المادة.
             /*
-            if (material.type === 'video' && material.url) {
+            if (material.type === 'video' && material.url) { // هنا يجب أن تستخدم material.file_url لو كانت فيديوهات مرفوعة
                 window.open(material.url, '_blank');
-            } else if (material.type === 'pdf' && material.file) {
+            } else if (material.type === 'pdf' && material.file) { // هنا يجب أن تستخدم material.file_url لو كانت ملفات مرفوعة
                 window.open(material.file, '_blank');
             } else if (material.type === 'link' && material.url) {
                 window.open(material.url, '_blank');
@@ -125,8 +127,12 @@ function CourseDetailPage() {
     const courseSubjectLabel = academicStructure.allSubjectsMap[course.subject]?.label || course.subject;
     const courseAcademicLevelLabel = academicStructure[course.academic_level]?.label || course.academic_level;
 
+    // NEW: التحقق من ملكية الكورس بشكل دقيق
+    const isCourseOwner = isTeacher && course.teacher_id === parseInt(sessionStorage.getItem('userId')); // قارن teacher_id من الكورس بـ currentUserId
+
+
     // حالة الوصول للمحتوى (أستاذ الكورس أو طالب مشترك)
-    const canAccessFullContent = course.is_teacher_owner || (isStudent && course.is_enrolled);
+    const canAccessFullContent = isCourseOwner || (isStudent && course.is_enrolled);
 
 
     return (
@@ -147,22 +153,37 @@ function CourseDetailPage() {
             </header>
 
             <main className="main-content course-detail-content">
-                {/* Hero Section لصفحة الكورس */}
-                <section className="course-hero-section" style={{ backgroundImage: `url(${course.image || CoursePlaceholder})` }}>
+                {/* Hero Section لصفحة الكورس - الآن بدون background-image مباشر */}
+                <section className="course-hero-section">
+                    {/* NEW: إضافة عنصر الصورة بداخل الـ Hero Section */}
+                    <div className="course-image-wrapper">
+                        <img 
+                            src={course.image ? `http://127.0.0.1:8000${course.image}` : CoursePlaceholder} 
+                            alt={course.title} 
+                            className="course-hero-image"
+                            onError={(e) => { e.target.onerror = null; e.target.src = CoursePlaceholder; }} // للتعامل مع أخطاء تحميل الصورة
+                        />
+                    </div>
+                    
+                    <div className="course-hero-overlay"></div> {/* طبقة شفافة فوق الصورة */}
                     <div className="container">
-                        <div className="course-hero-overlay"></div> {/* طبقة شفافة فوق الصورة */}
                         <div className="course-hero-content">
                             <div className="course-hero-badge">{course.course_type_display}</div>
                             <h1 className="course-hero-title">{course.title}</h1>
                             <p className="course-hero-teacher">أ/ {course.teacher_name} {course.teacher_last_name}</p>
                             <p className="course-hero-meta">
-                                {courseAcademicLevelLabel} | {courseSubjectLabel}
+                                {/* يمكن إضافة أيقونات صغيرة هنا بجانب كل معلومة */}
+                                <span>{courseAcademicLevelLabel}</span> | <span>{courseSubjectLabel}</span>
                             </p>
+                            <div className="course-hero-description">
+                                {course.description}
+                            </div>
                             <div className="course-hero-actions">
                                 <span className="course-hero-price">{course.price} جنيه</span>
-                                {/* الزر الذي يظهر في الـ Hero Section */}
-                                {canAccessFullContent ? (
-                                     <Link to={`/course/${course.id}/content`} className="btn btn-primary course-hero-action-btn">الدخول للكورس</Link>
+                                {isCourseOwner ? (
+                                    <Link to={`/teacher/courses/${course.id}/manage-content`} className="btn btn-primary course-hero-action-btn">إدارة الكورس</Link>
+                                ) : (isStudent && course.is_enrolled) ? (
+                                    <Link to={`/student/courses/${course.id}/view-content`} className="btn btn-primary course-hero-action-btn">الدخول للكورس</Link>
                                 ) : (
                                     <button className="btn btn-primary course-hero-subscribe-btn">اشترك الآن</button>
                                 )}
@@ -212,25 +233,21 @@ function CourseDetailPage() {
                                                                 <span className="material-icon">{getMaterialIcon(material.type)}</span>
                                                                 <span className="material-title">{material.title}</span>
                                                                 {!canAccessFullContent && material.type !== 'branch' && (
-                                                                    <span className="lock-icon">{LOCKED_ICON}</span>
+                                                                    <span className="lock-icon">🔒</span>
                                                                 )}
                                                             </div>
-                                                            {/* تفاصيل المادة الموسعة تظهر هنا عند النقر عليها */}
                                                             {expandedMaterial === material.id && (
                                                                 <div className="material-details-expanded">
                                                                     {material.description && <p className="material-description-text">الوصف: {material.description}</p>}
-                                                                    {material.type === 'video' && material.url && (
-                                                                        <p className="material-detail-info">رابط الفيديو: <a href={material.url} target="_blank" rel="noopener noreferrer">{material.url}</a></p>
-                                                                    )}
-                                                                    {material.type === 'pdf' && material.file && (
-                                                                        <p className="material-detail-info">رابط الملف: <a href={material.file} target="_blank" rel="noopener noreferrer">تحميل الملف</a></p>
+                                                                    {(material.type === 'video' || material.type === 'pdf') && material.file && (
+                                                                        <p className="material-detail-info">الملف: <a href={`http://127.0.0.1:8000${material.file}`} target="_blank" rel="noopener noreferrer">عرض/تحميل الملف</a></p>
                                                                     )}
                                                                     {material.type === 'text' && material.text_content && (
                                                                         <div className="material-detail-info">المحتوى النصي: <pre>{material.text_content}</pre></div>
                                                                     )}
-                                                                    {/* أضف تفاصيل إضافية لأنواع المواد الأخرى مثل الواجبات والامتحانات هنا */}
-                                                                    {/* <p className="material-detail-info">عدد المشاهدات: 100 مشاهدة</p> */}
-                                                                    {/* <p className="material-detail-info">مدة الفيديو: 30 دقيقة</p> */}
+                                                                    {material.type === 'link' && material.url && (
+                                                                        <p className="material-detail-info">الرابط: <a href={material.url} target="_blank" rel="noopener noreferrer">{material.url}</a></p>
+                                                                    )}
                                                                 </div>
                                                             )}
                                                         </React.Fragment>

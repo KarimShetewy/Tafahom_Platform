@@ -4,6 +4,7 @@ import axios from 'axios';
 import TafahomLogo from '../assets/images/tafahom_logo.png';
 import './TeacherManageCourseContentPage.css';
 import academicStructure from '../constants/academicStructure';
+import CoursePlaceholder from '../assets/images/course_placeholder.jpg'; // صورة Placeholder
 
 function TeacherManageCourseContentPage() {
     const { courseId } = useParams();
@@ -109,7 +110,7 @@ function TeacherManageCourseContentPage() {
                 }
                 for (let i = currentLecturesCount - 1; i >= targetLecturesCount; i--) {
                     const lectureToDelete = lectures[i];
-                    await axios.delete(`http://127.0.0.1:8000/api/lectures/${lectureToDelete.id}/`, {
+                    await axios.delete(`http://127.0.0.1:8000/api/courses/lectures/${lectureToDelete.id}/`, {
                         headers: { 'Authorization': `Token ${userToken}` }
                     });
                 }
@@ -133,12 +134,17 @@ function TeacherManageCourseContentPage() {
         setLoading(true);
         setError(null);
         try {
-            await axios.put(`http://127.0.0.1:8000/api/lectures/${lectureId}/`, updatedLectureData, {
+            const dataToUpdate = { 
+                ...updatedLectureData, 
+                course: courseId 
+            };
+
+            await axios.put(`http://127.0.0.1:8000/api/courses/lectures/${lectureId}/`, dataToUpdate, {
                 headers: { 'Authorization': `Token ${userToken}` }
             });
 
             for (const materialData of materialsToAdd) {
-                await axios.post(`http://127.0.0.1:8000/api/lectures/${lectureId}/materials/`, {
+                await axios.post(`http://127.0.0.1:8000/api/courses/lectures/${lectureId}/materials/`, {
                     lecture: lectureId,
                     title: materialData.title,
                     type: materialData.type,
@@ -148,7 +154,7 @@ function TeacherManageCourseContentPage() {
                     is_published: materialData.is_published || false,
                 }, {
                     headers: { 'Authorization': `Token ${userToken}`,
-                    'Content-Type': 'multipart/form-data', // للمواد التي قد تحتوي على ملفات
+                    'Content-Type': 'multipart/form-data',
                 }
                 });
             }
@@ -181,7 +187,7 @@ function TeacherManageCourseContentPage() {
         if (!window.confirm("هل أنت متأكد من حذف هذه المادة؟")) return;
         setLoading(true);
         try {
-            await axios.delete(`http://127.0.0.1:8000/api/materials/${materialId}/`, {
+            await axios.delete(`http://127.0.0.1:8000/api/courses/materials/${materialId}/`, {
                 headers: { 'Authorization': `Token ${userToken}` }
             });
             const updatedLectures = [...lectures];
@@ -199,11 +205,11 @@ function TeacherManageCourseContentPage() {
     const handleUpdateMaterial = async (materialId, updatedData, lectureIndex) => {
         setLoading(true);
         try {
-            await axios.put(`http://127.0.0.1:8000/api/materials/${materialId}/`, updatedData, {
+            await axios.put(`http://127.0.0.1:8000/api/courses/materials/${materialId}/`, updatedData, { 
                 headers: { 'Authorization': `Token ${userToken}` }
             });
             setSuccessMessage("تم تحديث المادة بنجاح.");
-            const lecturesResponse = await axios.get(`http://127.0.0.1:8000/api/courses/${courseId}/lectures/`, {
+            const lecturesResponse = await axios.get(`http://127.00.0.1:8000/api/courses/${courseId}/lectures/`, {
                 headers: { 'Authorization': `Token ${userToken}` }
             });
             setLectures(lecturesResponse.data.sort((a, b) => a.order - b.order));
@@ -220,7 +226,21 @@ function TeacherManageCourseContentPage() {
     const handleAddNewMaterialForm = (lectureId) => {
         setNewMaterialForms(prevForms => ({
             ...prevForms,
-            [lectureId]: { type: '', title: '', url: '', text_content: '', is_published: false, file: null, order: (lectures.find(l => l.id === lectureId)?.materials?.length || 0) + 1 }
+            [lectureId]: { 
+                type: '', 
+                title: '', 
+                url: '', 
+                text_content: '', 
+                is_published: false, 
+                file: null, 
+                order: (lectures.find(l => l.id === lectureId)?.materials?.length || 0) + 1,
+                // NEW: لبيانات الواجب/الامتحان
+                quiz_details: { 
+                    questions: [{ question_text: '', points: 1, choices: [{ choice_text: '', is_correct: false }] }] ,
+                    duration_minutes: null, // للامتحانات
+                    passing_score_percentage: null,
+                }
+            }
         }));
     };
 
@@ -237,6 +257,152 @@ function TeacherManageCourseContentPage() {
             [lectureId]: { ...prevForms[lectureId], file: file }
         }));
     };
+
+    // NEW: التعامل مع تغييرات حقول الواجب/الامتحان
+    const handleQuizDetailChange = (lectureId, field, value) => {
+        setNewMaterialForms(prevForms => ({
+            ...prevForms,
+            [lectureId]: {
+                ...prevForms[lectureId],
+                quiz_details: {
+                    ...prevForms[lectureId].quiz_details,
+                    [field]: value
+                }
+            }
+        }));
+    };
+
+    // NEW: إضافة سؤال جديد للواجب/الامتحان
+    const handleAddQuestion = (lectureId) => {
+        setNewMaterialForms(prevForms => {
+            const currentQuizDetails = prevForms[lectureId].quiz_details;
+            return {
+                ...prevForms,
+                [lectureId]: {
+                    ...prevForms[lectureId],
+                    quiz_details: {
+                        ...currentQuizDetails,
+                        questions: [
+                            ...currentQuizDetails.questions,
+                            { question_text: '', points: 1, choices: [{ choice_text: '', is_correct: false }] }
+                        ]
+                    }
+                }
+            };
+        });
+    };
+
+    // NEW: حذف سؤال من الواجب/الامتحان
+    const handleRemoveQuestion = (lectureId, qIndex) => {
+        setNewMaterialForms(prevForms => {
+            const currentQuizDetails = prevForms[lectureId].quiz_details;
+            const newQuestions = currentQuizDetails.questions.filter((_, i) => i !== qIndex);
+            return {
+                ...prevForms,
+                [lectureId]: {
+                    ...prevForms[lectureId],
+                    quiz_details: {
+                        ...currentQuizDetails,
+                        questions: newQuestions
+                    }
+                }
+            };
+        });
+    };
+
+    // NEW: تغيير نص السؤال أو درجاته
+    const handleQuestionChange = (lectureId, qIndex, field, value) => {
+        setNewMaterialForms(prevForms => {
+            const currentQuizDetails = prevForms[lectureId].quiz_details;
+            const newQuestions = [...currentQuizDetails.questions];
+            newQuestions[qIndex] = { ...newQuestions[qIndex], [field]: value };
+            return {
+                ...prevForms,
+                [lectureId]: {
+                    ...prevForms[lectureId],
+                    quiz_details: {
+                        ...currentQuizDetails,
+                        questions: newQuestions
+                    }
+                }
+            };
+        });
+    };
+
+    // NEW: إضافة خيار جديد لسؤال
+    const handleAddChoice = (lectureId, qIndex) => {
+        setNewMaterialForms(prevForms => {
+            const currentQuizDetails = prevForms[lectureId].quiz_details;
+            const newQuestions = [...currentQuizDetails.questions];
+            newQuestions[qIndex] = {
+                ...newQuestions[qIndex],
+                choices: [...newQuestions[qIndex].choices, { choice_text: '', is_correct: false }]
+            };
+            return {
+                ...prevForms,
+                [lectureId]: {
+                    ...prevForms[lectureId],
+                    quiz_details: {
+                        ...currentQuizDetails,
+                        questions: newQuestions
+                    }
+                }
+            };
+        });
+    };
+
+    // NEW: حذف خيار من سؤال
+    const handleRemoveChoice = (lectureId, qIndex, cIndex) => {
+        setNewMaterialForms(prevForms => {
+            const currentQuizDetails = prevForms[lectureId].quiz_details;
+            const newQuestions = [...currentQuizDetails.questions];
+            newQuestions[qIndex] = {
+                ...newQuestions[qIndex],
+                choices: newQuestions[qIndex].choices.filter((_, i) => i !== cIndex)
+            };
+            return {
+                ...prevForms,
+                [lectureId]: {
+                    ...prevForms[lectureId],
+                    quiz_details: {
+                        ...currentQuizDetails,
+                        questions: newQuestions
+                    }
+                }
+            };
+        });
+    };
+
+    // NEW: تغيير نص الخيار أو تحديد إذا ما كان صحيحاً
+    const handleChoiceChange = (lectureId, qIndex, cIndex, field, value) => {
+        setNewMaterialForms(prevForms => {
+            const currentQuizDetails = prevForms[lectureId].quiz_details;
+            const newQuestions = [...currentQuizDetails.questions];
+            const newChoices = [...newQuestions[qIndex].choices];
+
+            // إذا كان التغيير هو تحديد إجابة صحيحة، تأكد من أن خياراً واحداً فقط هو الصحيح (Radio-like behavior)
+            if (field === 'is_correct') {
+                newChoices.forEach((choice, idx) => {
+                    newChoices[idx] = { ...choice, is_correct: (idx === cIndex ? value : false) };
+                });
+            } else {
+                newChoices[cIndex] = { ...newChoices[cIndex], [field]: value };
+            }
+            
+            newQuestions[qIndex] = { ...newQuestions[qIndex], choices: newChoices };
+            return {
+                ...prevForms,
+                [lectureId]: {
+                    ...prevForms[lectureId],
+                    quiz_details: {
+                        ...currentQuizDetails,
+                        questions: newQuestions
+                    }
+                }
+            };
+        });
+    };
+
 
     const handleCreateNewMaterial = async (lectureId) => {
         setLoading(true);
@@ -255,19 +421,24 @@ function TeacherManageCourseContentPage() {
             formDataToSubmit.append('type', newMaterialData.type);
             formDataToSubmit.append('order', newMaterialData.order);
             formDataToSubmit.append('is_published', newMaterialData.is_published);
-            // NEW: أضف الحقول بناءً على النوع
-            if (newMaterialData.type === 'video') { // لرفع الفيديو كملف
+            
+            // إضافة الحقول بناءً على النوع
+            if (newMaterialData.type === 'video') { 
                 if (newMaterialData.file) formDataToSubmit.append('file', newMaterialData.file);
-            } else if (newMaterialData.type === 'pdf') { // لرفع PDF كملف
+            } else if (newMaterialData.type === 'pdf') { 
                 if (newMaterialData.file) formDataToSubmit.append('file', newMaterialData.file);
-            } else if (newMaterialData.type === 'link') { // للرابط الخارجي
+            } else if (newMaterialData.type === 'link') { 
                 if (newMaterialData.url) formDataToSubmit.append('url', newMaterialData.url);
-            } else if (newMaterialData.type === 'text') { // للمحتوى النصي
+            } else if (newMaterialData.type === 'text') { 
                 if (newMaterialData.text_content) formDataToSubmit.append('text_content', newMaterialData.text_content);
+            } else if (newMaterialData.type === 'quiz' || newMaterialData.type === 'exam') {
+                // هنا نرسل بيانات الواجب/الامتحان المتداخلة كـ JSON string
+                // الـ Backend سيتولى إنشاء QuizOrAssignment والأسئلة والخيارات
+                formDataToSubmit.append('quiz_details', JSON.stringify(newMaterialData.quiz_details));
             }
-            // بقية الأنواع (quiz, exam, branch) لا تحتاج حقول إضافية هنا لإنشائها مبدئياً
+            // بقية الأنواع (branch) لا تحتاج حقول إضافية هنا لإنشائها مبدئياً
 
-            await axios.post(`http://127.0.0.1:8000/api/lectures/${lectureId}/materials/`, formDataToSubmit, {
+            await axios.post(`http://127.0.0.1:8000/api/courses/lectures/${lectureId}/materials/`, formDataToSubmit, {
                 headers: {
                     'Authorization': `Token ${userToken}`,
                     'Content-Type': 'multipart/form-data',
@@ -285,7 +456,21 @@ function TeacherManageCourseContentPage() {
             setLectures(lecturesResponse.data.sort((a, b) => a.order - b.order));
         } catch (err) {
             console.error("Error creating new material:", err.response ? err.response.data : err.message);
-            setError("فشل إضافة المادة.");
+            let errorMessage = "فشل إضافة المادة.";
+            if (err.response && err.response.data) {
+                const apiErrors = err.response.data;
+                if (typeof apiErrors === 'object') {
+                    const detailed = Object.entries(apiErrors).map(([key, value]) => {
+                        return `${key}: ${Array.isArray(value) ? value.join(', ') : value}`;
+                    }).join('\n');
+                    errorMessage += `\n${detailed}`;
+                } else if (apiErrors.detail) {
+                    errorMessage += `\n${apiErrors.detail}`;
+                } else {
+                    errorMessage += `\n${JSON.stringify(apiErrors)}`;
+                }
+            }
+            setError(errorMessage);
         } finally {
             setLoading(false);
         }
@@ -333,7 +518,6 @@ function TeacherManageCourseContentPage() {
         );
     }
 
-    // NEW: إذا كان courseId غير صالح، لا تعرض بقية الصفحة
     if (!courseId || courseId === 'undefined' || !course) {
         return (
             <div className="teacher-manage-course-content-page">
@@ -516,8 +700,7 @@ function TeacherManageCourseContentPage() {
                                                         {/* حقول خاصة بأنواع مواد معينة */}
                                                         {newMaterialForms[lecture.id].type === 'video' && (
                                                             <div className="form-group">
-                                                                <label>ملف الفيديو (MP4, MOV, etc.):</label> {/* <--- تم تغيير هذا النص ليوضح أنه رفع ملف */}
-                                                                {/* <--- تحديد أنواع الملفات المقبولة للفيديو */}
+                                                                <label>ملف الفيديو (MP4, MOV, etc.):</label> {/* <--- هذا هو التعديل المطلوب */}
                                                                 <input
                                                                     type="file"
                                                                     accept="video/*"
@@ -564,6 +747,7 @@ function TeacherManageCourseContentPage() {
                                                                 />
                                                             </div>
                                                         )}
+                                                        {/* الواجبات والامتحانات ستكون أكثر تعقيداً هنا */}
                                                         {(newMaterialForms[lecture.id].type === 'quiz' || newMaterialForms[lecture.id].type === 'exam') && (
                                                             <div className="form-group">
                                                                 <p className="note-message">

@@ -1,9 +1,8 @@
 from django.db import models
-# NEW: استيراد الخيارات من ملف constants
 from tafahom_project.constants import (
     ACADEMIC_LEVEL_CHOICES, ACADEMIC_TRACK_CHOICES, CATEGORY_CHOICES
 )
-from users.models import CustomUser # تأكد من استيراد CustomUser فقط
+from users.models import CustomUser
 
 class Course(models.Model):
     COURSE_TYPE_CHOICES = (
@@ -15,7 +14,7 @@ class Course(models.Model):
     description = models.TextField(verbose_name='وصف الكورس التفصيلي')
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='سعر الكورس')
     image = models.ImageField(upload_to='course_images/', blank=True, null=True, verbose_name='صورة الكورس')
-
+    
     teacher = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='courses', verbose_name='الأستاذ')
 
     academic_level = models.CharField(max_length=50, choices=ACADEMIC_LEVEL_CHOICES, verbose_name='الصف الدراسي')
@@ -35,8 +34,8 @@ class Course(models.Model):
     class Meta:
         verbose_name = 'كورس'
         verbose_name_plural = 'كورسات'
-        # NEW: قم بإزالة سطر unique_together بالكامل
-        # unique_together = ('academic_level', 'academic_track', 'subject', 'teacher') # <--- احذف هذا السطر
+        # unique_together تم إزالته سابقاً
+
 
 class Lecture(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='lectures', verbose_name='الكورس')
@@ -44,6 +43,16 @@ class Lecture(models.Model):
     description = models.TextField(blank=True, null=True, verbose_name='وصف المحاضرة')
     order = models.IntegerField(default=0, verbose_name='الترتيب')
     is_published = models.BooleanField(default=True, verbose_name='منشورة؟')
+    # NEW: حقل لتحديد ما إذا كانت المحاضرة مقفلة وتتطلب إكمال مهمة سابقة
+    is_locked = models.BooleanField(default=False, verbose_name='مقفلة وتتطلب إكمال واجب/امتحان سابق؟')
+    required_quiz_or_exam = models.OneToOneField(
+        'QuizOrAssignment', 
+        on_delete=models.SET_NULL, 
+        blank=True, 
+        null=True, 
+        related_name='locks_lecture', 
+        verbose_name='الواجب/الامتحان المطلوب لفتح هذه المحاضرة'
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -57,11 +66,34 @@ class Lecture(models.Model):
         return f"{self.course.title} - المحاضرة {self.order}: {self.title}"
 
 
+class QuizOrAssignment(models.Model):
+    # تم تغيير 'اختبار' إلى 'واجب' ليتناسق مع 'assignment'
+    MATERIAL_CHOICES = (
+        ('quiz', 'واجب'), 
+        ('exam', 'امتحان'),
+    )
+    lecture = models.ForeignKey(Lecture, on_delete=models.CASCADE, related_name='quizzes_assignments', verbose_name='المحاضرة')
+    title = models.CharField(max_length=255, verbose_name='العنوان')
+    type = models.CharField(max_length=20, choices=MATERIAL_CHOICES, verbose_name='النوع')
+    duration_minutes = models.IntegerField(blank=True, null=True, verbose_name='مدة الاختبار بالدقائق') # يستخدم للامتحانات
+    passing_score_percentage = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True, verbose_name='نسبة النجاح المطلوبة (%)')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = 'اختبار/واجب'
+        verbose_name_plural = 'اختبارات/واجبات'
+        ordering = ['created_at']
+
+    def __str__(self):
+        return f"{self.type} {self.title} - {self.lecture.title}"
+
+
 class Material(models.Model):
     MATERIAL_TYPE_CHOICES = (
         ('video', 'فيديو'),
         ('pdf', 'ملف PDF'),
-        ('quiz', 'واجب'),
+        ('quiz', 'واجب'), # تحديث التسمية
         ('exam', 'امتحان'),
         ('link', 'رابط خارجي'),
         ('text', 'نص/شرح'),
@@ -77,6 +109,15 @@ class Material(models.Model):
     description = models.TextField(blank=True, null=True, verbose_name='وصف المادة')
     order = models.IntegerField(default=0, verbose_name='الترتيب')
     is_published = models.BooleanField(default=True, verbose_name='منشور؟')
+    # NEW: ربط المادة بالواجب/الامتحان (إذا كانت المادة من نوع quiz أو exam)
+    quiz_assignment = models.OneToOneField(
+        QuizOrAssignment,
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        related_name='material_link',
+        verbose_name='الواجب/الامتحان المرتبط'
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -89,27 +130,6 @@ class Material(models.Model):
     def __str__(self):
         return f"{self.lecture.title} - {self.title} ({self.get_type_display()})"
 
-
-class QuizOrAssignment(models.Model):
-    MATERIAL_CHOICES = (
-        ('quiz', 'اختبار'),
-        ('assignment', 'واجب'),
-    )
-    lecture = models.ForeignKey(Lecture, on_delete=models.CASCADE, related_name='quizzes_assignments', verbose_name='المحاضرة')
-    title = models.CharField(max_length=255, verbose_name='العنوان')
-    type = models.CharField(max_length=20, choices=MATERIAL_CHOICES, verbose_name='النوع')
-    duration_minutes = models.IntegerField(blank=True, null=True, verbose_name='مدة الاختبار بالدقائق')
-    passing_score_percentage = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True, verbose_name='نسبة النجاح المطلوبة (%)')
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        verbose_name = 'اختبار/واجب'
-        verbose_name_plural = 'اختبارات/واجبات'
-        ordering = ['created_at']
-
-    def __str__(self):
-        return f"{self.type} {self.title} - {self.lecture.title}"
 
 class Question(models.Model):
     quiz_or_assignment = models.ForeignKey(QuizOrAssignment, on_delete=models.CASCADE, related_name='questions', verbose_name='الاختبار/الواجب')

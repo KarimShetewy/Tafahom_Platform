@@ -1,24 +1,26 @@
+/* frontend/src/index.css */
+
 /* Import Google Font - Cairo for Arabic text support and modern look */
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
 
 /* Colors Variables - Dark Theme (Default) - الوضع الليلي (الوضع الافتراضي) */
 :root {
-    --primary-bg-color: #0c142b; /* خلفية أساسية داكنة جداً */ /* cite: 2 */
-    --secondary-bg-color: #1a223a; /* خلفية ثانوية أفتح قليلاً للبطاقات/الكونتينرات */ /* cite: 2 */
+    --primary-bg-color: #0c142b; /* خلفية أساسية داكنة جداً */
+    --secondary-bg-color: #1a223a; /* خلفية ثانوية أفتح قليلاً للبطاقات/الكونتينرات */
     --text-color: #f0f2f5; /* لون النص الرئيسي فاتح */
-    --heading-color: #009465; /* لون العناوين الرئيسية (أخضر مائي) */ /* cite: 2 */
-    --accent-color-1: #e2613d; /* لون مميز/أزرار أساسية (برتقالي محمر) */ /* cite: 2 */
-    --accent-color-2: #96724a; /* لون ثانوي/حدود (بني فاتح) */ /* cite: 2 */
-    --border-color: #4b8357; /* لون الحدود/الفواصل (أخضر داكن) */ /* cite: 2 */
+    --heading-color: #009465; /* لون العناوين الرئيسية (أخضر مائي) */
+    --accent-color-1: #e2613d; /* لون مميز/أزرار أساسية (برتقالي محمر) */
+    --accent-color-2: #96724a; /* لون ثانوي/حدود (بني فاتح) */
+    --border-color: #4b8357; /* لون الحدود/الفواصل (أخضر داكن) */
     --button-text-color: #fff; /* لون نص الأزرار */
-    --error-color: #e2613d; /* لون رسائل الخطأ */ /* cite: 2 */
+    --error-color: #e2613d; /* لون رسائل الخطأ */
     --error-color-rgb: 226, 97, 61; /* قيم RGB للون الخطأ */
     --accent-color-1-rgb: 226, 97, 61; /* قيم RGB للون المميز */
     --accent-color-2-rgb: 150, 114, 74; /* RGB للبني الفاتح */
     --heading-color-rgb: 0, 148, 101; /* RGB للأخضر المائي */
-    --input-background-color: #0c142b; /* لون خلفية المدخلات في الوضع الليلي */ /* cite: 2 */
-    --card-background-color: #1a223a; /* لون خلفية البطاقات في الوضع الليلي */ /* cite: 2 */
-    --background-color-light: #0c142b; /* للوحة التحكم */ /* cite: 2 */
+    --input-background-color: #0c142b; /* لون خلفية المدخلات في الوضع الليلي */
+    --card-background-color: #1a223a; /* لون خلفية البطاقات في الوضع الليلي */
+    --background-color-light: #0c142b; /* للوحة التحكم */
     --box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* ظل داكن */
     --box-shadow-hover: 0 10px 25px rgba(0, 0, 0, 0.4); /* ظل داكن أغمق للهوفر */
 }
@@ -29,9 +31,9 @@
     --secondary-bg-color: #ffffff; /* خلفية ثانوية للبطاقات/الكونتينرات */
     --text-color: #333; /* لون النص الرئيسي داكن */
     --heading-color: #1a223a; /* لون العناوين الرئيسية (أغمق قليلاً) */
-    --accent-color-1: #009465; /* لون مميز/أزرار أساسية (أخضر مائي) */ /* cite: 2 */
-    --accent-color-2: #e2613d; /* لون ثانوي/حدود (برتقالي محمر) */ /* cite: 2 */
-    --border-color: #96724a; /* لون الحدود/الفواصل (بني فاتح) */ /* cite: 2 */
+    --accent-color-1: #009465; /* لون مميز/أزرار أساسية (أخضر مائي) */
+    --accent-color-2: #e2613d; /* لون ثانوي/حدود (برتقالي محمر) */
+    --border-color: #96724a; /* لون الحدود/الفواصل (بني فاتح) */
     --button-text-color: #fff;
     --error-color: #e2613d;
     --error-color-rgb: 226, 97, 61;
@@ -155,11 +157,11 @@ a:hover {
 .navbar .nav-links li a {
   padding: 8px 15px;
   border-radius: 5px;
-  transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+  transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease, border-color 0.3s ease;
 }
 
 .navbar .nav-links li a:hover {
-  background-color: var(--secondary-bg-color); /* لون خلفية خفيف عند Hover */
+  background-color: rgba(var(--text-color-rgb), 0.05); /* لون خلفية خفيف عند Hover */
   color: var(--accent-color-1); /* لون الخط عند Hover */
 }
 
