@@ -1,0 +1,77 @@
+/* frontend/src/components/StudentDashboard.css */
+/* أنماط صفحة لوحة تحكم الطالب */
+.student-dashboard-page {
+    /* استخدم متغيرات الألوان المعرفة في index.css */
+    background-color: var(--primary-bg-color);
+    color: var(--text-color);
+    min-height: 100vh;
+    transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+.student-dashboard-page .main-content {
+    padding-top: 60px; /* مسافة من أعلى بسبب الناف بار الثابت */
+    padding-bottom: 60px;
+}
+
+.student-dashboard-page .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.student-welcome-title {
+    font-size: 2.5em;
+    color: var(--heading-color);
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.student-dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    margin-top: 30px;
+}
+
+.student-dashboard-card {
+    background-color: var(--secondary-bg-color);
+    border-radius: 15px;
+    padding: 25px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.5s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 150px;
+    color: var(--text-color);
+}
+
+.student-dashboard-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.student-dashboard-card h3 {
+    font-size: 1.6em;
+    color: var(--heading-color);
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.student-dashboard-card p {
+    font-size: 0.95em;
+    color: var(--text-color);
+    line-height: 1.5;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .student-welcome-title {
+        font-size: 2em;
+    }
+    .student-dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+}

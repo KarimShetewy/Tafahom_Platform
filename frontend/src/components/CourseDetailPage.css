@@ -1,5 +1,9 @@
 /* frontend/src/components/CourseDetailPage.css */
 
+/* REMOVE THE :root SECTION AND ALL VARIABLE DEFINITIONS FROM HERE */
+/* THEY SHOULD BE IN index.css OR App.css GLOBALLY */
+
+
 .course-detail-page {
     background-color: var(--primary-bg-color);
     color: var(--text-color);
@@ -8,66 +12,106 @@
 }
 
 .course-detail-page .main-content {
-    padding-top: 0;
+    padding-top: 0; /* Hero section will handle its own top padding */
     padding-bottom: 60px;
 }
 
-/* --- Course Hero Section (الجزء العلوي - تصميم خيالي) --- */
+/* Header/Navbar Styles (أزرار تسجيل الدخول في الـ navbar لصفحة تفاصيل الكورس) */
+/* هذه الأنماط موجودة في HomePage.css لكنها قد تتكرر أو تحتاج تنسيقًا خاصًا هنا */
+.app-header .auth-buttons .btn {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 1em;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.app-header .auth-buttons .btn-primary { /* زر "إنشاء حساب جديد" */
+    background-color: var(--accent-color-1); /* البرتقالي */
+    color: var(--button-text-color);
+    box-shadow: 0 2px 5px rgba(var(--accent-color-1-rgb), 0.2);
+}
+
+.app-header .auth-buttons .btn-primary:hover {
+    filter: brightness(90%);
+    transform: translateY(-2px);
+}
+
+.app-header .auth-buttons .btn-secondary { /* NEW: زر "تسجيل الدخول" - لونه أخضر هنا أيضاً */
+    background-color: var(--accent-color-2); /* الأخضر #009465 */
+    color: var(--button-text-color);
+    box-shadow: 0 2px 5px rgba(var(--accent-color-2-rgb), 0.2);
+    border: none;
+}
+
+.app-header .auth-buttons .btn-secondary:hover {
+    filter: brightness(90%);
+    transform: translateY(-2px);
+}
+
+
+/* --- Course Hero Section --- */
 .course-hero-section {
     position: relative;
     overflow: hidden;
     padding: 0;
-    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.4);
-    transition: background-color 0.5s ease, box-shadow 0.5s ease;
-    min-height: 450px;
+    min-height: 550px;
     display: flex;
-    align-items: center; /* لمركزة المحتوى عمودياً */
-    /* NEW: تم تعديل هذا ليناسب تخطيط flexbox الذي يضع الصورة بجانب المحتوى */
-    justify-content: flex-end; /* محاذاة المحتوى النصي لليمين */
-    flex-wrap: wrap; /* للسماح بالعناصر بالانتقال إلى سطر جديد على الشاشات الصغيرة */
+    align-items: center;
+    justify-content: flex-end;
+    text-align: right;
+    padding-top: 80px;
 }
 
-/* NEW: حاوية الصورة الجديدة */
+.course-hero-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: row-reverse;
+    gap: 40px;
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    padding: 40px 20px;
+}
+
 .course-image-wrapper {
-    position: absolute; /* وضع الصورة بشكل مطلق داخل الـ Hero Section */
-    left: 50px; /* مسافة من اليسار */
-    top: 50%;
-    transform: translateY(-50%); /* لمركزة الصورة عمودياً */
-    width: 320px; /* NEW: حجم أصغر للصورة */
-    height: 240px; /* NEW: حجم أصغر للصورة (نسبة 4:3 تقريباً) */
+    flex-shrink: 0;
+    width: 400px;
+    height: 300px;
     overflow: hidden;
-    border-radius: 15px; /* حواف مستديرة */
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5); /* ظل للصورة */
-    z-index: 3; /* لضمان ظهورها فوق الـ overlay */
-    border: 3px solid var(--accent-color-1); /* حدود بسيطة */
-    display: flex; /* لمركزة الصورة داخل الـ wrapper */
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+    border: 4px solid var(--accent-color-1);
+    display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
+    z-index: 3;
 }
 
 .course-hero-image {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* لضمان أن الصورة تملأ الحاوية دون تشويه */
-    display: block; /* لإزالة أي مسافات إضافية */
+    object-fit: cover;
+    display: block;
 }
 
-
-.course-hero-overlay { /* طبقة شفافة فوق الصورة لجعل النص مقروءاً */
+.course-hero-overlay {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    /* تدرج لوني داكن يغطي الصورة، مع لمسة زرقاء خفيفة لإحساس الخيال */
-    background: linear-gradient(to right, 
-                rgba(var(--primary-bg-color-rgb), 0.95) 0%, 
-                rgba(var(--primary-bg-color-rgb), 0.7) 70%, 
-                rgba(var(--heading-color-rgb), 0.3) 100%);
+    background: linear-gradient(to left, 
+                rgba(var(--primary-bg-color-rgb, 10, 10, 10), 0.9) 0%, /* استخدام الألوان الجديدة */
+                rgba(var(--primary-bg-color-rgb, 10, 10, 10), 0.7) 50%, 
+                rgba(var(--heading-color-rgb, 255, 255, 255), 0.3) 100%);
     z-index: 0;
 }
 
-/* تأثير الجزيئات المتوهجة (شكل مبدئي) */
+
+/* Background particles/pattern (using ::before for subtle effect) */
 .course-hero-section::before {
     content: '';
     position: absolute;
@@ -76,11 +120,11 @@
     width: 100%;
     height: 100%;
     background: 
-        radial-gradient(circle at 10% 20%, rgba(var(--accent-color-1-rgb), 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 90% 80%, rgba(var(--accent-color-2-rgb), 0.15) 0%, transparent 60%),
-        radial-gradient(circle at 50% 50%, rgba(var(--heading-color-rgb), 0.05) 0%, transparent 40%);
+        radial-gradient(circle at 10% 20%, rgba(var(--accent-color-1-rgb, 226, 97, 61), 0.15) 0%, transparent 50%), /* استخدام البرتقالي */
+        radial-gradient(circle at 90% 80%, rgba(var(--accent-color-2-rgb, 0, 148, 101), 0.2) 0%, transparent 60%), /* استخدام الأخضر */
+        radial-gradient(circle at 50% 50%, rgba(var(--heading-color-rgb, 255, 255, 255), 0.08) 0%, transparent 40%);
     background-size: 800px 800px;
-    opacity: 0.8;
+    opacity: 0.9;
     animation: moveBackground 30s linear infinite;
     z-index: 1;
 }
@@ -94,27 +138,23 @@
     }
 }
 
-
 .course-hero-content {
     position: relative;
     z-index: 2;
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
+    align-items: flex-start;
     text-align: right;
-    padding: 70px 20px;
-    /* NEW: ضبط العرض والهوامش ليتناسب مع الصورة على اليسار */
-    max-width: calc(1200px - 320px - 100px); /* 1200px (max container) - 320px (image width) - 50px (left margin) - 50px (right padding) */
-    margin-right: auto; /* لتبدأ من اليمين وتسمح بوجود الصورة على اليسار */
-    margin-left: 370px; /* مسافة من اليسار لإفساح مجال للصورة (320px + 50px) */
-    width: 100%;
+    flex-grow: 1;
+    padding: 20px 0;
+    max-width: 65%;
 }
 
 .course-hero-badge {
     position: absolute;
-    top: 30px;
-    right: 30px;
-    background-color: rgba(var(--accent-color-1-rgb), 0.95);
+    top: -20px;
+    right: 0;
+    background-color: var(--accent-color-2); /* اللون الأخضر للشارة */
     color: var(--button-text-color);
     padding: 8px 18px;
     border-radius: 20px;
@@ -127,112 +167,136 @@
 }
 
 .course-hero-title {
-    font-size: 4.5em;
-    color: #fff;
+    font-size: 4em;
+    color: var(--heading-color);
     margin-bottom: 15px;
-    line-height: 1.1;
-    text-shadow: 3px 3px 8px rgba(0,0,0,0.7);
-    font-weight: 700;
+    line-height: 1.2;
+    text-shadow: none;
+    font-weight: 800;
 }
 
 .course-hero-teacher {
-    font-size: 1.8em;
-    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.5em;
+    color: var(--text-color);
     margin-bottom: 10px;
-    font-weight: 500;
+    font-weight: 600;
 }
 
 .course-hero-meta {
-    font-size: 1.2em;
-    color: rgba(255, 255, 255, 0.7);
+    font-size: 1.1em;
+    color: var(--text-color);
     margin-bottom: 25px;
     display: flex;
-    gap: 15px;
+    gap: 20px;
     align-items: center;
+    flex-wrap: wrap;
 }
-.course-hero-meta span {
+.course-hero-meta .meta-item-detail {
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 8px;
+    background-color: var(--primary-bg-color);
+    padding: 5px 12px;
+    border-radius: 20px;
+    box-shadow: 0 2px 5px var(--shadow-color);
+    font-weight: 500;
 }
 .course-hero-meta .icon {
-    font-size: 1.1em;
+    font-size: 1.2em;
+    color: var(--accent-color-1); /* البرتقالي للأيقونات */
 }
 
 
 .course-hero-description {
-    font-size: 1.2em;
-    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.1em;
+    color: var(--text-color);
     line-height: 1.8;
-    margin-bottom: 40px;
-    max-width: 900px;
+    margin-bottom: 30px;
+    max-width: 100%;
     text-align: right;
-    text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+    text-shadow: none;
 }
 
 .course-hero-actions {
     display: flex;
     align-items: center;
-    gap: 25px;
+    gap: 20px;
     flex-wrap: wrap;
-    justify-content: flex-end;
+    justify-content: flex-start;
     width: 100%;
 }
 
 .course-hero-price {
-    font-size: 2.8em;
-    color: #fff;
+    font-size: 2.5em;
+    color: var(--heading-color);
     font-weight: bold;
-    text-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+    text-shadow: none;
 }
 
 .course-hero-subscribe-btn, .course-hero-action-btn {
-    padding: 18px 45px;
-    font-size: 1.3em;
-    border-radius: 10px;
-    background-color: var(--accent-color-1);
+    padding: 15px 35px;
+    font-size: 1.2em;
+    border-radius: 8px;
+    background-color: var(--accent-color-1); /* البرتقالي لزر الاشتراك/الإدارة */
     color: var(--button-text-color);
-    box-shadow: 0 6px 15px rgba(var(--accent-color-1-rgb), 0.5);
+    box-shadow: 0 5px 15px rgba(var(--accent-color-1-rgb), 0.4);
     transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+    text-transform: capitalize;
+    letter-spacing: 0;
+    font-weight: 600;
 }
 .course-hero-subscribe-btn:hover, .course-hero-action-btn:hover {
-    background-color: rgba(var(--accent-color-1-rgb), 0.9);
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(var(--accent-color-1-rgb), 0.7);
+    background-color: var(--accent-color-1);
+    filter: brightness(90%);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(var(--accent-color-1-rgb), 0.6);
+}
+
+/* NEW: زر الدخول للكورس باللون الأخضر */
+.course-hero-action-btn.btn-primary { /* هذا هو زر "الدخول للكورس" في Hero Section */
+    background-color: var(--accent-color-2); /* الأخضر #009465 */
+    box-shadow: 0 5px 15px rgba(var(--accent-color-2-rgb), 0.4);
+}
+.course-hero-action-btn.btn-primary:hover {
+    background-color: var(--accent-color-2);
+    filter: brightness(90%);
+    box-shadow: 0 8px 20px rgba(var(--accent-color-2-rgb), 0.6);
 }
 
 
-/* --- Course Meta Details Section (معلومات إضافية تحت الـ Hero) --- */
+/* --- Course Meta Details Section --- */
 .course-meta-details-section {
     background-color: var(--secondary-bg-color);
-    padding: 25px 0;
-    border-bottom: 1px solid var(--border-color);
-    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
-    transition: background-color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
+    padding: 20px 0;
+    border-bottom: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: background-color 0.5s ease, box-shadow 0.5s ease;
     color: var(--text-color);
 }
 .course-meta-details-section .container {
     display: flex;
-    justify-content: space-around;
+    justify-content: center;
     align-items: center;
     flex-wrap: wrap;
-    gap: 25px;
+    gap: 30px;
 }
 .meta-item {
     display: flex;
     align-items: center;
-    gap: 12px;
-    font-size: 1em;
+    gap: 10px;
+    font-size: 0.95em;
     color: var(--text-color);
+    background-color: var(--primary-bg-color);
+    padding: 8px 15px;
+    border-radius: 25px;
+    box-shadow: 0 2px 5px var(--shadow-color);
 }
 .meta-icon {
-    font-size: 1.8em;
-    color: var(--heading-color);
+    font-size: 1.5em;
+    color: var(--accent-color-2); /* الأخضر للأيقونات */
 }
 .meta-label {
-    font-weight: bold;
+    font-weight: 600;
     color: var(--heading-color);
 }
 .meta-value {
@@ -240,63 +304,63 @@
 }
 
 
-/* --- Course Content Section (محتوى الكورس - الأكورديون) --- */
+/* --- Course Content Section (Accordion) --- */
 .course-content-section {
     padding: 60px 0;
     background-color: var(--primary-bg-color);
 }
 
 .section-title {
-    font-size: 3em;
+    font-size: 2.8em;
     color: var(--heading-color);
-    margin-bottom: 50px;
+    margin-bottom: 40px;
     text-align: center;
     position: relative;
+    font-weight: 700;
 }
-
 .section-title::after {
     content: '';
     display: block;
-    width: 90px;
-    height: 5px;
-    background-color: var(--accent-color-1);
-    margin: 15px auto 0;
-    border-radius: 3px;
+    width: 70px;
+    height: 4px;
+    background-color: var(--accent-color-1); /* البرتقالي للخط تحت العنوان */
+    margin: 10px auto 0;
+    border-radius: 2px;
 }
 
 .lectures-accordion {
-    max-width: 950px;
+    max-width: 900px;
     margin: 0 auto;
 }
 
 .lecture-item {
     background-color: var(--secondary-bg-color);
     border: 1px solid var(--border-color);
-    border-radius: 12px;
-    margin-bottom: 20px;
+    border-radius: 10px;
+    margin-bottom: 15px;
     overflow: hidden;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
-    transition: background-color 0.5s ease, border-color 0.5s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.4s ease, border-color 0.4s ease, box-shadow 0.3s ease;
 }
 
 .lecture-item.expanded {
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
 
 .lecture-header {
-    padding: 20px 30px;
-    background-color: var(--primary-bg-color);
-    color: var(--text-color);
+    padding: 18px 25px;
+    background-color: var(--secondary-bg-color);
+    color: var(--heading-color);
     cursor: pointer;
     display: flex;
     justify-content: space-between;
     align-items: center;
     border-bottom: 1px solid var(--border-color);
-    transition: background-color 0.3s ease, border-color 0.3s ease;
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
 }
 
 .lecture-item.expanded .lecture-header {
-    background-color: var(--accent-color-2);
+    background-color: var(--accent-color-1); /* البرتقالي لرأس المحاضرة المفتوحة */
     color: var(--button-text-color);
     border-bottom: none;
     border-radius: 10px 10px 0 0;
@@ -304,13 +368,13 @@
 
 .lecture-header h4 {
     margin: 0;
-    font-size: 1.5em;
+    font-size: 1.3em;
     color: inherit;
     font-weight: 600;
 }
 
 .lecture-header .lecture-toggle-icon {
-    font-size: 1.4em;
+    font-size: 1.2em;
     font-weight: bold;
     transition: transform 0.3s ease;
 }
@@ -320,7 +384,7 @@
 }
 
 .lecture-materials-list {
-    padding: 20px 30px;
+    padding: 15px 25px;
     background-color: var(--secondary-bg-color);
     transition: background-color 0.5s ease;
 }
@@ -328,27 +392,28 @@
 .material-item {
     background-color: var(--primary-bg-color);
     border: 1px solid var(--border-color);
-    padding: 15px 20px;
-    margin-bottom: 12px;
-    border-radius: 10px;
+    padding: 12px 18px;
+    margin-bottom: 10px;
+    border-radius: 8px;
     display: flex;
     align-items: center;
-    font-size: 1em;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    font-size: 0.95em;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
     transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.2s ease, opacity 0.3s ease, filter 0.3s ease;
     position: relative;
     cursor: pointer;
 }
 
 .material-item:hover {
-    background-color: rgba(var(--text-color-rgb), 0.1);
-    transform: translateX(8px);
+    background-color: rgba(var(--accent-color-1-rgb), 0.05);
+    transform: translateX(5px);
+    border-color: rgba(var(--accent-color-1-rgb), 0.5);
 }
 
 .material-item.locked-content {
-    opacity: 0.4;
+    opacity: 0.5;
     cursor: not-allowed;
-    filter: blur(2px);
+    filter: blur(1.5px);
     pointer-events: none;
 }
 .material-item.locked-content::after {
@@ -357,25 +422,27 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: rgba(var(--primary-bg-color-rgb), 0.9);
-    padding: 10px 15px;
-    border-radius: 8px;
+    background-color: rgba(var(--secondary-bg-color-rgb, 26, 26, 26), 0.95);
+    padding: 8px 12px;
+    border-radius: 6px;
     color: var(--error-color);
     font-weight: bold;
-    font-size: 1.1em;
+    font-size: 0.9em;
     white-space: nowrap;
     opacity: 0.9;
     pointer-events: none;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
 }
 .material-item.locked-content:hover {
     transform: translateX(0);
     background-color: var(--primary-bg-color);
+    border-color: var(--border-color);
 }
 
 .material-icon {
-    font-size: 1.8em;
-    margin-left: 15px;
-    color: var(--heading-color);
+    font-size: 1.6em;
+    margin-left: 12px;
+    color: var(--accent-color-1); /* البرتقالي للأيقونات */
     flex-shrink: 0;
 }
 
@@ -385,8 +452,8 @@
 
 .material-title {
     flex-grow: 1;
-    font-size: 1.15em;
-    color: var(--text-color);
+    font-size: 1.05em;
+    color: var(--heading-color);
     font-weight: 500;
 }
 
@@ -395,24 +462,24 @@
 }
 
 .lock-icon {
-    font-size: 1.3em;
-    margin-right: 10px;
+    font-size: 1.1em;
+    margin-right: 8px;
     color: var(--error-color);
 }
 
 
-/* تفاصيل المادة الموسعة */
+/* Expanded Material Details */
 .material-details-expanded {
-    background-color: rgba(var(--secondary-bg-color-rgb), 0.95);
-    padding: 20px 25px;
-    border-radius: 8px;
-    margin-top: 5px;
+    background-color: rgba(var(--primary-bg-color-rgb, 10, 10, 10), 0.9);
+    padding: 15px 20px;
+    border-radius: 6px;
+    margin-top: 8px;
     margin-bottom: 15px;
-    font-size: 0.95em;
+    font-size: 0.9em;
     color: var(--text-color);
-    border: 1px solid rgba(var(--border-color-rgb), 0.5);
-    box-shadow: inset 0 0 8px rgba(0,0,0,0.15);
-    line-height: 1.7;
+    border: 1px solid rgba(var(--accent-color-1-rgb, 226, 97, 61), 0.3);
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
+    line-height: 1.6;
     animation: fadeIn 0.4s ease-out;
 }
 @keyframes fadeIn {
@@ -421,163 +488,154 @@
 }
 
 .material-details-expanded p {
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 .material-details-expanded pre {
     white-space: pre-wrap;
     word-break: break-all;
-    background-color: rgba(var(--primary-bg-color-rgb), 0.8);
-    padding: 12px;
-    border-radius: 5px;
-    font-family: 'Cairo', sans-serif;
-    font-size: 0.9em;
-    color: var(--text-color);
+    background-color: rgba(var(--secondary-bg-color-rgb, 26, 26, 26), 0.8);
+    padding: 10px;
+    border-radius: 4px;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 0.85em;
+    color: var(--heading-color);
     border: 1px solid var(--border-color);
+    overflow-x: auto;
 }
 .material-details-expanded a {
-    color: var(--accent-color-1);
+    color: var(--accent-color-1); /* البرتقالي للروابط */
     text-decoration: underline;
     font-weight: bold;
 }
 
+/* Footer */
+footer {
+    background-color: var(--heading-color);
+    color: var(--button-text-color);
+    padding: 30px 0;
+    text-align: center;
+    font-size: 0.9em;
+    margin-top: 20px;
+    border-radius: 15px;
+}
+footer .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+footer .footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 25px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+footer .footer-links a {
+    color: var(--button-text-color);
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+footer .footer-links a:hover {
+    color: var(--accent-color-1); /* البرتقالي في التحويم */
+}
 
-/* --- Responsive adjustments --- */
+
+/* Responsive adjustments (already updated) */
 @media (max-width: 992px) {
-    .course-hero-section { /* ضبط ارتفاع الـ Hero ليناسب المحتوى */
-        min-height: 500px; /* زيادة الارتفاع ليتناسب مع الصورة والمحتوى على الأجهزة اللوحية */
-        /* تعديل المحاذاة على الأجهزة اللوحية */
-        flex-direction: column; /* جعل الصورة والمحتوى يظهران فوق بعض */
-        justify-content: center; /* توسيط عمودي */
-    }
-    .course-image-wrapper {
-        position: relative; /* إعادتها لوضعها الطبيعي في تدفق الصفحة */
-        top: auto;
-        left: auto;
-        transform: none;
-        width: 300px; /* حجم أصغر قليلاً */
-        height: 225px; /* نسبة 4:3 */
-        margin-bottom: 25px; /* مسافة بين الصورة والمحتوى */
-    }
-    .course-hero-content {
-        align-items: center; /* توسيط المحتوى النصي */
-        text-align: center; /* توسيط النص */
-        /* إزالة الهوامش الخاصة بالصورة */
-        margin-left: auto;
-        margin-right: auto;
-        max-width: 100%; /* تأكد أنها تأخذ العرض الكامل المتاح */
-        padding: 40px 20px; /* padding مناسب */
-    }
-    .course-hero-title {
-        font-size: 3.5em;
-    }
-    .course-hero-teacher {
-        font-size: 1.3em;
-    }
-    .course-hero-meta {
-        font-size: 1em;
+    .hero-container, .join-team-container {
         flex-direction: column;
-        gap: 10px;
-    }
-    .course-hero-description {
-        font-size: 1.1em;
         text-align: center;
+        gap: 30px;
     }
-    .course-hero-actions {
-        flex-direction: column;
-        gap: 15px;
+    .hero-content, .join-team-content {
+        max-width: 100%;
+        padding-bottom: 0;
+    }
+    .hero-cta {
         justify-content: center;
     }
-    .course-hero-price {
+    .hero-image, .join-team-image {
+        max-width: 80%;
+    }
+    .hero-content h1 {
+        font-size: 2.8em;
+    }
+    .hero-content h3 {
+        font-size: 1.2em;
+    }
+    .teachers-filter {
+        flex-direction: column;
+        align-items: center;
+    }
+    .teachers-filter select, .teachers-filter button {
+        width: 80%;
+        max-width: 300px;
+    }
+    .homepage-section h2 {
         font-size: 2.2em;
     }
-    .course-hero-subscribe-btn, .course-hero-action-btn {
-        padding: 15px 30px;
-        font-size: 1.1em;
-        width: 80%; /* لجعل الأزرار أوسع */
-    }
-    .section-title {
-        font-size: 2.5em;
-    }
-    .lecture-header h4 {
-        font-size: 1.3em;
-    }
-    .material-item {
-        font-size: 0.9em;
-    }
-    .material-icon {
-        font-size: 1.5em;
-    }
-    .material-title {
+    .section-description {
         font-size: 1em;
     }
-    .material-details-expanded {
-        padding: 15px 20px;
-        font-size: 0.9em;
+    .teachers-grid, .courses-grid, .all-levels-materials-grid {
+        grid-template-columns: 1fr;
     }
-    .material-item.locked-content::after {
-        font-size: 1em;
-        padding: 8px 12px;
+    .course-actions-new {
+        flex-direction: column;
+        gap: 8px;
+    }
+    .course-action-btn, .subscribe-btn, .course-action-btn-outline {
+        width: 100%;
+    }
+    .level-group-card {
+        padding: 15px;
+    }
+    .level-group-card h3 {
+        font-size: 1.4em;
     }
 }
 
-@media (max-width: 768px) {
-    .course-hero-section {
-        min-height: 400px; /* ارتفاع أقل للموبايل */
-        justify-content: center; /* محاذاة في المنتصف */
-    }
-    .course-hero-content {
-        padding: 30px 15px;
-        margin-left: 0;
-        margin-right: 0;
-        max-width: 100%;
-    }
-    .course-hero-badge {
-        top: 15px;
-        right: 15px;
-        padding: 6px 14px;
-        font-size: 0.8em;
-    }
-    .course-hero-title {
+@media (max-width: 576px) {
+    .hero-content h1 {
         font-size: 2em;
     }
-    .course-hero-teacher {
+    .hero-content h3 {
         font-size: 1em;
     }
-    .course-hero-price {
+    .hero-cta {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .hero-cta .btn {
+        width: 100%;
+    }
+    .homepage-section h2 {
         font-size: 1.8em;
     }
-    .course-hero-subscribe-btn, .course-hero-action-btn {
-        width: 90%;
+    .teachers-filter select, .teachers-filter button {
+        width: 95%;
     }
-    .section-title {
-        font-size: 1.8em;
-    }
-    .lectures-accordion {
-        padding: 0 10px;
-    }
-    .lecture-header {
-        padding: 12px 15px;
-    }
-    .lecture-header h4 {
+    .course-info-new h3 {
         font-size: 1.1em;
     }
-    .lecture-materials-list {
-        padding: 10px 15px;
+    .course-price-new {
+        font-size: 1em;
     }
-    .material-item {
-        padding: 10px 12px;
+    .join-as-teacher-cta h2, .join-team-content h2 {
+        font-size: 1.8em;
     }
-    .material-details-expanded {
-        padding: 12px 15px;
+    .join-team-content p {
+        font-size: 0.9em;
     }
-    /* NEW: تعديل موضع الصورة وحجمها على الموبايل لتكون فوق المحتوى */
-    .course-image-wrapper {
-        width: 80%; /* عرض مناسب */
-        height: 160px; /* ارتفاع مناسب */
-        margin: 0 auto 20px auto; /* توسيط الصورة ومسافة من الأسفل */
-        position: relative; /* إعادتها لوضعها الطبيعي في تدفق الصفحة على الموبايل */
-        top: auto;
-        left: auto;
-        transform: none;
+    .join-team-btn {
+        font-size: 1em;
+        padding: 12px 25px;
+    }
+    footer .footer-links {
+        flex-direction: column;
+        gap: 10px;
     }
 }

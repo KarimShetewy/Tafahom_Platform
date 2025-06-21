@@ -1,74 +1,95 @@
-/* General Login Page Styling */
+/* frontend/src/components/LoginPage.css */
+
+/* General Page Layout */
 .login-page {
-    text-align: right;
-    color: var(--text-color);
+    background-color: var(--primary-bg-color); /* من index.css */
+    color: var(--text-color); /* من index.css */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.5s ease, color 0.5s ease;
 }
 
-/* Login Section Specific Styles */
-.login-section {
+.login-page .main-content {
+    flex-grow: 1; /* لجعل المحتوى الرئيسي يملأ المساحة المتاحة */
     display: flex;
     justify-content: center;
-    align-items: flex-start;
-    min-height: 80vh;
-    padding: 40px 0;
+    align-items: center;
+    width: 100%;
+}
+
+/* Login Section Layout */
+.login-section {
+    padding: 60px 0;
+    width: 100%;
+    /* لا توجد خلفية ديناميكية هنا بشكل افتراضي، تعتمد على primary-bg-color */
 }
 
 .login-container {
     display: flex;
-    gap: 40px;
-    background-color: var(--secondary-bg-color);
-    padding: 40px;
-    border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    flex-wrap: wrap;
-    max-width: 900px;
-    border: 1px solid var(--border-color);
+    justify-content: center;
+    align-items: center;
+    background-color: var(--secondary-bg-color); /* من index.css */
+    border-radius: 15px;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    max-width: 900px; /* تحديد أقصى عرض للحاوية */
+    width: 100%;
+    transition: background-color 0.5s ease, box-shadow 0.5s ease;
 }
 
 .login-image-wrapper {
     flex: 1;
     display: flex;
     flex-direction: column;
-    align-items: center;
     justify-content: center;
+    align-items: center;
+    background-color: var(--primary-bg-color); /* لون خلفية جانب الصورة */
+    padding: 30px;
     text-align: center;
-    min-width: 250px;
-    order: 2;
+    transition: background-color 0.5s ease;
 }
 
 .login-illustration {
-    max-width: 100%;
+    max-width: 90%;
     height: auto;
-    border-radius: 8px;
+    margin-bottom: 20px;
 }
 
-.login-image-wrapper .image-caption {
-    margin-top: 20px;
+.image-caption {
     font-size: 1.1em;
     color: var(--text-color);
+    line-height: 1.6;
 }
 
 .login-form-wrapper {
-    flex: 1.5;
-    min-width: 300px;
-    order: 1;
+    flex: 1;
+    padding: 40px;
+    background-color: var(--secondary-bg-color); /* لون خلفية الفورم */
+    color: var(--text-color);
+    text-align: right; /* محاذاة كل المحتوى لليمين */
 }
 
 .login-form-wrapper h2 {
-    color: var(--heading-color);
-    margin-bottom: 25px;
-    text-align: center;
+    font-size: 2.5em;
+    color: var(--heading-color); /* لون عناوين الفورم */
+    margin-bottom: 30px;
+    text-align: center; /* توسيط العنوان */
 }
 
 .login-form .form-group {
     margin-bottom: 20px;
+    text-align: right;
 }
 
 .login-form label {
     display: block;
+    font-size: 1em;
+    color: var(--heading-color);
     margin-bottom: 8px;
-    color: var(--text-color);
-    font-weight: bold;
+    font-weight: 600;
 }
 
 .login-form input[type="email"],
@@ -76,86 +97,143 @@
     width: 100%;
     padding: 12px 15px;
     border: 1px solid var(--border-color);
-    border-radius: 5px;
-    background-color: var(--primary-bg-color);
-    color: var(--text-color);
+    border-radius: 8px;
+    background-color: var(--primary-bg-color); /* لون خلفية حقول الإدخال */
+    color: var(--text-color); /* لون النص داخل الحقول */
     font-size: 1em;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.login-form input:focus {
-    border-color: var(--accent-color-1);
-    box-shadow: 0 0 8px rgba(var(--accent-color-1-rgb), 0.5);
+.login-form input[type="email"]:focus,
+.login-form input[type="password"]:focus {
     outline: none;
+    border-color: var(--accent-color-1); /* البرتقالي عند التركيز */
+    box-shadow: 0 0 0 3px rgba(var(--accent-color-1-rgb), 0.3);
 }
 
 .login-form .submit-btn {
     width: 100%;
     padding: 15px;
-    font-size: 1.1em;
-    background-color: var(--accent-color-1);
+    background-color: var(--accent-color-1); /* البرتقالي لزر تسجيل الدخول */
     color: var(--button-text-color);
-    border-radius: 5px;
-    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1em;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(var(--accent-color-1-rgb), 0.3);
 }
 
 .login-form .submit-btn:hover {
-    background-color: rgba(var(--accent-color-1-rgb), 0.8);
+    filter: brightness(90%);
     transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(var(--accent-color-1-rgb), 0.4);
+    box-shadow: 0 8px 20px rgba(var(--accent-color-1-rgb), 0.4);
 }
 
 .login-links {
     margin-top: 20px;
-    text-align: center;
+    text-align: center; 
+    font-size: 0.95em;
 }
 
-.login-links .forgot-password-link {
-    display: block;
-    margin-bottom: 10px;
-    color: var(--heading-color);
+.login-links .forgot-password-link,
+.login-links .create-account-link {
+    color: var(--accent-color-2); 
+    text-decoration: none;
+    font-weight: 600;
     transition: color 0.3s ease;
 }
 
-.login-links .forgot-password-link:hover {
-    color: var(--accent-color-1);
+.login-links .forgot-password-link:hover,
+.login-links .create-account-link:hover {
+    filter: brightness(120%);
     text-decoration: underline;
 }
 
 .login-links p {
+    margin-top: 10px;
     color: var(--text-color);
 }
 
-.login-links .create-account-link {
-    color: var(--accent-color-1);
-    font-weight: bold;
+/* Error Message Box */
+.error-message-box {
+    background-color: rgba(var(--error-color-rgb, 231, 76, 60), 0.1);
+    color: var(--error-color);
+    border: 1px solid var(--error-color);
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    text-align: right;
+    font-size: 0.95em;
+    font-weight: 500;
+}
+
+
+/* Footer (يمكن أن يكون هنا أو في مكون عام مثل App.js أو Layout component) */
+footer {
+    background-color: var(--heading-color); 
+    color: var(--button-text-color); 
+    padding: 20px 0;
+    text-align: center;
+    font-size: 0.85em;
+    width: 100%;
+}
+footer .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+footer .footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+footer .footer-links a {
+    color: var(--button-text-color);
+    font-weight: 500;
     transition: color 0.3s ease;
 }
-
-.login-links .create-account-link:hover {
-    color: var(--heading-color);
-    text-decoration: underline;
-}
-
-.error-message-box {
-    background-color: rgba(var(--error-color-rgb), 0.2);
-    color: var(--error-color);
-    padding: 10px 15px;
-    border-radius: 5px;
-    margin-bottom: 20px;
-    text-align: center;
-    font-weight: bold;
-    border: 1px solid var(--error-color);
+footer .footer-links a:hover {
+    color: var(--accent-color-1);
 }
 
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .login-container {
-        flex-direction: column;
+        flex-direction: column; 
+        max-width: 90%;
+    }
+    .login-image-wrapper {
+        display: none; 
         padding: 20px;
     }
-    .login-image-wrapper, .login-form-wrapper {
-        order: initial;
+    .login-form-wrapper {
+        padding: 30px;
+        width: 100%; 
+    }
+    .login-form-wrapper h2 {
+        font-size: 2em;
+        margin-bottom: 20px;
+    }
+    .login-form input, .login-form button {
+        font-size: 0.9em;
+        padding: 10px 12px;
+    }
+    .image-caption {
+        font-size: 0.9em;
+    }
+    footer {
+        padding: 15px 0;
+        margin-top: 0; 
+    }
+    footer .footer-links {
+        gap: 10px;
+        font-size: 0.8em;
     }
 }

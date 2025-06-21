@@ -1,70 +1,424 @@
+/* frontend/src/components/Dashboard.css */
+
+/* General Dashboard Page Styles */
 .dashboard-page {
-    padding-bottom: 50px;
+    background-color: var(--primary-bg-color);
+    color: var(--text-color);
+    min-height: 100vh;
+    transition: background-color 0.5s ease, color 0.5s ease;
 }
 
 .dashboard-page .main-content {
-    padding: 40px 20px;
-    background-color: var(--background-color-light);
-    min-height: calc(100vh - 120px);
+    padding-top: 0;
+    padding-bottom: 60px;
 }
 
-.dashboard-page .container {
-    max-width: 1000px;
+/* Header/Navbar Styles for Dashboard - هذه الأنماط ستُطبق لأن Navbar.js يستورد Dashboard.css */
+.app-header {
+    background-color: var(--secondary-bg-color);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 15px 0;
+    z-index: 100;
+    position: sticky;
+    top: 0;
+    width: 100%;
+}
+.app-header .container {
+    max-width: 1200px;
     margin: 0 auto;
-    padding: 20px;
+    padding: 0 20px;
 }
-
-.dashboard-page .welcome-message {
-    text-align: center;
-    color: var(--text-color-primary);
-    margin-bottom: 20px;
-    font-size: 2.2em;
+.app-header .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
 }
-
-.dashboard-page .dashboard-intro {
-    text-align: center;
-    color: var(--text-color-secondary);
-    margin-bottom: 40px;
+.app-header .navbar-logo {
+    height: 40px;
+}
+.app-header .nav-links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 25px;
+    flex-wrap: wrap;
+}
+.app-header .nav-links li {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+.app-header .nav-links a {
+    color: var(--heading-color);
+    font-weight: 600;
     font-size: 1.1em;
+    transition: color 0.3s ease;
+}
+.app-header .nav-links a:hover {
+    color: var(--accent-color-1);
 }
 
+.app-header .auth-buttons {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.app-header .auth-buttons .btn {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 1em;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.app-header .auth-buttons .btn-secondary {
+    background-color: var(--accent-color-2);
+    color: var(--button-text-color);
+    box-shadow: 0 2px 5px rgba(var(--accent-color-2-rgb), 0.2);
+    border: none;
+}
+.app-header .auth-buttons .btn-secondary:hover {
+    filter: brightness(90%);
+    transform: translateY(-2px);
+}
+
+/* أنماط صورة واسم الأستاذ في الناف بار */
+.user-profile-widget {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: var(--primary-bg-color);
+    padding: 5px 15px;
+    border-radius: 25px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: background-color 0.3s ease;
+}
+.user-profile-widget:hover {
+    background-color: var(--border-color);
+}
+
+.user-profile-image {
+    width: 35px !important;
+    height: 35px !important;
+    border-radius: 50% !important;
+    object-fit: cover !important;
+    border: 2px solid var(--accent-color-1);
+}
+
+.user-profile-name {
+    color: var(--text-color);
+    font-weight: 600;
+    font-size: 1em;
+    white-space: nowrap;
+}
+
+
+/* Teacher Dashboard Hero Section */
+.teacher-dashboard-hero-section {
+    position: relative;
+    overflow: hidden;
+    padding: 0;
+    min-height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding-top: 80px;
+    background-color: var(--primary-bg-color);
+}
+
+.teacher-hero-container {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 1000px;
+    padding: 40px 20px;
+}
+
+.teacher-hero-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.teacher-welcome-title {
+    font-size: 3.5em;
+    color: var(--heading-color);
+    margin-bottom: 15px;
+    line-height: 1.2;
+    font-weight: 800;
+}
+
+.teacher-welcome-title .teacher-name-highlight {
+    color: var(--accent-color-2);
+    font-weight: 900;
+}
+
+.teacher-dashboard-intro {
+    font-size: 1.3em;
+    color: var(--text-color);
+    line-height: 1.8;
+    margin-bottom: 30px;
+    max-width: 700px;
+}
+
+/* أنماط الإحصائيات السريعة */
+.teacher-hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+}
+.stat-item {
+    background-color: var(--secondary-bg-color);
+    border-radius: 10px;
+    padding: 15px 25px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 120px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.stat-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+}
+.stat-icon {
+    font-size: 2em;
+    color: var(--accent-color-1);
+    margin-bottom: 5px;
+}
+.stat-value {
+    font-size: 1.8em;
+    font-weight: 700;
+    color: var(--heading-color);
+}
+.stat-label {
+    font-size: 0.9em;
+    color: var(--text-color);
+}
+
+
+.teacher-hero-actions .btn {
+    padding: 15px 35px;
+    font-size: 1.1em;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.teacher-hero-actions .btn-primary {
+    background-color: var(--accent-color-1);
+    color: var(--button-text-color);
+    box-shadow: 0 5px 15px rgba(var(--accent-color-1-rgb), 0.3);
+}
+.teacher-hero-actions .btn-primary:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(var(--accent-color-1-rgb), 0.4);
+}
+
+.teacher-hero-actions .btn-secondary {
+    background-color: var(--accent-color-2);
+    color: var(--button-text-color);
+    box-shadow: 0 5px 15px rgba(var(--accent-color-2-rgb), 0.3);
+}
+.teacher-hero-actions .btn-secondary:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(var(--accent-color-2-rgb), 0.4);
+}
+
+/* طبقة شفافة فوق الخلفية المتحركة */
+.teacher-hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to top, 
+                rgba(var(--primary-bg-color-rgb), 0.8) 0%, 
+                rgba(var(--primary-bg-color-rgb), 0.5) 50%, 
+                rgba(var(--primary-bg-color-rgb), 0.2) 100%);
+    background-image: var(--teacher-hero-background-image, none);
+    background-size: cover;
+    background-position: center;
+    z-index: 0;
+}
+
+/* تأثير الجزيئات المتوهجة / الخلفية المتحركة */
+.teacher-dashboard-hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 10% 20%, rgba(var(--accent-color-1-rgb), 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 90% 80%, rgba(var(--accent-color-2-rgb), 0.2) 0%, transparent 60%),
+        radial-gradient(circle at 50% 50%, rgba(var(--heading-color-rgb), 0.08) 0%, transparent 40%);
+    background-size: 800px 800px;
+    opacity: 0.8;
+    animation: moveBackground 30s linear infinite;
+    z-index: 1;
+}
+
+@keyframes moveBackground {
+    from {
+        background-position: 0% 0%, 100% 100%, 50% 50%;
+    }
+    to {
+        background-position: 100% 100%, 0% 0%, 0% 0%;
+    }
+}
+
+/* Wrapper for dashboard cards/sections */
+.dashboard-sections-wrapper {
+    margin-top: -80px;
+    position: relative;
+    z-index: 5;
+}
+
+/* Dashboard Sections Grid (بطاقات الأقسام) */
 .dashboard-sections-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 30px;
-    justify-content: center;
 }
 
 .dashboard-section-card {
-    background-color: var(--card-background-color);
-    padding: 25px;
-    border-radius: 10px;
-    box-shadow: var(--box-shadow);
+    background-color: var(--secondary-bg-color);
+    border-radius: 15px;
+    padding: 30px;
     text-align: center;
-    text-decoration: none; /* لإزالة خط الرابط */
-    color: inherit; /* لورث لون النص */
-    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.5s ease;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    min-height: 150px;
+    min-height: 180px;
+    color: var(--text-color);
 }
-
 .dashboard-section-card:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--box-shadow-hover);
+    transform: translateY(-8px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
 }
 
 .dashboard-section-card h3 {
-    color: var(--text-color-primary);
+    font-size: 1.8em;
+    color: var(--heading-color);
     margin-bottom: 10px;
-    font-size: 1.5em;
+    font-weight: 700;
 }
 
 .dashboard-section-card p {
-    color: var(--text-color-secondary);
-    font-size: 0.95em;
+    font-size: 1em;
+    color: var(--text-color);
+    line-height: 1.5;
 }
 
-/* يمكنك إضافة تنسيقات إضافية للـ navbar والـ footer المشتركة في App.css */
+/* Footer (General, consistent across pages) */
+footer {
+    background-color: var(--heading-color);
+    color: var(--button-text-color);
+    padding: 30px 0;
+    text-align: center;
+    font-size: 0.9em;
+    margin-top: 20px;
+    border-radius: 15px;
+}
+footer .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+footer .footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 25px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+footer .footer-links a {
+    color: var(--button-text-color);
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+footer .footer-links a:hover {
+    color: var(--accent-color-1);
+}
+
+/* Responsive adjustments for Dashboard */
+@media (max-width: 992px) {
+    .teacher-dashboard-hero-section {
+        min-height: 350px;
+        padding-top: 60px;
+    }
+    .teacher-welcome-title {
+        font-size: 2.8em;
+    }
+    .teacher-dashboard-intro {
+        font-size: 1.1em;
+    }
+    .teacher-hero-actions .btn {
+        padding: 12px 30px;
+        font-size: 1em;
+    }
+    .dashboard-sections-wrapper {
+        margin-top: -60px;
+    }
+}
+
+@media (max-width: 768px) {
+    .teacher-dashboard-hero-section {
+        min-height: 300px;
+        padding-top: 50px;
+    }
+    .teacher-welcome-title {
+        font-size: 2.2em;
+    }
+    .teacher-dashboard-intro {
+        font-size: 1em;
+    }
+    .teacher-hero-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .teacher-hero-actions .btn {
+        width: 80%;
+        max-width: 280px;
+    }
+    .dashboard-sections-wrapper {
+        margin-top: -40px;
+    }
+    .dashboard-section-card {
+        padding: 20px;
+        min-height: 150px;
+    }
+    .dashboard-section-card h3 {
+        font-size: 1.5em;
+    }
+    .dashboard-section-card p {
+        font-size: 0.9em;
+    }
+
+    .teacher-hero-stats {
+        flex-direction: column;
+        gap: 15px;
+    }
+    .stat-item {
+        width: 80%;
+        max-width: 200px;
+    }
+}

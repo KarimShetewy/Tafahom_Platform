@@ -1,102 +1,304 @@
-.teacher-add-course-page {
-    padding-bottom: 50px; /* لإعطاء مساحة للـ footer */
-}
+/* frontend/src/components/TeacherAddCoursePage.css */
 
-.teacher-add-course-page .main-content {
-    padding: 40px 20px;
-    background-color: var(--background-color-light); /* استخدم متغيرات الثيم */
-    min-height: calc(100vh - 120px); /* Adjust based on header/footer height */
-}
-
-.teacher-add-course-page .container {
-    max-width: 800px;
-    margin: 0 auto;
-    background-color: var(--card-background-color);
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: var(--box-shadow);
-}
-
-.teacher-add-course-page h2 {
+/* Hero Section for Add Course Page */
+.add-course-hero-section {
+    position: relative;
+    overflow: hidden;
+    padding: 0;
+    min-height: 350px; /* ارتفاع مناسب */
+    display: flex;
+    align-items: center;
+    justify-content: center;
     text-align: center;
-    color: var(--text-color-primary);
+    padding-top: 80px; /* لإفساح مجال للهيدر */
+    background-color: var(--primary-bg-color);
+}
+
+.add-course-hero-container {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 800px; /* عرض محدود للمحتوى */
+    padding: 40px 20px;
+}
+
+.add-course-hero-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.add-course-title {
+    font-size: 3em;
+    color: var(--heading-color);
+    margin-bottom: 15px;
+    line-height: 1.2;
+    font-weight: 800;
+}
+
+.add-course-intro {
+    font-size: 1.2em;
+    color: var(--text-color);
+    line-height: 1.8;
     margin-bottom: 30px;
-    font-size: 2em;
+    max-width: 600px;
+}
+
+.add-course-subject-display {
+    color: var(--accent-color-2); /* اللون الأخضر لتخصص المادة */
+    font-weight: 700;
+}
+
+/* طبقة شفافة فوق الخلفية المتحركة */
+.add-course-hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* تدرج لوني يعتمد على الثيم لضمان الوضوح */
+    background: linear-gradient(to top, 
+                rgba(var(--primary-bg-color-rgb), 0.8) 0%, 
+                rgba(var(--primary-bg-color-rgb), 0.5) 50%, 
+                rgba(var(--primary-bg-color-rgb), 0.2) 100%);
+    background-image: var(--add-course-background-image, none); /* متغير لصور الخلفية */
+    background-size: cover;
+    background-position: center;
+    z-index: 0;
+}
+
+/* تأثير الجزيئات المتوهجة / الخلفية المتحركة (نسخ من CourseDetailPage/Dashboard) */
+.add-course-hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 10% 20%, rgba(var(--accent-color-1-rgb), 0.15) 0%, transparent 50%), /* برتقالي */
+        radial-gradient(circle at 90% 80%, rgba(var(--accent-color-2-rgb), 0.2) 0%, transparent 60%), /* أخضر */
+        radial-gradient(circle at 50% 50%, rgba(var(--heading-color-rgb), 0.08) 0%, transparent 40%);
+    background-size: 800px 800px;
+    opacity: 0.8;
+    animation: moveBackground 30s linear infinite;
+    z-index: 1;
+}
+
+/* Reuse keyframes from index.css or define here if not global */
+@keyframes moveBackground {
+    from {
+        background-position: 0% 0%, 100% 100%, 50% 50%;
+    }
+    to {
+        background-position: 100% 100%, 0% 0%, 0% 0%;
+    }
+}
+
+
+/* Form specific styles */
+.course-form-wrapper {
+    margin-top: -80px; /* لسحب الفورم للأعلى فوق جزء من الـ Hero */
+    position: relative;
+    z-index: 5; /* لضمان ظهوره فوق الـ Hero */
+    background-color: var(--secondary-bg-color); /* خلفية للفورم */
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.course-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
 .course-form .form-group {
-    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    text-align: right;
 }
 
 .course-form label {
-    display: block;
+    font-size: 1em;
+    color: var(--heading-color);
     margin-bottom: 8px;
-    font-weight: bold;
-    color: var(--text-color-secondary);
+    font-weight: 600;
 }
 
 .course-form input[type="text"],
 .course-form input[type="number"],
+.course-form input[type="url"],
 .course-form textarea,
-.course-form select {
-    width: 100%;
-    padding: 10px;
+.course-form select,
+.course-form input[type="file"] {
+    padding: 12px 15px;
     border: 1px solid var(--border-color);
-    border-radius: 4px;
-    background-color: var(--input-background-color);
-    color: var(--text-color-primary);
+    border-radius: 8px;
+    background-color: var(--primary-bg-color);
+    color: var(--text-color);
     font-size: 1em;
-    box-sizing: border-box; /* Ensures padding doesn't increase width */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.course-form input[type="text"]:focus,
+.course-form input[type="number"]:focus,
+.course-form input[type="url"]:focus,
+.course-form textarea:focus,
+.course-form select:focus,
+.course-form input[type="file"]:focus {
+    outline: none;
+    border-color: var(--accent-color-1);
+    box-shadow: 0 0 0 3px rgba(var(--accent-color-1-rgb), 0.3);
 }
 
 .course-form textarea {
-    min-height: 120px;
+    min-height: 100px;
     resize: vertical;
 }
 
-.course-form input[type="file"] {
-    padding: 5px;
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    background-color: var(--input-background-color);
-    color: var(--text-color-primary);
+.course-form .read-only-field {
+    background-color: var(--border-color); /* لون خلفية للحقول المقروءة فقط */
+    opacity: 0.8;
 }
 
+.course-form .subject-restriction-message {
+    font-size: 0.9em;
+    color: var(--text-color);
+    margin-top: 5px;
+}
+.course-form .subject-restriction-message strong {
+    color: var(--accent-color-2); /* الأخضر للنص المهم */
+}
+
+
 .course-form .checkbox-group {
-    display: flex;
+    flex-direction: row; /* العناصر في صف واحد */
     align-items: center;
     gap: 10px;
+    margin-top: 10px;
 }
 
 .course-form .checkbox-group input[type="checkbox"] {
-    width: auto; /* Override 100% width */
-    margin-right: 5px;
+    width: 20px;
+    height: 20px;
+    margin: 0;
+    accent-color: var(--accent-color-2); /* لون الأخضر للـ checkbox */
+}
+.course-form .checkbox-group label {
+    margin-bottom: 0;
+    cursor: pointer;
 }
 
-.course-form button.btn-primary {
-    width: 100%;
-    padding: 12px;
+.course-form .btn-primary {
+    padding: 15px 30px;
     font-size: 1.1em;
-    font-weight: bold;
+    border-radius: 8px;
+    background-color: var(--accent-color-1);
+    color: var(--button-text-color);
+    box-shadow: 0 5px 15px rgba(var(--accent-color-1-rgb), 0.3);
+    transition: all 0.3s ease;
     margin-top: 20px;
 }
+.course-form .btn-primary:hover {
+    filter: brightness(90%);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(var(--accent-color-1-rgb), 0.4);
+}
+.course-form .btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
 
+/* Error/Success Messages */
 .alert {
     padding: 15px;
     margin-bottom: 20px;
-    border-radius: 4px;
-    font-weight: bold;
-    text-align: center;
+    border-radius: 8px;
+    font-size: 1em;
+    font-weight: 600;
+    text-align: right;
 }
-
 .alert-danger {
-    background-color: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
+    background-color: rgba(var(--error-color-rgb, 231, 76, 60), 0.1);
+    color: var(--error-color);
+    border: 1px solid var(--error-color);
+}
+.alert-success {
+    background-color: rgba(var(--success-color-rgb, 0, 148, 101), 0.1);
+    color: var(--success-color);
+    border: 1px solid var(--success-color);
 }
 
-.alert-success {
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
+/* Footer (General, consistent across pages) */
+footer {
+    background-color: var(--heading-color);
+    color: var(--button-text-color);
+    padding: 30px 0;
+    text-align: center;
+    font-size: 0.9em;
+    margin-top: 20px;
+    border-radius: 15px;
+}
+footer .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+footer .footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 25px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+footer .footer-links a {
+    color: var(--button-text-color);
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+footer .footer-links a:hover {
+    color: var(--accent-color-1);
+}
+
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .add-course-hero-section {
+        min-height: 250px;
+        padding-top: 50px;
+    }
+    .add-course-title {
+        font-size: 2.2em;
+    }
+    .add-course-intro {
+        font-size: 1em;
+        margin-bottom: 20px;
+    }
+    .course-form-wrapper {
+        margin-top: -40px;
+        padding: 25px;
+    }
+    .course-form .form-group label {
+        font-size: 0.9em;
+    }
+    .course-form input[type="text"],
+    .course-form input[type="number"],
+    .course-form input[type="url"],
+    .course-form textarea,
+    .course-form select,
+    .course-form input[type="file"] {
+        padding: 10px 12px;
+        font-size: 0.9em;
+    }
+    .course-form .btn-primary {
+        padding: 12px 25px;
+        font-size: 1em;
+    }
 }

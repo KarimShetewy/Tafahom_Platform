@@ -3,13 +3,11 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './HomePage.css';
 
-import TafahomLogo from '../assets/images/tafahom_logo.png';
 import StudentHeroImage from '../assets/images/student_hero.png';
 import JoinUsIllustration from '../assets/images/join_us_illustration.png';
 
-// صور Placeholder
-import Teacher1 from '../assets/images/teacher1.jpg'; // تأكد من وجود هذه الصورة
-import Course1 from '../assets/images/course1.jpg'; // تأكد من وجود هذه الصورة
+import Teacher1 from '../assets/images/teacher1.jpg';
+import Course1 from '../assets/images/course1.jpg';
 
 
 function HomePage() {
@@ -24,7 +22,6 @@ function HomePage() {
     const [coursesError, setCoursesError] = useState(null);
 
     const handleImageError = (e) => {
-        // إذا فشل تحميل الصورة، استبدلها بـ placeholder عام أو قم بتسجيل الخطأ
         console.error("Failed to load image:", e.target.src);
         e.target.src = 'https://via.placeholder.com/180/CCCCCC/808080?text=No+Image';
     };
@@ -32,7 +29,7 @@ function HomePage() {
     const fetchTeachers = async () => {
         setLoadingTeachers(true);
         setTeachersError(null);
-        let apiUrl = 'http://127.0.0.1:8000/api/courses/teachers/'; // مسار API للمدرسين
+        let apiUrl = 'http://127.0.0.1:8000/api/courses/teachers/';
         const params = new URLSearchParams();
 
         if (selectedLevel) {
@@ -64,8 +61,7 @@ function HomePage() {
     const fetchCourses = async () => {
         setLoadingCourses(true);
         setCoursesError(null);
-        // مسار API للكورسات: /api/courses/
-        let apiUrl = 'http://127.0.0.1:8000/api/courses/'; // <--- مسار API الصحيح للكورسات
+        let apiUrl = 'http://127.0.0.1:8000/api/courses/';
         const params = new URLSearchParams();
 
         if (selectedLevel) {
@@ -124,34 +120,13 @@ function HomePage() {
 
     return (
         <div className="home-page">
-            <header className="app-header">
-                <div className="container">
-                <nav className="navbar">
-                    <div className="logo">
-                    <Link to="/">
-                        <img src={TafahomLogo} alt="Tafahom Logo" className="navbar-logo" />
-                    </Link>
-                    </div>
-                    <ul className="nav-links">
-                    <li><Link to="/">الرئيسية</Link></li>
-                    <li><Link to="/about">عن المنصة</Link></li>
-                    <li><Link to="/teachers-list">الاساتذة</Link></li>
-                    <li><Link to="/courses">الكورسات</Link></li>
-                    <li><Link to="/contact">تواصل معنا</Link></li>
-                    </ul>
-                    <div className="auth-buttons">
-                    <Link to="/login" className="btn btn-secondary">تسجيل الدخول</Link>
-                    <Link to="/register/student" className="btn btn-primary">إنشاء حساب جديد</Link>
-                    </div>
-                </nav>
-                </div>
-            </header>
+            {/* REMOVED: Header/Navbar is now in App.js */}
 
             <main className="main-content">
                 <section className="hero-section homepage-section">
                     <div className="container hero-container">
                         <div className="hero-content">
-                            <h1>منصة تفاهم</h1>
+                            <h1>منصة <span className="tafahom-highlight">تفاهم</span></h1>
                             <h3>منصة متكاملة بها كل ما يحتاجه الطالب ليتفوق</h3>
                             <div className="hero-cta">
                                 <Link to="/register/student" className="btn btn-primary">ابدأ الآن</Link>
@@ -214,7 +189,6 @@ function HomePage() {
                                                 <Link to={`/teachers/${teacher.id}`}>
                                                     <h3>أ/ {teacher.first_name} {teacher.last_name}</h3>
                                                 </Link>
-                                                {/* استخدام specialized_subject_display مباشرة لعرض التخصص */}
                                                 <p>أستاذ {teacher.specialized_subject_display || 'تخصص غير محدد'}</p>
                                             </div>
                                         </div>

@@ -1,74 +1,107 @@
 from rest_framework import generics, status
 from rest_framework.response import Response
-from rest_framework.views import APIView
+# REMOVED: from rest_framework.views import APIView # لم نعد بحاجة لـ APIView لـ Login
 from rest_framework.permissions import IsAuthenticated, AllowAny
+# تأكد من استيراد موديلاتك
 from .models import AccountRequest, CustomUser
-from .serializers import AccountRequestSerializer, LoginSerializer, TeacherProfileSerializer
-from rest_framework.authtoken.models import Token
+# تأكد من استيراد serializers الصحيحة
+from .serializers import AccountRequestSerializer, TeacherProfileSerializer, CustomUserSerializer
+# REMOVED: from .serializers import LoginSerializer # لم نعد بحاجة لـ LoginSerializer المخصصة
+# REMOVED: from rest_framework.authtoken.models import Token # لم نعد بحاجة لها هنا إذا djoser يتعامل مع التوكن
 
 
-class AccountRequestCreateAPIView(generics.CreateAPIView):
+# Viewsets لطلبات إنشاء الحساب (للطلاب، الأساتذة، أعضاء الفريق)
+# هذه Views ستستقبل طلبات التسجيل وتحفظها كـ AccountRequest
+class StudentRegistrationView(generics.CreateAPIView):
     queryset = AccountRequest.objects.all()
     serializer_class = AccountRequestSerializer
+    permission_classes = [AllowAny] # يمكن لأي شخص غير مسجل طلب حساب طالب
 
     def perform_create(self, serializer):
-        serializer.save()
+        # قبل الحفظ، تأكد من تعيين user_type بشكل صحيح للطلب
+        serializer.save(user_type='student')
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
         return Response(
-            {"message": "تم إرسال طلب إنشاء الحساب بنجاح. سيتم مراجعته قريباً."},
-            status=status.HTTP_201_CREATED,
-            headers=headers
+            {"message": "تم إرسال طلب إنشاء حساب طالب بنجاح. سيتم مراجعته قريباً."},
+            status=status.HTTP_201_CREATED
         )
 
-class LoginAPIView(APIView):
-    permission_classes = ()
+class TeacherRegistrationView(generics.CreateAPIView):
+    queryset = AccountRequest.objects.all()
+    serializer_class = AccountRequestSerializer
+    permission_classes = [AllowAny] # يمكن لأي شخص غير مسجل طلب حساب أستاذ
 
-    def post(self, request, *args, **kwargs):
-        serializer = LoginSerializer(data=request.data)
+    def perform_create(self, serializer):
+        serializer.save(user_type='teacher')
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        return Response(
+            {"message": "تم إرسال طلب إنشاء حساب أستاذ بنجاح. سيتم مراجعته قريباً."},
+            status=status.HTTP_201_CREATED
+        )
 
-        token = serializer.validated_data['token']
-        user_type = serializer.validated_data['user_type']
-        first_name = serializer.validated_data['first_name']
-        specialized_subject = serializer.validated_data.get('specialized_subject')
+class TeamRegistrationView(generics.CreateAPIView):
+    queryset = AccountRequest.objects.all()
+    serializer_class = AccountRequestSerializer
+    permission_classes = [AllowAny] # يمكن لأي شخص غير مسجل طلب حساب عضو فريق
 
-        response_data = {
-            'token': token,
-            'user_type': user_type,
-            'first_name': first_name,
-            'message': 'تم تسجيل الدخول بنجاح!'
-        }
-        if specialized_subject:
-            response_data['specialized_subject'] = specialized_subject
+    def perform_create(self, serializer):
+        serializer.save(user_type='team_member')
 
-        return Response(response_data, status=status.HTTP_200_OK)
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        return Response(
+            {"message": "تم إرسال طلب إنشاء حساب عضو فريق بنجاح. سيتم مراجعته قريباً."},
+            status=status.HTTP_201_CREATED
+        )
+
+# REMOVED: LoginAPIView المخصصة لم تعد ضرورية، حيث djoser يتولى المصادقة
+# class LoginAPIView(APIView):
+#     permission_classes = ()
+#     def post(self, request, *args, **kwargs):
+#         serializer = LoginSerializer(data=request.data)
+#         serializer.is_valid(raise_exception=True)
+#         token = serializer.validated_data['token']
+#         user_type = serializer.validated_data['user_type']
+#         first_name = serializer.validated_data['first_name']
+#         specialized_subject = serializer.validated_data.get('specialized_subject')
+#         response_data = {
+#             'token': token,
+#             'user_type': user_type,
+#             'first_name': first_name,
+#             'message': 'تم تسجيل الدخول بنجاح!'
+#         }
+#         if specialized_subject:
+#             response_data['specialized_subject'] = specialized_subject
+#         return Response(response_data, status=status.HTTP_200_OK)
 
 
-class TeacherProfileAPIView(generics.RetrieveAPIView):
-    serializer_class = TeacherProfileSerializer
+# View لجلب بيانات بروفايل المستخدم الحالي (المسجل دخوله)
+# djoser يوفر بالفعل مسار /api/auth/users/me/ لهذا الغرض
+class UserProfileView(generics.RetrieveAPIView):
+    serializer_class = CustomUserSerializer # استخدم CustomUserSerializer ليعرض جميع الحقول المخصصة
     permission_classes = [IsAuthenticated]
 
     def get_object(self):
         return self.request.user
 
-    def retrieve(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = self.get_serializer(instance)
-        return Response(serializer.data)
-
-# NEW: View لجلب بيانات مستخدم واحد (مثل ملف تعريف المدرس) بواسطة ID
+# View لجلب بيانات مستخدم واحد بواسطة ID (مثل ملف تعريف المدرس لصفحته العامة)
 class CustomUserRetrieveAPIView(generics.RetrieveAPIView):
     queryset = CustomUser.objects.all()
-    serializer_class = TeacherProfileSerializer # يمكن استخدام TeacherProfileSerializer لأنه يغطي بيانات المدرس
-    permission_classes = [AllowAny] # يمكن لأي شخص رؤية الملف الشخصي للمدرس
+    serializer_class = CustomUserSerializer # استخدم CustomUserSerializer ليعرض جميع الحقول المخصصة
+    permission_classes = [AllowAny] # يمكن لأي شخص رؤية الملف الشخصي العام للمدرس
     lookup_field = 'pk' # لجلب المستخدم باستخدام ID (primary key)
 
     def get_queryset(self):
-        # التأكد من أن المستخدم الذي يتم جلبه هو 'teacher' فقط إذا كانت هذه نقطة نهاية مخصصة للمدرسين
-        # إذا كنت تريد أن يكون ملف تعريف المستخدم عاماً، يمكنك إزالة هذا الفلتر
+        # إذا كنت تريد أن يكون هذا الـ View فقط للمدرسين، احتفظ بهذا الفلتر
+        # وإلا، أزله للسماح بجلب أي نوع مستخدم
         return CustomUser.objects.filter(user_type='teacher')

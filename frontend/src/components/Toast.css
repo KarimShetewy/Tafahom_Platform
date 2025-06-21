@@ -1,0 +1,129 @@
+/* frontend/src/components/Toast.css */
+
+/* تأكد أن هذه المتغيرات معرفة في ملف CSS العام مثل index.css أو App.css */
+/* :root { ... } */
+
+.toast-notification {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background-color: var(--toast-bg-color);
+    color: var(--toast-text-color);
+    padding: 15px 25px;
+    border-radius: 10px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(30px);
+    transition: opacity 0.4s ease-out, transform 0.4s ease-out, visibility 0.4s;
+    z-index: 2000;
+    font-size: 1.1em;
+    font-weight: 600;
+    direction: rtl;
+    text-align: right;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    max-width: 380px;
+
+    flex-direction: row; 
+    justify-content: flex-start; 
+}
+
+.toast-notification.confirm { 
+    padding-bottom: 10px;
+    flex-direction: column; 
+    align-items: flex-end; 
+    gap: 10px;
+}
+
+.toast-notification.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.toast-notification .toast-icon {
+    font-size: 1.6em;
+    flex-shrink: 0;
+    line-height: 1;
+}
+
+/* ألوان مختلفة لأنواع التوست */
+.toast-notification.success { background-color: var(--toast-success-bg-color); }
+.toast-notification.error { background-color: var(--toast-error-bg-color); }
+.toast-notification.warning { background-color: var(--toast-warning-bg-color); }
+.toast-notification.info { background-color: var(--toast-info-bg-color); }
+.toast-notification.confirm { 
+    background-color: var(--info-color); 
+    color: var(--button-text-color);
+}
+
+
+/* أنماط الأزرار داخل التوست */
+.toast-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    justify-content: flex-end;
+    width: 100%;
+}
+
+.toast-actions .btn {
+    padding: 8px 15px;
+    border-radius: 5px;
+    font-size: 0.9em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.toast-actions .toast-confirm-btn {
+    background-color: var(--success-color);
+    color: var(--button-text-color);
+}
+.toast-actions .toast-confirm-btn:hover {
+    filter: brightness(90%);
+    transform: translateY(-2px);
+}
+
+.toast-actions .toast-cancel-btn {
+    background-color: var(--error-color);
+    color: var(--button-text-color);
+}
+.toast-actions .toast-cancel-btn:hover {
+    filter: brightness(90%);
+    transform: translateY(-2px);
+}
+
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .toast-notification {
+        bottom: 15px;
+        right: 15px;
+        left: 15px;
+        max-width: unset;
+        font-size: 0.9em;
+        padding: 12px 20px;
+        text-align: center;
+        justify-content: center;
+        flex-direction: column;
+    }
+    .toast-notification .toast-icon {
+        font-size: 1.3em;
+    }
+    .toast-actions {
+        flex-direction: column;
+        width: 100%;
+        gap: 8px;
+    }
+    .toast-actions .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}

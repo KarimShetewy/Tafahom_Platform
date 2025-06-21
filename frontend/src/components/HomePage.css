@@ -1,468 +1,161 @@
-/* frontend/src/HomePage.css */
+/* frontend/src/components/HomePage.css */
 
-/* HomePage specific styles */
-.home-page {
-    text-align: right;
-    color: var(--text-color); /* استخدام متغير الثيم */
+/* تأكد من أن المتغيرات الأساسية معرفة في index.css */
+
+/* Header/Navbar Styles (تحسينات أزرار تسجيل الدخول) */
+/* هذه الأنماط أصبحت تُدار من Navbar.css العام. يمكن حذفها هنا إذا لم يكن هناك تعارض محدد */
+/* لضمان التناسق، سأبقيها هنا مؤقتاً إذا كنت لا تريد حذفها من هذا الملف، 
+   ولكن الأفضل هو أن تكون الأنماط العامة في Navbar.css */
+.app-header .auth-buttons .btn {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 1em;
+    font-weight: 500;
+    transition: all 0.3s ease;
 }
 
-/* Section Common Styles */
-.homepage-section {
-    padding: 60px 0;
+.app-header .auth-buttons .btn-primary { /* زر "إنشاء حساب جديد" (برتقالي) */
+    background-color: var(--accent-color-1);
+    color: var(--button-text-color);
+    box-shadow: 0 2px 5px rgba(var(--accent-color-1-rgb), 0.2);
 }
+.app-header .auth-buttons .btn-primary:hover {
+    filter: brightness(90%);
+    transform: translateY(-2px);
+}
+
+.app-header .auth-buttons .btn-secondary { /* زر "تسجيل الدخول" (أخضر) */
+    background-color: var(--accent-color-2);
+    color: var(--button-text-color);
+    box-shadow: 0 2px 5px rgba(var(--accent-color-2-rgb), 0.2);
+    border: none;
+}
+.app-header .auth-buttons .btn-secondary:hover {
+    filter: brightness(90%);
+    transform: translateY(-2px);
+}
+
 
 /* Hero Section */
 .hero-section {
-    background-color: var(--primary-bg-color); /* استخدام متغير الثيم */
+    background-color: var(--primary-bg-color);
     padding: 80px 0;
-    transition: background-color 0.5s ease; /* انتقال سلس للثيم */
+    text-align: center;
 }
 
 .hero-container {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    flex-wrap: wrap;
-    gap: 30px;
+    justify-content: space-between;
+    text-align: right; 
+    gap: 40px;
 }
 
 .hero-content {
-    flex: 2;
-    min-width: 300px;
-    text-align: right;
+    flex: 1;
+    max-width: 60%; 
+    padding-bottom: 20px;
 }
 
 .hero-content h1 {
     font-size: 3.5em;
-    margin-bottom: 10px;
-    color: var(--heading-color); /* استخدام متغير الثيم */
+    color: var(--heading-color);
+    margin-bottom: 15px;
     line-height: 1.2;
-    transition: color 0.5s ease; /* انتقال سلس للثيم */
+    font-weight: 800; 
+}
+
+/* تنسيق كلمة "تفاهم" داخل الـ h1 */
+.hero-content h1 .tafahom-highlight {
+    color: var(--accent-color-2);
+    font-weight: 900; 
 }
 
 .hero-content h3 {
-    font-size: 1.8em;
-    color: var(--accent-color-1); /* استخدام متغير الثيم */
+    font-size: 1.5em;
+    color: var(--text-color);
     margin-bottom: 30px;
-    transition: color 0.5s ease; /* انتقال سلس للثيم */
+    font-weight: 500;
 }
+
+.hero-cta {
+    display: flex;
+    gap: 20px;
+    justify-content: flex-start;
+}
+
+/* تحسينات أزرار الـ Hero Section */
+.hero-cta .btn {
+    padding: 18px 40px; 
+    font-size: 1.2em; 
+    border-radius: 10px; 
+    transition: all 0.3s ease;
+    font-weight: 600; 
+}
+
+.hero-cta .btn-primary { 
+    background-color: var(--accent-color-1);
+    color: var(--button-text-color);
+    box-shadow: 0 5px 15px rgba(var(--accent-color-1-rgb), 0.3);
+}
+
+.hero-cta .btn-primary:hover {
+    transform: translateY(-5px); 
+    box-shadow: 0 8px 20px rgba(var(--accent-color-1-rgb), 0.4);
+}
+
+.hero-cta .btn-secondary { 
+    background-color: transparent;
+    border: 2px solid var(--accent-color-1); 
+    color: var(--accent-color-1); 
+    box-shadow: none;
+}
+
+.hero-cta .btn-secondary:hover {
+    background-color: var(--accent-color-1); 
+    color: var(--button-text-color); 
+    transform: translateY(-5px); 
+    box-shadow: 0 8px 20px rgba(var(--accent-color-1-rgb), 0.4);
+}
+
 
 .hero-image {
     flex: 1;
-    min-width: 250px;
-    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 40%;
 }
 
 .hero-image img {
     max-width: 100%;
     height: auto;
     border-radius: 15px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-    transition: box-shadow 0.5s ease; /* انتقال سلس للثيم */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
-.hero-cta .btn {
-    margin-left: 15px;
-    font-size: 1.1em;
-    padding: 12px 30px;
-    border-radius: 8px;
-}
-
-/* Teachers Section */
-.teachers-section {
-    background-color: var(--secondary-bg-color); /* استخدام متغير الثيم */
-    text-align: center;
-    transition: background-color 0.5s ease; /* انتقال سلس للثيم */
-}
-
-.teachers-section h2, .courses-section h2, .academic-levels-section h2 {
-    font-size: 2.5em;
-    margin-bottom: 40px;
-    color: var(--heading-color); /* استخدام متغير الثيم */
-    text-align: center;
-    position: relative;
-    transition: color 0.5s ease; /* انتقال سلس للثيم */
-}
-
-.teachers-section h2::after, .courses-section h2::after, .academic-levels-section h2::after {
-    content: '';
-    display: block;
-    width: 80px;
-    height: 4px;
-    background-color: var(--accent-color-1); /* استخدام متغير الثيم */
-    margin: 10px auto 0;
-    border-radius: 2px;
-    transition: background-color 0.5s ease; /* انتقال سلس للثيم */
-}
-
-.teachers-filter {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    margin-bottom: 40px;
-    flex-wrap: wrap;
-}
-
-.teachers-filter select, .teachers-filter .filter-btn {
-    padding: 10px 15px;
-    border-radius: 5px;
-    border: 1px solid var(--border-color); /* استخدام متغير الثيم */
-    background-color: var(--primary-bg-color); /* استخدام متغير الثيم */
-    color: var(--text-color); /* استخدام متغير الثيم */
-    font-family: 'Cairo', sans-serif;
-    font-size: 1em;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.5s ease, color 0.5s ease; /* انتقال سلس */
-}
-
-.teachers-filter select:focus {
-    border-color: var(--accent-color-1); /* استخدام متغير الثيم */
-    outline: none;
-}
-
-.teachers-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 30px;
-    margin-bottom: 40px;
-}
-
-/* تحسين بطاقات المعلمين - التصميم النهائي من الصورة image_648e27.png */
-.teacher-card {
-    background-color: var(--secondary-bg-color); /* لون خلفية البطاقة (أبيض في النهاري، أغمق قليلا في الليلي) */
-    padding: 0; /* لا يوجد padding مباشر هنا */
-    border-radius: 15px; /* حواف مستديرة للبطاقة ككل */
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15); /* ظل أنيق وواضح */
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    max-width: 300px; /* تحديد أقصى عرض للبطاقة لكي تكون متناسبة */
-    width: 100%; /* تأكد أنها تستجيب */
-    margin: 0 auto; /* توسيط البطاقة في الخلية إذا كانت أضيق من الخلية */
-    height: 100%; /* لضمان تساوي الارتفاعات في الـ grid */
-    overflow: hidden; /* مهم جداً لقص الصورة وتأثيراتها */
-    transition: transform 0.3s ease-out, box-shadow 0.3s ease-out, background-color 0.5s ease, border-color 0.5s ease; /* حركات سلسة للبطاقة */
-    border: 1px solid var(--border-color); /* إطار رقيق حول البطاقة */
-}
-
-.teacher-card:hover {
-    transform: translateY(-10px); /* رفع البطاقة للأعلى عند التمرير */
-    box-shadow: var(--box-shadow-hover); /* ظل أكبر وأكثر وضوحاً عند الهوفر */
-}
-
-/* حاوية الصورة لتحديد الأبعاد ونسبة العرض إلى الارتفاع والخلفية الزرقاء/التي حول الصورة */
-.teacher-image-container { /* هذا الاسم هو المستخدم في HomePage.js */
-    position: relative; /* للسماح بوضع العناصر المطلقة داخله (الصورة والهالة) */
-    width: 100%; /* تأخذ العرض الكامل للبطاقة */
-    padding-bottom: 75%; /* نسبة عرض إلى ارتفاع 4:3 للحاوية (75% من العرض) */
-    overflow: hidden; /* لقص الصورة إذا خرجت عن الحدود */
-    border-radius: 15px 15px 0 0; /* حواف مستديرة في الأعلى فقط للحاوية */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* ظل خفيف تحت الصورة ليفصلها عن المحتوى السفلي */
-    transition: border-radius 0.4s ease, box-shadow 0.4s ease; /* انتقال سلس لتغيرات الهوفر */
-    background: radial-gradient(circle at center, rgba(var(--heading-color-rgb), 0.2) 0%, rgba(var(--heading-color-rgb), 0.05) 70%); /* هالة زرقاء خفيفة */
-    display: flex; /* لمركزة الصورة داخلها */
-    justify-content: center;
-    align-items: center;
-}
-
-/* الصورة نفسها داخل الحاوية */
-.teacher-card .teacher-image {
-    display: block; /* مهم لضمان التعامل الصحيح معها ككتلة */
-    width: 160px; /* حجم الصورة الفعلية لكي تكون مربعة ومناسبة (تم تصغيرها قليلاً) */
-    height: 160px; /* حجم الصورة الفعلية */
-    object-fit: cover; /* لضمان تغطية الصورة للمساحة دون تشويه */
-    object-position: center; /* لمركزة الوجه في الصورة */
-    border-radius: 15px; /* حواف دائرية خفيفة للصورة نفسها - هذا هو الذي سيجعلها غير دائرية تماماً */
-    border: 4px solid var(--accent-color-1); /* إطار بلون مميز حول الصورة */
-    transition: transform 0.4s ease, border-radius 0.4s ease, border-color 0.4s ease; /* حركة سلسة للتكبير والتحول */
-    z-index: 2; /* لجعلها فوق أي خلفية/هالة */
-    box-shadow: 0 0 15px rgba(0,0,0,0.2); /* ظل خفيف للصورة نفسها */
-}
-
-/* تأثير التكبير والتحول الدائري عند الهوفر على البطاقة كلها */
-.teacher-card:hover .teacher-image {
-    transform: scale(1.05); /* تكبير الصورة قليلاً لجذب الانتباه */
-    border-radius: 50%; /* التحول إلى دائرة عند الهوفر */
-    border-color: var(--heading-color); /* تغيير لون الإطار عند الهوفر */
-}
-
-
-/* معلومات المدرس داخل البطاقة */
-.teacher-info-content {
-    padding: 20px; /* Padding للمحتوى النصي والزر */
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* توسيط العناصر أفقياً */
-    justify-content: center; /* توسيط العناصر عمودياً */
-    flex-grow: 1; /* لملء المساحة المتبقية ودفع الزر للأسفل */
-}
-
-.teacher-info-content h3 {
-    color: var(--heading-color); /* لون الاسم (الأخضر المائي) */
-    font-size: 1.5em; /* حجم أكبر للاسم */
-    margin-bottom: 5px;
-    font-weight: 700;
-    transition: color 0.5s ease; /* انتقال سلس للثيم */
-}
-
-.teacher-info-content p {
-    color: var(--text-color); /* لون التخصص (نص عادي) */
-    font-size: 0.95em;
-    margin-bottom: 25px; /* مسافة قبل الزر */
-    min-height: 20px; /* لتجنب انهيار التخطيط إذا كان التخصص قصيراً */
-    transition: color 0.5s ease; /* انتقال سلس للثيم */
-}
-
-.teacher-card .btn {
-    background-color: var(--accent-color-1); /* لون الزر (البرتقالي المحمر) */
-    color: var(--button-text-color); /* لون نص الزر (أبيض) */
-    padding: 10px 20px;
-    font-size: 0.95em;
-    border-radius: 8px; /* حواف مستديرة للزر */
-    width: calc(100% - 40px); /* عرض كامل تقريبا مع padding جانبي (20px من كل جهة) */
-    box-shadow: 0 4px 10px rgba(var(--accent-color-1-rgb), 0.2); /* ظل للزر */
-}
-
-.teacher-card .btn:hover {
-    background-color: rgba(var(--accent-color-1-rgb), 0.9); /* درجة أغمق قليلاً عند الهوفر */
-    transform: translateY(-3px);
-    box-shadow: 0 6px 15px rgba(var(--accent-color-1-rgb), 0.4);
-}
-
-
-.view-more-container {
-    text-align: center;
-    margin-top: 20px;
-}
-
-.view-more-container .btn {
-    font-size: 1.1em;
-    padding: 12px 30px;
-    border-radius: 8px;
-}
-
-/* Join as Teacher CTA */
-.join-as-teacher-cta {
-    background-color: var(--primary-bg-color); /* استخدام متغير الثيم */
-    padding: 40px;
-    border-radius: 10px;
-    margin-top: 50px;
-    box-shadow: var(--box-shadow); /* استخدام متغير الثيم */
-    text-align: center;
-    border: 1px solid var(--border-color); /* استخدام متغير الثيم */
-    transition: background-color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease; /* انتقال سلس */
-}
-
-.join-as-teacher-cta h2 {
-    color: var(--heading-color); /* استخدام متغير الثيم */
-    font-size: 2em;
-    margin-bottom: 20px;
-    transition: color 0.5s ease; /* انتقال سلس */
-}
-
-.join-as-teacher-cta .btn {
-    font-size: 1.1em;
-    padding: 12px 25px;
-}
-
-
-/* Courses Section */
-.courses-section {
-    background-color: var(--primary-bg-color); /* استخدام متغير الثيم */
-    text-align: center;
-    transition: background-color 0.5s ease; /* انتقال سلس */
-}
-
-.courses-section .section-description {
-    max-width: 700px;
-    margin: 0 auto 50px;
-    color: var(--text-color); /* استخدام متغير الثيم */
-    font-size: 1.1em;
-    transition: color 0.5s ease; /* انتقال سلس */
-}
-
-.courses-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 30px;
-    margin-bottom: 40px;
-}
-
-/* تصميم بطاقة الكورس الجديدة من الصورة image_d4d82b.jpg */
-.course-card {
-    background-color: var(--secondary-bg-color); /* لون خلفية البطاقة */
-    border-radius: 15px; /* حواف مستديرة للبطاقة ككل */
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15); /* ظل أنيق وواضح */
-    overflow: hidden; /* مهم لقص الصورة وأي عناصر تخرج عن الحدود */
-    display: flex;
-    flex-direction: column;
-    height: 100%; /* لضمان تساوي الارتفاعات في الـ grid */
-    transition: transform 0.3s ease-out, box-shadow 0.3s ease-out, background-color 0.5s ease, border-color 0.5s ease; /* حركات سلسة للبطاقة */
-    border: 1px solid var(--border-color); /* إطار رقيق حول البطاقة */
-}
-
-.course-card:hover {
-    transform: translateY(-10px); /* رفع البطاقة للأعلى عند التمرير */
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25); /* ظل أكبر وأكثر وضوحاً عند الهوفر */
-}
-
-.course-image-container-new {
-    position: relative; /* لجعل الشارة (badge) تظهر عليه */
-    width: 100%;
-    padding-bottom: 56.25%; /* نسبة عرض إلى ارتفاع 16:9 للفيديو أو الصورة العريضة */
-    overflow: hidden;
-    background-color: var(--primary-bg-color); /* لون خلفية في حالة عدم تحميل الصورة */
-    border-radius: 15px 15px 0 0; /* حواف مستديرة في الأعلى فقط */
-}
-
-.course-image-new {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* تغطية المساحة بالكامل */
-    object-position: center;
-    display: block;
-}
-
-.course-badge {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    background-color: rgba(var(--accent-color-1-rgb), 0.85); /* لون الشارة (برتقالي محمر) */
-    color: var(--button-text-color);
-    padding: 5px 12px;
-    border-radius: 5px;
-    font-size: 0.85em;
-    font-weight: bold;
-    z-index: 10;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-}
-
-.course-info-new {
-    padding: 20px;
-    text-align: right;
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-.course-info-new h3 {
-    color: var(--heading-color); /* لون عنوان الكورس (أخضر مائي) */
-    font-size: 1.6em;
-    margin-bottom: 8px;
-    line-height: 1.3;
-}
-
-.course-note {
-    color: var(--text-color);
-    font-size: 0.95em;
-    margin-bottom: 15px;
-    line-height: 1.5;
-}
-
-.course-meta {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    font-size: 0.9em;
-    color: var(--accent-color-2); /* لون ثانوي (بني فاتح) */
-}
-
-.course-price-new {
-    font-weight: bold;
-    color: var(--accent-color-1); /* سعر بلون مميز */
-    font-size: 1.1em;
-}
-
-.course-teacher-name {
-    /* أنماط اسم الأستاذ داخل الميتا */
-}
-
-.course-actions-new {
-    display: flex;
-    gap: 10px;
-    margin-top: auto; /* لدفع الأزرار للأسفل */
-}
-
-.course-actions-new .btn {
-    flex-grow: 1; /* لجعل الأزرار تمتلئ المساحة */
-    padding: 10px 15px;
-    font-size: 0.9em;
-    border-radius: 8px;
-}
-
-.course-action-btn { /* زر الدخول للكورس - primary */
-    background-color: var(--heading-color); /* لون أخضر مائي */
-    color: var(--button-text-color);
-}
-.course-action-btn:hover {
-    background-color: rgba(var(--heading-color-rgb), 0.9);
-}
-
-.course-action-btn-outline { /* زر الدخول للكورس - secondary outline */
-    background-color: transparent;
-    color: var(--heading-color);
-    border: 2px solid var(--heading-color);
-}
-.course-action-btn-outline:hover {
-    background-color: var(--heading-color);
-    color: var(--button-text-color);
-}
-
-.subscribe-btn { /* زر اشترك الآن */
-    background-color: var(--accent-color-1); /* لون برتقالي محمر */
-    color: var(--button-text-color);
-}
-.subscribe-btn:hover {
-    background-color: rgba(var(--accent-color-1-rgb), 0.9);
-}
-
-/* Academic Levels Section */
-.academic-levels-section {
+/* Common Section Styles */
+.homepage-section {
+    padding: 60px 0;
     background-color: var(--secondary-bg-color);
-    text-align: center;
-    transition: background-color 0.5s ease;
-}
-
-/* Full Materials Grid */
-.all-levels-materials-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 40px;
-    margin-top: 40px;
-}
-
-.level-group-card {
-    background-color: var(--primary-bg-color);
-    padding: 30px;
+    margin-bottom: 20px;
     border-radius: 15px;
-    box-shadow: var(--box-shadow);
-    border: 1px solid var(--border-color);
-    text-align: right;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    min-height: 380px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.5s ease, border-color 0.5s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.5s ease, color 0.5s ease, box-shadow 0.5s ease;
+}
+.homepage-section:last-of-type {
+    margin-bottom: 0;
 }
 
-.level-group-card:hover {
-    transform: translateY(-10px);
-    box-shadow: var(--box-shadow-hover);
-}
-
-.level-group-card h3 {
+.homepage-section h2 {
+    font-size: 2.8em;
     color: var(--heading-color);
-    font-size: 2.2em;
-    margin-bottom: 25px;
+    margin-bottom: 40px;
     text-align: center;
     position: relative;
+    font-weight: 700;
 }
-
-.level-group-card h3::after {
+.homepage-section h2::after {
     content: '';
     display: block;
     width: 70px;
@@ -470,221 +163,505 @@
     background-color: var(--accent-color-1);
     margin: 10px auto 0;
     border-radius: 2px;
-    transition: background-color 0.5s ease;
+}
+.section-description {
+    text-align: center;
+    font-size: 1.1em;
+    color: var(--text-color);
+    max-width: 800px;
+    margin: 0 auto 50px auto;
+    line-height: 1.8;
 }
 
-.level-materials-container {
-    flex-grow: 1;
+/* Teachers Section */
+.teachers-filter {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+}
+.teachers-filter select, .teachers-filter button {
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background-color: var(--primary-bg-color);
+    color: var(--text-color);
+    font-size: 1em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.teachers-filter select:focus, .teachers-filter button:focus {
+    outline: none;
+    border-color: var(--accent-color-1);
+    box-shadow: 0 0 0 3px rgba(var(--accent-color-1-rgb), 0.3);
+}
+.teachers-filter button:hover {
+    background-color: var(--accent-color-1);
+    color: var(--button-text-color);
+    box-shadow: 0 2px 5px rgba(var(--accent-color-1-rgb), 0.2);
+}
+
+.teachers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    margin-bottom: 40px;
+}
+.teacher-card {
+    background-color: var(--primary-bg-color);
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     overflow: hidden;
-    max-height: 250px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-align: center;
+    color: var(--text-color);
+}
+.teacher-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+.teacher-image-container {
+    width: 100%;
+    height: 180px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--border-color); 
+}
+.teacher-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.teacher-info-content {
+    padding: 15px;
+}
+.teacher-info-content h3 {
+    font-size: 1.3em;
+    margin-bottom: 5px;
+    color: var(--heading-color);
+    font-weight: 600;
+}
+.teacher-info-content p {
+    font-size: 0.95em;
+    color: var(--text-color);
+}
+
+.view-more-container {
+    text-align: center;
+    margin-top: 20px;
+}
+.view-more-btn {
+    background-color: var(--secondary-bg-color); 
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+}
+.view-more-btn:hover {
+    background-color: var(--accent-color-1);
+    color: var(--button-text-color);
+    border-color: var(--accent-color-1);
+}
+
+.join-as-teacher-cta {
+    background-color: var(--primary-bg-color);
+    padding: 40px;
+    border-radius: 15px;
+    text-align: center;
+    margin-top: 60px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+.join-as-teacher-cta h2 {
+    color: var(--heading-color);
+    font-size: 2.2em;
+    margin-bottom: 20px;
+}
+.join-as-teacher-cta h2::after {
+    display: none;
+}
+.join-as-teacher-cta .btn {
+    padding: 15px 30px;
+    font-size: 1.1em;
+}
+
+/* Courses Section */
+.courses-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    margin-bottom: 40px;
+}
+.course-card {
+    background-color: var(--primary-bg-color);
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+.course-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+.course-image-container-new {
+    width: 100%;
+    height: 180px;
+    overflow: hidden;
+    position: relative;
+}
+.course-image-new {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.course-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: var(--accent-color-2);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.8em;
+    font-weight: bold;
+}
+.course-info-new {
+    padding: 15px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.course-info-new h3 {
+    font-size: 1.2em;
+    margin-bottom: 8px;
+    color: var(--heading-color);
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.course-note {
+    font-size: 0.9em;
+    color: var(--text-color);
+    line-height: 1.5;
+    margin-bottom: 15px;
+}
+.course-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    font-size: 0.9em;
+    color: var(--text-color);
+}
+.course-price-new {
+    font-weight: bold;
+    color: var(--accent-color-1);
+    font-size: 1.1em;
+}
+.course-teacher-name {
+    color: var(--text-color);
+}
+.course-actions-new {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: auto;
+}
+.course-action-btn, .subscribe-btn {
+    flex: 1;
+    padding: 10px 15px;
+    font-size: 0.95em;
+    border-radius: 8px;
+}
+.course-action-btn.btn-primary {
+    background-color: var(--accent-color-2);
+    color: var(--button-text-color);
+    box-shadow: 0 2px 5px rgba(var(--accent-color-2-rgb), 0.2);
+}
+.course-action-btn.btn-primary:hover {
+    filter: brightness(90%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(var(--accent-color-2-rgb), 0.3);
+}
+
+.course-action-btn-outline {
+    background-color: transparent;
+    border: 1px solid var(--accent-color-1);
+    color: var(--accent-color-1);
+}
+.course-action-btn-outline:hover {
+    background-color: var(--accent-color-1);
+    color: var(--button-text-color);
+}
+
+.subscribe-btn {
+    background-color: var(--accent-color-1);
+    color: var(--button-text-color);
+    box-shadow: 0 2px 5px rgba(var(--accent-color-1-rgb), 0.2);
+}
+.subscribe-btn:hover {
+    filter: brightness(90%);
+}
+
+
+/* Academic Levels Section */
+.academic-levels-section {
+    background-color: var(--secondary-bg-color);
+}
+.all-levels-materials-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+}
+.level-group-card {
+    background-color: var(--primary-bg-color);
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    text-align: center;
+    color: var(--text-color);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+.level-group-card h3 {
+    font-size: 1.6em;
+    color: var(--heading-color);
+    margin-bottom: 20px;
+    font-weight: 700;
+}
+.level-materials-container {
+    max-height: 120px;
+    overflow: hidden;
     transition: max-height 0.5s ease-out;
-    padding-right: 10px;
+    width: 100%;
 }
-
 .level-materials-container.show-all {
-    max-height: 1000px;
-    overflow-y: auto;
+    max-height: 500px;
 }
-
-/* ستايل السكرول بار */
-.level-materials-container::-webkit-scrollbar {
-    width: 8px;
-}
-.level-materials-container::-webkit-scrollbar-track {
-    background: var(--primary-bg-color);
-    border-radius: 10px;
-}
-.level-materials-container::-webkit-scrollbar-thumb {
-    background: var(--border-color);
-    border-radius: 10px;
-}
-.level-materials-container::-webkit-scrollbar-thumb:hover {
-    background: var(--heading-color);
-}
-
-
-.level-group-card .subject-list {
+.subject-list {
     list-style: none;
     padding: 0;
     margin: 0;
+    width: 100%;
+}
+.subject-list li {
+    background-color: var(--secondary-bg-color);
+    margin-bottom: 8px;
+    padding: 10px 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    font-size: 1em;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
     text-align: right;
 }
-
-.level-group-card .subject-list li {
-    padding: 8px 0;
-    border-bottom: 1px dotted rgba(var(--border-color-rgb), 0.5);
-    text-align: center;
+.subject-list li:hover {
+    background-color: var(--primary-bg-color);
+    border-color: var(--accent-color-1);
 }
-
-.level-group-card .subject-list li:last-child {
-    border-bottom: none;
-}
-
-.level-group-card .subject-list li a {
+.subject-list li a {
     color: var(--text-color);
-    font-size: 1.05em;
-    transition: color 0.3s ease, text-decoration 0.3s ease;
     display: block;
+    width: 100%;
 }
-
-.level-group-card .subject-list li a:hover {
-    color: var(--accent-color-1);
-    text-decoration: underline;
-}
-
-/* زر "عرض المزيد" للمواد */
 .view-more-materials-btn {
     margin-top: 15px;
-    background-color: var(--accent-color-2);
-    color: var(--button-text-color);
     padding: 10px 20px;
-    font-size: 1em;
+    font-size: 0.9em;
     border-radius: 8px;
-    width: 100%;
-    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    background-color: var(--accent-color-1);
+    color: var(--button-text-color);
 }
-
 .view-more-materials-btn:hover {
-    background-color: rgba(var(--accent-color-2-rgb), 0.9);
-    transform: translateY(-3px);
-    box-shadow: 0 5px 10px rgba(var(--accent-color-2-rgb), 0.5);
+    filter: brightness(90%);
 }
 
 /* Join Team Section */
 .join-team-section {
     background-color: var(--primary-bg-color);
-    padding: 60px 0;
-    margin-top: 40px;
-    transition: background-color 0.5s ease;
+    padding: 80px 0;
 }
-
 .join-team-container {
     display: flex;
     align-items: center;
-    gap: 50px;
-    max-width: 1000px;
-    width: 90%;
-    margin: 0 auto;
-    padding: 40px;
-    background-color: var(--secondary-bg-color);
-    border-radius: 15px;
-    box-shadow: var(--box-shadow);
-    flex-wrap: wrap;
-    order: 1;
-    border: 1px solid var(--border-color);
-    transition: background-color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
-}
-
-.join-team-content {
-    flex: 2;
-    min-width: 300px;
+    justify-content: space-between;
+    flex-direction: row;
+    gap: 40px;
     text-align: right;
 }
-
-.join-team-content h2 {
-    color: var(--accent-color-1);
-    font-size: 2.5em;
-    margin-bottom: 18px;
-    transition: color 0.5s ease;
+.join-team-content {
+    flex: 1;
+    max-width: 60%;
 }
-
+.join-team-content h2 {
+    color: var(--heading-color);
+    font-size: 2.2em;
+    margin-bottom: 20px;
+}
+.join-team-content h2::after {
+    display: none;
+}
 .join-team-content p {
     color: var(--text-color);
-    line-height: 1.8;
+    line-height: 1.7;
     margin-bottom: 30px;
-    font-size: 1.1em;
-    transition: color 0.5s ease;
+    font-size: 1em;
 }
-
 .join-team-btn {
-    background-color: var(--heading-color);
+    background-color: var(--accent-color-2);
     color: var(--button-text-color);
-    padding: 15px 35px;
+    padding: 15px 30px;
     font-size: 1.1em;
     border-radius: 8px;
-    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
 }
-
 .join-team-btn:hover {
-    background-color: rgba(var(--heading-color-rgb), 0.9);
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(var(--heading-color-rgb), 0.6);
+    filter: brightness(90%);
 }
-
 .join-team-image {
     flex: 1;
-    min-width: 250px;
-    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 40%;
 }
-
 .join-team-image img {
     max-width: 100%;
     height: auto;
-    border-radius: 12px;
-    box-shadow: var(--box-shadow-hover);
-    transition: box-shadow 0.5s ease;
 }
+
+/* Footer */
+footer {
+    background-color: var(--heading-color);
+    color: var(--button-text-color);
+    padding: 30px 0;
+    text-align: center;
+    font-size: 0.9em;
+    margin-top: 20px;
+    border-radius: 15px;
+}
+footer .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+footer .footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 25px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+footer .footer-links a {
+    color: var(--button-text-color);
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+footer .footer-links a:hover {
+    color: var(--accent-color-1);
+}
+
 
 /* Responsive adjustments for HomePage */
 @media (max-width: 992px) {
-    .hero-section h1 {
-        font-size: 2.8em;
-    }
-    .hero-content h3 {
-        font-size: 1.4em;
-    }
-    .teachers-grid, .courses-grid, .all-levels-materials-grid {
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    }
-    .level-group-card {
-        min-height: 350px;
-    }
-}
-
-@media (max-width: 768px) {
     .hero-container, .join-team-container {
         flex-direction: column;
         text-align: center;
+        gap: 30px;
     }
-    .hero-content, .hero-image, .join-team-content, .join-team-image {
-        order: initial;
-        text-align: center;
+    .hero-content, .join-team-content {
+        max-width: 100%;
+        padding-bottom: 0;
+    }
+    .hero-cta {
+        justify-content: center;
+    }
+    .hero-image, .join-team-image {
+        max-width: 80%;
+    }
+    .hero-content h1 {
+        font-size: 2.8em;
+    }
+    .hero-content h3 {
+        font-size: 1.2em;
+    }
+    .teachers-filter {
+        flex-direction: column;
+        align-items: center;
+    }
+    .teachers-filter select, .teachers-filter button {
+        width: 80%;
+        max-width: 300px;
+    }
+    .homepage-section h2 {
+        font-size: 2.2em;
+    }
+    .section-description {
+        font-size: 1.1em;
+    }
+    .teachers-grid, .courses-grid, .all-levels-materials-grid {
+        grid-template-columns: 1fr;
+    }
+    .course-actions-new {
+        flex-direction: column;
+        gap: 8px;
+    }
+    .course-action-btn, .subscribe-btn, .course-action-btn-outline {
+        width: 100%;
+    }
+    .level-group-card {
+        padding: 15px;
+    }
+    .level-group-card h3 {
+        font-size: 1.4em;
+    }
+}
+
+@media (max-width: 576px) {
+    .hero-content h1 {
+        font-size: 2em;
+    }
+    .hero-content h3 {
+        font-size: 1em;
     }
     .hero-cta {
         flex-direction: column;
         gap: 10px;
     }
     .hero-cta .btn {
-        margin-left: 0;
-        width: 80%;
-    }
-    .teachers-filter, .academic-browse-filters {
-        flex-direction: column;
-        gap: 10px;
-    }
-    .teachers-filter select, .teachers-filter .filter-btn, .academic-browse-filters select {
         width: 100%;
     }
-    .academic-browse-filters {
+    .homepage-section h2 {
+        font-size: 1.8em;
+    }
+    .teachers-filter select, .teachers-filter button {
+        width: 95%;
+    }
+    .course-info-new h3 {
+        font-size: 1.1em;
+    }
+    .course-price-new {
+        font-size: 1em;
+    }
+    .join-as-teacher-cta h2, .join-team-content h2 {
+        font-size: 1.8em;
+    }
+    .join-team-content p {
+        font-size: 0.9em;
+    }
+    .join-team-btn {
+        font-size: 1em;
+        padding: 12px 25px;
+    }
+    footer .footer-links {
         flex-direction: column;
         gap: 10px;
-    }
-    .academic-browse-filters select {
-        width: 100%;
-    }
-    .all-levels-materials-grid {
-        grid-template-columns: 1fr;
-    }
-    .level-group-card {
-        min-height: auto;
-        margin-bottom: 20px;
-    }
-    .level-materials-container {
-        max-height: none;
-        overflow-y: visible;
-        padding-right: 0;
-    }
-    .subject-list li {
-        padding: 6px 0;
     }
 }

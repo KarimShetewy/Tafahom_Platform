@@ -1,37 +1,41 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-// NEW: تصحيح مسار الصور
-import TafahomLogo from '../assets/images/tafahom_logo.png'; // تم التصحيح
-import CoursePlaceholder from '../assets/images/course_placeholder.jpg'; // تم التصحيح
+// REMOVED: import TafahomLogo from '../assets/images/tafahom_logo.png'; // لم يعد ضروريا هنا
+import CoursePlaceholder from '../assets/images/course_placeholder.jpg';
 import academicStructure from '../constants/academicStructure';
+import { ToastContext } from '../App';
+// REMOVED: import { AuthContext } from '../App'; // لم يعد ضروريا هنا بشكل مباشر للـ Navbar
 
-// أيقونات (يمكن استبدالها لاحقاً بـ Lucide React أو FontAwesome)
+// Icons
 const VIDEO_ICON = '▶️';
 const PDF_ICON = '📄';
 const QUIZ_ICON = '📝';
 const EXAM_ICON = '🏅';
 const LINK_ICON = '🔗';
 const TEXT_ICON = '📖';
-const BRANCH_ICON = '📁';
-const LOCKED_ICON = '🔒'; // أيقونة المحتوى المقفل
-const UNLOCKED_ICON = '🔓'; // أيقونة المحتوى المفتوح
+const BRANCH_ICON = '📂';
+const LOCKED_ICON = '🔒';
+const UNLOCKED_ICON = '🔓';
 
 function CourseDetailPage() {
-    const { id } = useParams(); // لجلب ID الكورس من الـ URL (مثلاً /course/123)
+    const { id } = useParams();
     const navigate = useNavigate();
     const [course, setCourse] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [expandedLecture, setExpandedLecture] = useState(null); // لتحديد المحاضرة المفتوحة حالياً
-    const [expandedMaterial, setExpandedMaterial] = useState(null); // لتحديد المادة المفتوحة حالياً
+    const [expandedLecture, setExpandedLecture] = useState(null);
+    const [expandedMaterial, setExpandedMaterial] = useState(null);
 
-    // جلب معلومات المستخدم الحالي (للتأكد من حالة الاشتراك/الأستاذية)
+    const showGlobalToast = useContext(ToastContext);
+
+    // جلب بيانات المستخدم من sessionStorage مباشرةً لأن الـ context غير متاح هنا بشكل مباشر للوصول للـ user object
+    // ويمكنك تمرير user من App.js كـ prop لـ CourseDetailPage إذا أردت استخدام AuthContext مباشرة هنا.
     const userToken = sessionStorage.getItem('userToken');
     const userType = sessionStorage.getItem('userType');
     const isStudent = userType === 'student';
     const isTeacher = userType === 'teacher';
-    const currentUserId = parseInt(sessionStorage.getItem('userId')); // تأكد من تخزين userId في sessionStorage عند تسجيل الدخول
+    const currentUserId = parseInt(sessionStorage.getItem('userId'));
 
 
     useEffect(() => {
@@ -41,7 +45,7 @@ function CourseDetailPage() {
             try {
                 const response = await axios.get(`http://127.0.0.1:8000/api/courses/${id}/`, {
                     headers: {
-                        'Authorization': userToken ? `Token ${userToken}` : '' // إرسال التوكن إذا كان موجوداً
+                        'Authorization': userToken ? `Token ${userToken}` : ''
                     }
                 });
                 setCourse(response.data);
@@ -57,11 +61,11 @@ function CourseDetailPage() {
         };
 
         fetchCourseDetails();
-    }, [id, userToken]); // أعد جلب البيانات إذا تغير ID الكورس أو التوكن (حالة المستخدم)
+    }, [id, userToken]);
 
     const handleToggleLecture = (lectureId) => {
         setExpandedLecture(expandedLecture === lectureId ? null : lectureId);
-        setExpandedMaterial(null); // إغلاق أي مادة مفتوحة عند طي/فتح محاضرة
+        setExpandedMaterial(null);
     };
 
     const handleToggleMaterial = (materialId) => {
@@ -69,25 +73,10 @@ function CourseDetailPage() {
     };
 
     const handleAccessMaterial = (material) => {
-        // التحقق من صلاحيات الوصول للمادة
-        // إذا كان المستخدم هو الأستاذ صاحب الكورس، أو طالب ومشترك
         if (course.is_teacher_owner || (isStudent && course.is_enrolled)) {
-            // فتح تفاصيل المادة فقط عند النقر (ستظهر تفاصيل إضافية أسفل المادة)
-            handleToggleMaterial(material.id); 
-
-            // إذا كان نوع المادة يمكن تشغيله مباشرة، يمكنك إضافة منطق لفتحه في نافذة جديدة
-            /*
-            if (material.type === 'video' && material.url) { // هنا يجب أن تستخدم material.file_url لو كانت فيديوهات مرفوعة
-                window.open(material.url, '_blank');
-            } else if (material.type === 'pdf' && material.file) { // هنا يجب أن تستخدم material.file_url لو كانت ملفات مرفوعة
-                window.open(material.file, '_blank');
-            } else if (material.type === 'link' && material.url) {
-                window.open(material.url, '_blank');
-            }
-            */
+            handleToggleMaterial(material.id);
         } else {
-            alert('يجب الاشتراك في الكورس للوصول إلى هذا المحتوى.');
-            // يمكنك توجيه المستخدم لصفحة الاشتراك أو إظهار Modal
+            showGlobalToast('يجب الاشتراك في الكورس للوصول إلى هذا المحتوى.', 'warning');
         }
     };
 
@@ -107,7 +96,7 @@ function CourseDetailPage() {
     const formatDate = (dateString) => {
         if (!dateString) return 'غير متاح';
         const options = { year: 'numeric', month: 'long', day: 'numeric' };
-        return new Date(dateString).toLocaleDateString('ar-EG', options); // التنسيق العربي
+        return new Date(dateString).toLocaleDateString('ar-EG', options);
     };
 
 
@@ -123,21 +112,18 @@ function CourseDetailPage() {
         return <p>لم يتم العثور على الكورس.</p>;
     }
 
-    // معلومات الكورس للعرض
     const courseSubjectLabel = academicStructure.allSubjectsMap[course.subject]?.label || course.subject;
     const courseAcademicLevelLabel = academicStructure[course.academic_level]?.label || course.academic_level;
 
-    // NEW: التحقق من ملكية الكورس بشكل دقيق
-    const isCourseOwner = isTeacher && course.teacher_id === parseInt(sessionStorage.getItem('userId')); // قارن teacher_id من الكورس بـ currentUserId
+    const isCourseOwner = isTeacher && course.teacher_id === currentUserId;
 
-
-    // حالة الوصول للمحتوى (أستاذ الكورس أو طالب مشترك)
     const canAccessFullContent = isCourseOwner || (isStudent && course.is_enrolled);
 
 
     return (
         <div className="course-detail-page">
-            <header className="app-header">
+            {/* REMOVED: Header/Navbar is now in App.js */}
+            {/* <header className="app-header">
                 <div className="container">
                     <nav className="navbar">
                         <div className="logo"><Link to="/"><img src={TafahomLogo} alt="Tafahom Logo" className="navbar-logo" /></Link></div>
@@ -146,38 +132,34 @@ function CourseDetailPage() {
                             <li><Link to="/courses">الكورسات</Link></li>
                         </ul>
                         <div className="auth-buttons">
-                            {/* أزرار تسجيل الدخول/الخروج هنا */}
                         </div>
                     </nav>
                 </div>
-            </header>
+            </header> */}
 
             <main className="main-content course-detail-content">
-                {/* Hero Section لصفحة الكورس - الآن بدون background-image مباشر */}
                 <section className="course-hero-section">
-                    {/* NEW: إضافة عنصر الصورة بداخل الـ Hero Section */}
-                    <div className="course-image-wrapper">
-                        <img 
-                            src={course.image ? `http://127.0.0.1:8000${course.image}` : CoursePlaceholder} 
-                            alt={course.title} 
-                            className="course-hero-image"
-                            onError={(e) => { e.target.onerror = null; e.target.src = CoursePlaceholder; }} // للتعامل مع أخطاء تحميل الصورة
-                        />
-                    </div>
-                    
-                    <div className="course-hero-overlay"></div> {/* طبقة شفافة فوق الصورة */}
-                    <div className="container">
+                    <div className="container course-hero-container">
+                        <div className="course-image-wrapper">
+                            <img 
+                                src={course.image ? `http://127.0.0.1:8000${course.image}` : CoursePlaceholder} 
+                                alt={course.title} 
+                                className="course-hero-image"
+                                onError={(e) => { e.target.onerror = null; e.target.src = CoursePlaceholder; }}
+                            />
+                        </div>
+                        
                         <div className="course-hero-content">
                             <div className="course-hero-badge">{course.course_type_display}</div>
                             <h1 className="course-hero-title">{course.title}</h1>
                             <p className="course-hero-teacher">أ/ {course.teacher_name} {course.teacher_last_name}</p>
-                            <p className="course-hero-meta">
-                                {/* يمكن إضافة أيقونات صغيرة هنا بجانب كل معلومة */}
-                                <span>{courseAcademicLevelLabel}</span> | <span>{courseSubjectLabel}</span>
-                            </p>
-                            <div className="course-hero-description">
-                                {course.description}
+                            <div className="course-hero-meta">
+                                <span className="meta-item-detail"><span className="icon">📚</span>{courseAcademicLevelLabel}</span>
+                                <span className="meta-item-detail"><span className="icon">🎯</span>{courseSubjectLabel}</span>
                             </div>
+                            <p className="course-hero-description">
+                                {course.description}
+                            </p>
                             <div className="course-hero-actions">
                                 <span className="course-hero-price">{course.price} جنيه</span>
                                 {isCourseOwner ? (
@@ -190,9 +172,9 @@ function CourseDetailPage() {
                             </div>
                         </div>
                     </div>
+                    <div className="course-hero-overlay"></div>
                 </section>
 
-                {/* قسم معلومات إضافية تحت الـ Hero (التاريخ، التحديث) */}
                 <section className="course-meta-details-section">
                     <div className="container">
                         <div className="meta-item">
@@ -208,8 +190,6 @@ function CourseDetailPage() {
                     </div>
                 </section>
 
-
-                {/* قسم محتوى الكورس */}
                 <section className="course-content-section">
                     <div className="container">
                         <h2 className="section-title">محتوى الكورس</h2>
@@ -219,7 +199,9 @@ function CourseDetailPage() {
                                     <div key={lecture.id} className={`lecture-item ${expandedLecture === lecture.id ? 'expanded' : ''}`}>
                                         <div className="lecture-header" onClick={() => handleToggleLecture(lecture.id)}>
                                             <h4>{lecture.order}. {lecture.title}</h4>
-                                            <span className="lecture-toggle-icon">{expandedLecture === lecture.id ? '▲' : '▼'}</span>
+                                            <span className="lecture-toggle-icon">
+                                                {expandedLecture === lecture.id ? '▲' : '▼'}
+                                            </span>
                                         </div>
                                         {expandedLecture === lecture.id && (
                                             <div className="lecture-materials-list">

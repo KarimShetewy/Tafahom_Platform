@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
-import TafahomLogo from '../assets/images/tafahom_logo.png';
-import './TeacherManageCourseContentPage.css';
-import academicStructure from '../constants/academicStructure';
+// REMOVED: import TafahomLogo from '../assets/images/tafahom_logo.png'; // لم يعد ضروريا هنا بعد نقل Navbar
+import academicStructure from '../constants/academicStructure'; 
 import CoursePlaceholder from '../assets/images/course_placeholder.jpg'; // صورة Placeholder
 
 function TeacherManageCourseContentPage() {
@@ -104,9 +103,9 @@ function TeacherManageCourseContentPage() {
             }
             else if (targetLecturesCount < currentLecturesCount) {
                 if (!window.confirm(`هل أنت متأكد من رغبتك في حذف ${currentLecturesCount - targetLecturesCount} محاضرة؟ هذا سيؤدي إلى حذف جميع محتواها.`)) {
-                     setLoading(false);
-                     setNumLecturesInput(currentLecturesCount);
-                     return;
+                    setLoading(false);
+                    setNumLecturesInput(currentLecturesCount);
+                    return;
                 }
                 for (let i = currentLecturesCount - 1; i >= targetLecturesCount; i--) {
                     const lectureToDelete = lectures[i];
@@ -234,10 +233,9 @@ function TeacherManageCourseContentPage() {
                 is_published: false, 
                 file: null, 
                 order: (lectures.find(l => l.id === lectureId)?.materials?.length || 0) + 1,
-                // NEW: لبيانات الواجب/الامتحان
                 quiz_details: { 
                     questions: [{ question_text: '', points: 1, choices: [{ choice_text: '', is_correct: false }] }] ,
-                    duration_minutes: null, // للامتحانات
+                    duration_minutes: null,
                     passing_score_percentage: null,
                 }
             }
@@ -258,7 +256,6 @@ function TeacherManageCourseContentPage() {
         }));
     };
 
-    // NEW: التعامل مع تغييرات حقول الواجب/الامتحان
     const handleQuizDetailChange = (lectureId, field, value) => {
         setNewMaterialForms(prevForms => ({
             ...prevForms,
@@ -272,7 +269,6 @@ function TeacherManageCourseContentPage() {
         }));
     };
 
-    // NEW: إضافة سؤال جديد للواجب/الامتحان
     const handleAddQuestion = (lectureId) => {
         setNewMaterialForms(prevForms => {
             const currentQuizDetails = prevForms[lectureId].quiz_details;
@@ -292,7 +288,6 @@ function TeacherManageCourseContentPage() {
         });
     };
 
-    // NEW: حذف سؤال من الواجب/الامتحان
     const handleRemoveQuestion = (lectureId, qIndex) => {
         setNewMaterialForms(prevForms => {
             const currentQuizDetails = prevForms[lectureId].quiz_details;
@@ -310,7 +305,6 @@ function TeacherManageCourseContentPage() {
         });
     };
 
-    // NEW: تغيير نص السؤال أو درجاته
     const handleQuestionChange = (lectureId, qIndex, field, value) => {
         setNewMaterialForms(prevForms => {
             const currentQuizDetails = prevForms[lectureId].quiz_details;
@@ -329,7 +323,6 @@ function TeacherManageCourseContentPage() {
         });
     };
 
-    // NEW: إضافة خيار جديد لسؤال
     const handleAddChoice = (lectureId, qIndex) => {
         setNewMaterialForms(prevForms => {
             const currentQuizDetails = prevForms[lectureId].quiz_details;
@@ -351,7 +344,6 @@ function TeacherManageCourseContentPage() {
         });
     };
 
-    // NEW: حذف خيار من سؤال
     const handleRemoveChoice = (lectureId, qIndex, cIndex) => {
         setNewMaterialForms(prevForms => {
             const currentQuizDetails = prevForms[lectureId].quiz_details;
@@ -373,14 +365,12 @@ function TeacherManageCourseContentPage() {
         });
     };
 
-    // NEW: تغيير نص الخيار أو تحديد إذا ما كان صحيحاً
     const handleChoiceChange = (lectureId, qIndex, cIndex, field, value) => {
         setNewMaterialForms(prevForms => {
             const currentQuizDetails = prevForms[lectureId].quiz_details;
             const newQuestions = [...currentQuizDetails.questions];
             const newChoices = [...newQuestions[qIndex].choices];
 
-            // إذا كان التغيير هو تحديد إجابة صحيحة، تأكد من أن خياراً واحداً فقط هو الصحيح (Radio-like behavior)
             if (field === 'is_correct') {
                 newChoices.forEach((choice, idx) => {
                     newChoices[idx] = { ...choice, is_correct: (idx === cIndex ? value : false) };
@@ -422,7 +412,6 @@ function TeacherManageCourseContentPage() {
             formDataToSubmit.append('order', newMaterialData.order);
             formDataToSubmit.append('is_published', newMaterialData.is_published);
             
-            // إضافة الحقول بناءً على النوع
             if (newMaterialData.type === 'video') { 
                 if (newMaterialData.file) formDataToSubmit.append('file', newMaterialData.file);
             } else if (newMaterialData.type === 'pdf') { 
@@ -432,11 +421,8 @@ function TeacherManageCourseContentPage() {
             } else if (newMaterialData.type === 'text') { 
                 if (newMaterialData.text_content) formDataToSubmit.append('text_content', newMaterialData.text_content);
             } else if (newMaterialData.type === 'quiz' || newMaterialData.type === 'exam') {
-                // هنا نرسل بيانات الواجب/الامتحان المتداخلة كـ JSON string
-                // الـ Backend سيتولى إنشاء QuizOrAssignment والأسئلة والخيارات
                 formDataToSubmit.append('quiz_details', JSON.stringify(newMaterialData.quiz_details));
             }
-            // بقية الأنواع (branch) لا تحتاج حقول إضافية هنا لإنشائها مبدئياً
 
             await axios.post(`http://127.0.0.1:8000/api/courses/lectures/${lectureId}/materials/`, formDataToSubmit, {
                 headers: {
@@ -480,14 +466,15 @@ function TeacherManageCourseContentPage() {
     if (loading) {
         return (
             <div className="teacher-manage-course-content-page">
-                <header className="app-header">
+                {/* REMOVED: Header/Navbar is now in App.js */}
+                {/* <header className="app-header">
                     <div className="container">
                         <nav className="navbar">
                             <div className="logo"><Link to="/"><img src={TafahomLogo} alt="Tafahom Logo" className="navbar-logo" /></Link></div>
                             <ul className="nav-links"><li><Link to="/">الرئيسية</Link></li></ul>
                         </nav>
                     </div>
-                </header>
+                </header> */}
                 <main className="main-content dashboard-content">
                     <div className="container loading-message-container">
                         <p>جاري تحميل الكورس ومحتواه...</p>
@@ -500,14 +487,15 @@ function TeacherManageCourseContentPage() {
     if (error) {
         return (
             <div className="teacher-manage-course-content-page">
-                <header className="app-header">
+                {/* REMOVED: Header/Navbar is now in App.js */}
+                {/* <header className="app-header">
                     <div className="container">
                         <nav className="navbar">
                             <div className="logo"><Link to="/"><img src={TafahomLogo} alt="Tafahom Logo" className="navbar-logo" /></Link></div>
                             <ul className="nav-links"><li><Link to="/">الرئيسية</Link></li></ul>
                         </nav>
                     </div>
-                </header>
+                </header> */}
                 <main className="main-content dashboard-content">
                     <div className="container error-message-container">
                         <p className="error-message-box">{error}</p>
@@ -521,14 +509,15 @@ function TeacherManageCourseContentPage() {
     if (!courseId || courseId === 'undefined' || !course) {
         return (
             <div className="teacher-manage-course-content-page">
-                <header className="app-header">
+                {/* REMOVED: Header/Navbar is now in App.js */}
+                {/* <header className="app-header">
                     <div className="container">
                         <nav className="navbar">
                             <div className="logo"><Link to="/"><img src={TafahomLogo} alt="Tafahom Logo" className="navbar-logo" /></Link></div>
                             <ul className="nav-links"><li><Link to="/">الرئيسية</Link></li></ul>
                         </nav>
                     </div>
-                </header>
+                </header> */}
                 <main className="main-content dashboard-content">
                     <div className="container">
                         <p className="error-message-box">الكورس غير موجود أو غير محدد. يرجى العودة لصفحة إدارة الكورسات.</p>
@@ -543,7 +532,8 @@ function TeacherManageCourseContentPage() {
 
     return (
         <div className="teacher-manage-course-content-page">
-            <header className="app-header">
+            {/* REMOVED: Header/Navbar is now in App.js */}
+            {/* <header className="app-header">
                 <div className="container">
                     <nav className="navbar">
                         <div className="logo">
@@ -555,11 +545,10 @@ function TeacherManageCourseContentPage() {
                             <li><Link to="/teacher/add-course">إضافة كورس جديد</Link></li>
                         </ul>
                         <div className="auth-buttons">
-                            {/* زر تسجيل خروج يمكن إضافته هنا */}
                         </div>
                     </nav>
                 </div>
-            </header>
+            </header> */}
 
             <main className="main-content dashboard-content">
                 <div className="container">
@@ -615,6 +604,7 @@ function TeacherManageCourseContentPage() {
                                                         updatedLectures[index].title = e.target.value;
                                                         setLectures(updatedLectures);
                                                     }}
+                                                    required
                                                 />
                                             </div>
                                             <div className="form-group">
@@ -697,10 +687,9 @@ function TeacherManageCourseContentPage() {
                                                             </div>
                                                         )}
 
-                                                        {/* حقول خاصة بأنواع مواد معينة */}
                                                         {newMaterialForms[lecture.id].type === 'video' && (
                                                             <div className="form-group">
-                                                                <label>ملف الفيديو (MP4, MOV, etc.):</label> {/* <--- هذا هو التعديل المطلوب */}
+                                                                <label>ملف الفيديو (MP4, MOV, etc.):</label>
                                                                 <input
                                                                     type="file"
                                                                     accept="video/*"
@@ -747,7 +736,6 @@ function TeacherManageCourseContentPage() {
                                                                 />
                                                             </div>
                                                         )}
-                                                        {/* الواجبات والامتحانات ستكون أكثر تعقيداً هنا */}
                                                         {(newMaterialForms[lecture.id].type === 'quiz' || newMaterialForms[lecture.id].type === 'exam') && (
                                                             <div className="form-group">
                                                                 <p className="note-message">
@@ -794,7 +782,8 @@ function TeacherManageCourseContentPage() {
                                         </div>
                                     )}
                                 </div>
-                            ))
+                            )
+                        )
                         )}
                     </div>
                 </div>

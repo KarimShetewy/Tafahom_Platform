@@ -1,0 +1,77 @@
+/* frontend/src/components/TeamDashboard.css */
+/* أنماط صفحة لوحة تحكم فريق العمل */
+.team-dashboard-page {
+    /* استخدم متغيرات الألوان المعرفة في index.css */
+    background-color: var(--primary-bg-color);
+    color: var(--text-color);
+    min-height: 100vh;
+    transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+.team-dashboard-page .main-content {
+    padding-top: 60px; /* مسافة من أعلى بسبب الناف بار الثابت */
+    padding-bottom: 60px;
+}
+
+.team-dashboard-page .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.team-welcome-title {
+    font-size: 2.5em;
+    color: var(--heading-color);
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.team-dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    margin-top: 30px;
+}
+
+.team-dashboard-card {
+    background-color: var(--secondary-bg-color);
+    border-radius: 15px;
+    padding: 25px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.5s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 150px;
+    color: var(--text-color);
+}
+
+.team-dashboard-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.team-dashboard-card h3 {
+    font-size: 1.6em;
+    color: var(--heading-color);
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.team-dashboard-card p {
+    font-size: 0.95em;
+    color: var(--text-color);
+    line-height: 1.5;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .team-welcome-title {
+        font-size: 2em;
+    }
+    .team-dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+}

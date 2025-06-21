@@ -1,66 +1,80 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import TafahomLogo from '../assets/images/tafahom_logo.png';
+import DefaultUserImage from '../assets/images/default_user.png';
+import DashboardTeacherHero from '../assets/images/dashboard_teacher_hero.png';
 import './Dashboard.css';
+import { AuthContext, ToastContext } from '../App';
 
 function TeacherDashboard() {
     const navigate = useNavigate();
-    const [firstName, setFirstName] = useState('');
-    const [userType, setUserType] = useState('');
-    const [token, setToken] = useState('');
+    const { user, logout } = useContext(AuthContext); 
+    const showGlobalToast = useContext(ToastContext); 
 
     useEffect(() => {
-        const storedFirstName = sessionStorage.getItem('firstName'); // تم التوحيد إلى sessionStorage
-        const storedUserType = sessionStorage.getItem('userType'); // تم التوحيد إلى sessionStorage
-        const storedToken = sessionStorage.getItem('userToken'); // تم التوحيد إلى sessionStorage
-
-        if (storedUserType === 'teacher' && storedToken) {
-            setFirstName(storedFirstName);
-            setUserType(storedUserType);
-            setToken(storedToken);
-        } else {
+        if (!user || user.userType !== 'teacher' || !user.token) {
             navigate('/login');
         }
-    }, [navigate]);
+    }, [navigate, user]);
 
-    const handleLogout = () => {
-        sessionStorage.removeItem('userToken');
-        sessionStorage.removeItem('userType');
-        sessionStorage.removeItem('firstName');
-        sessionStorage.removeItem('userEmail');
-        sessionStorage.removeItem('specializedSubject');
-        navigate('/login');
+    const handleLogoutConfirm = () => { 
+        showGlobalToast(
+            'هل أنت متأكد من تسجيل الخروج؟',
+            'confirm',
+            (confirmed) => {
+                if (confirmed) {
+                    logout();
+                    navigate('/login');
+                }
+            }
+        );
     };
 
-    if (!token || userType !== 'teacher') {
+    if (!user || user.userType !== 'teacher') {
         return <p>جاري التحقق من الصلاحيات...</p>;
     }
 
     return (
         <div className="dashboard-page">
-            <header className="app-header">
-                <div className="container">
-                    <nav className="navbar">
-                        <div className="logo">
-                            <Link to="/"><img src={TafahomLogo} alt="Tafahom Logo" className="navbar-logo" /></Link>
-                        </div>
-                        <ul className="nav-links">
-                            <li><Link to="/teacher/dashboard">لوحة التحكم</Link></li>
-                            <li><Link to="/teacher/add-course">إضافة كورس جديد</Link></li>
-                            <li><Link to="/teacher/my-courses">إدارة كورساتي</Link></li>
-                        </ul>
-                        <div className="auth-buttons">
-                            <button onClick={handleLogout} className="btn btn-secondary">تسجيل الخروج</button>
-                        </div>
-                    </nav>
-                </div>
-            </header>
+            {/* REMOVED: Header/Navbar is now in App.js */}
 
             <main className="main-content dashboard-content">
-                <div className="container">
-                    <h2 className="welcome-message">أهلاً بك، أستاذ {firstName}!</h2>
-                    <p className="dashboard-intro">هذه لوحة تحكم الأستاذ. من هنا يمكنك إدارة كورساتك ومتابعة طلابك.</p>
-                    
+                <section className="teacher-dashboard-hero-section">
+                    <div className="container teacher-hero-container">
+                        <div className="teacher-hero-content">
+                            <h1 className="teacher-welcome-title">
+                                أهلاً بك، <span className="teacher-name-highlight">أستاذ {user.firstName}!</span>
+                            </h1>
+                            <p className="teacher-dashboard-intro">من هنا يمكنك إدارة كورساتك ومتابعة طلابك بكل سهولة.</p>
+                            
+                            <div className="teacher-hero-stats">
+                                <div className="stat-item">
+                                    <span className="stat-icon">📚</span>
+                                    <span className="stat-value">5+</span>
+                                    <span className="stat-label">كورسات نشطة</span>
+                                </div>
+                                <div className="stat-item">
+                                    <span className="stat-icon">🎓</span>
+                                    <span className="stat-value">250+</span>
+                                    <span className="stat-label">طالب مسجل</span>
+                                </div>
+                                <div className="stat-item">
+                                    <span className="stat-icon">⭐</span>
+                                    <span className="stat-value">4.8</span>
+                                    <span className="stat-label">متوسط التقييم</span>
+                                </div>
+                            </div>
+                            
+                            <div className="teacher-hero-actions">
+                                <Link to="/teacher/add-course" className="btn btn-primary">ابدأ إضافة كورس</Link>
+                                <Link to="/teacher/my-courses" className="btn btn-secondary">إدارة الكورسات</Link>
+                            </div>
+                        </div>
+                    </div>
+                    {/* طبقة شفافة وتأثير الجزيئات المتحركة (تنسيقاتها في Dashboard.css) */}
+                    <div className="teacher-hero-overlay" style={{ backgroundImage: `url(${DashboardTeacherHero})` }}></div>
+                </section>
+
+                <div className="container dashboard-sections-wrapper">
                     <div className="dashboard-sections-grid">
                         <Link to="/teacher/add-course" className="dashboard-section-card">
                             <h3>إضافة كورس جديد</h3>
