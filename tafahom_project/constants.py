@@ -1,64 +1,99 @@
 # tafahom_project/constants.py
 
-# خيارات الوظائف لفريق العمل
-JOB_POSITION_CHOICES = (
-    ('it_specialist', 'IT Specialist'),
-    ('developer', 'Developer'),
-    ('videographer_editor', 'Videographer/Editor'),
-    ('social_media_specialist', 'Social Media Specialist'),
-    ('print_designer', 'Print Designer'),
-    ('moderator', 'Moderator'),
-    ('arabic_english_translator', 'مترجم عربي/إنجليزي'),
-    ('accountant', 'محاسب'),
-    ('story_teller', 'راوي قصص'),
-    ('content_creator', 'صانع محتوى'),
-    ('sales_admin_assistant', 'مساعد مبيعات/إدارة'),
-    ('other', 'أخرى'),
-)
-
-GENDER_CHOICES = (
+# خيارات الجنس
+GENDER_CHOICES = [
     ('male', 'ذكر'),
     ('female', 'أنثى'),
-)
+]
 
-# الصفوف الدراسية (مرحلة الثانوي فقط)
-ACADEMIC_LEVEL_CHOICES = (
-    ('first_secondary', 'الصف الأول الثانوي'),
-    ('second_secondary', 'الصف الثاني الثانوي'),
-    ('third_secondary', 'الصف الثالث الثانوي'),
-)
+# خيارات المحافظات (استخدم القيم الفنية هنا، وليس التسميات المعربة)
+GOVERNORATE_CHOICES = [
+    ('cairo', 'القاهرة'),
+    ('alexandria', 'الإسكندرية'),
+    ('giza', 'الجيزة'),
+    ('qalyubia', 'القليوبية'),
+    ('sharqia', 'الشرقية'),
+    ('monufia', 'المنوفية'),
+    ('beheira', 'البحيرة'),
+    ('gharbia', 'الغربية'),
+    ('kafr_el_sheikh', 'كفر الشيخ'),
+    ('fayoum', 'الفيوم'),
+    ('beni_suef', 'بني سويف'),
+    ('minya', 'المنيا'),
+    ('assiut', 'أسيوط'),
+    ('sohag', 'سوهاج'),
+    ('qena', 'قنا'),
+    ('luxor', 'الأقصر'),
+    ('aswan', 'أسوان'),
+    ('red_sea', 'البحر الأحمر'),
+    ('new_valley', 'الوادي الجديد'),
+    ('matrouh', 'مطروح'),
+    ('north_sinai', 'شمال سيناء'),
+    ('south_sinai', 'جنوب سيناء'),
+    ('suez', 'السويس'),
+    ('ismailia', 'الإسماعيلية'),
+    ('port_said', 'بورسعيد'),
+    ('damietta', 'دمياط'),
+]
 
-# المسارات الأكاديمية
-ACADEMIC_TRACK_CHOICES = (
-    ('general', 'عام (الصف الأول الثانوي)'),
-    ('scientific_sec_2', 'علمي (الصف الثاني الثانوي)'),
-    ('literary_sec_2', 'أدبي (الصف الثاني الثانوي)'),
-    ('science_sec_3', 'علمي علوم (الصف الثالث الثانوي)'),
-    ('math_sec_3', 'علمي رياضة (الصف الثالث الثانوي)'),
-    ('literary_sec_3', 'أدبي (الصف الثالث الثانوي)'),
-)
+# مهن ولي الأمر
+PARENT_PROFESSION_CHOICES = [
+    ('doctor', 'طبيب'),
+    ('engineer', 'مهندس'),
+    ('teacher', 'معلم'),
+    ('accountant', 'محاسب'),
+    ('business_owner', 'صاحب عمل حر'),
+    ('employee', 'موظف'),
+    ('other', 'أخرى'),
+]
 
-# جميع المواد (CATEGORY_CHOICES) بناءً على النظام الجديد
-CATEGORY_CHOICES = (
-    ('arabic_lang', 'اللغة العربية'),
-    ('english_lang', 'اللغة الإنجليزية'),
-    ('french_lang', 'اللغة الفرنسية'),
-    ('german_lang', 'اللغة الألمانية'),
-    ('history', 'التاريخ'),
-    ('math', 'الرياضيات'),
+# وظائف فريق العمل
+JOB_POSITION_CHOICES = [
+    ('developer', 'مطور'),
+    ('designer', 'مصمم'),
+    ('content_creator', 'منشئ محتوى'),
+    ('marketing', 'تسويق'),
+    ('support', 'دعم فني'),
+    ('admin_assistant', 'مساعد إداري'),
+]
+
+# مستويات أكاديمية (الثانوية العامة فقط)
+ACADEMIC_LEVEL_CHOICES = [
+    ('level_sec_1', 'الصف الأول الثانوي'),
+    ('level_sec_2', 'الصف الثاني الثانوي'),
+    ('level_sec_3', 'الصف الثالث الثانوي'),
+]
+
+# مسارات أكاديمية (إذا كانت موجودة في موديل المستخدم أو الكورس)
+# بناءً على رغبتك في إزالة "علمي وأدبي"، يمكن أن يكون هذا ببساطة 'general'
+ACADEMIC_TRACK_CHOICES = [
+    ('general', 'عام'),
+    # لا توجد مسارات علمي/أدبي هنا إذا كنت قد أزلتها
+]
+
+# خيارات المواد الدراسية (SUBJECT_CHOICES)
+SUBJECT_CHOICES = [
+    ('arabic', 'اللغة العربية'),
+    ('english', 'اللغة الإنجليزية'),
+    # 'math' للإعدادي تم إزالته
+    ('math_sec', 'الرياضيات (ثانوي عام)'),
+    ('math_3_science', 'الرياضيات (علمي رياضة)'),
+    ('math_3_lit', 'الرياضيات (أدبي)'),
     ('physics', 'الفيزياء'),
     ('chemistry', 'الكيمياء'),
     ('biology', 'الأحياء'),
+    ('geology', 'الجيولوجيا'),
+    ('history', 'التاريخ'),
+    ('geography', 'الجغرافيا'),
     ('philosophy_logic', 'الفلسفة والمنطق'),
+    ('philosophy_3', 'الفلسفة والمنطق (ثانوية عامة)'),
     ('religious_edu', 'التربية الدينية'),
     ('programming_cs', 'البرمجة وعلوم الحاسب'),
-    ('eg_national_edu', 'EG التربية الوطنية'),
+    ('eg_national_edu', 'التربية الوطنية'),
     ('vocational_edu', 'التربية المهنية'),
     ('military_edu', 'التربية العسكرية'),
     ('psychology', 'علم النفس'),
-    ('geography', 'الجغرافيا'),
     ('sociology', 'علم اجتماع'),
-    ('geology', 'الجيولوجيا'),
     ('applied_math', 'الرياضيات التطبيقية'),
     ('solid_geometry', 'الهندسة الفراغية'),
     ('statistics', 'الإحصاء'),
@@ -67,20 +102,22 @@ CATEGORY_CHOICES = (
     ('philosophy', 'فلسفة'),
     ('logic', 'منطق'),
     ('civics', 'المواطنة'),
-)
+]
 
-# المحافظات المصرية
-GOVERNORATE_CHOICES = (
-    ('cairo', 'القاهرة'), ('alexandria', 'الإسكندرية'), ('giza', 'الجيزة'), ('qalyubia', 'القليوبية'),
-    ('sharqia', 'الشرقية'), ('monufia', 'المنوفية'), ('beheira', 'البحيرة'), ('gharbia', 'الغربية'),
-    ('kafr_el_sheikh', 'كفر الشيخ'), ('fayoum', 'الفيوم'), ('beni_suef', 'بني سويف'), ('minya', 'المنيا'),
-    ('assiut', 'أسيوط'), ('sohag', 'سوهاج'), ('qena', 'قنا'), ('luxor', 'الأقصر'),
-    ('aswan', 'أسوان'), ('red_sea', 'البحر الأحمر'), ('new_valley', 'الوادي الجديد'), ('matrouh', 'مطروح'),
-    ('north_sinai', 'شمال سيناء'), ('south_sinai', 'جنوب سيناء'), ('suez', 'السويس'),
-    ('ismailia', 'الإسماعيلية'), ('port_said', 'بورسعيد'), ('damietta', 'دمياط'),
-)
+# أنواع الكورسات
+COURSE_TYPE_CHOICES = [
+    ('regular', 'كورس عادي'),
+    ('separate', 'كورس منفصل (مراجعة/برنامج خاص)'),
+]
 
-# مهنة ولي الأمر
-PARENT_PROFESSION_CHOICES = (
-    ('doctor', 'طبيب'), ('engineer', 'مهندس'), ('teacher', 'معلم'), ('accountant', 'محاسب'), ('other', 'أخرى'),
-)
+# أنواع المواد التعليمية
+MATERIAL_TYPE_CHOICES = [
+    ('video', 'فيديو شرح'),
+    ('pdf', 'ملف PDF'),
+    ('quiz', 'واجب'),
+    ('exam', 'امتحان'),
+    ('link', 'رابط خارجي'),
+    ('text', 'نص/شرح'),
+    # 'branch' (فرع) يمكن إضافته هنا إذا كان نوعاً من المواد وليس فقط مؤشراً
+    ('branch', 'فرع'),
+]

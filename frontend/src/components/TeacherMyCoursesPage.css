@@ -1,131 +1,289 @@
 /* frontend/src/components/TeacherMyCoursesPage.css */
 
-.my-courses-page {
-    /* يمكنك إضافة أنماط خاصة للصفحة هنا إذا أردت */
-    background-color: var(--primary-bg-color); /* استخدام متغير الثيم */
-    color: var(--text-color);
+/* General Page Layout */
+.teacher-my-courses-page {
+    background-color: var(--primary-bg-color); /* من index.css */
+    color: var(--text-color); /* من index.css */
     min-height: 100vh;
     transition: background-color 0.5s ease, color 0.5s ease;
 }
 
-.my-courses-page .main-content {
-    padding: 60px 0;
+.teacher-my-courses-page .main-content {
+    padding-top: 60px; /* مسافة من أعلى بسبب الناف بار الثابت */
+    padding-bottom: 60px;
 }
 
-.my-courses-page h2 {
-    font-size: 2.5em;
-    margin-bottom: 20px;
-    color: var(--heading-color); /* استخدام متغير الثيم */
+.teacher-my-courses-page .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Page Title and Description */
+.page-title {
+    font-size: 2.8em;
+    color: var(--heading-color);
     text-align: center;
-    position: relative;
-    transition: color 0.5s ease;
+    margin-bottom: 10px;
+    font-weight: 700;
 }
 
-.my-courses-page h2::after {
-    content: '';
-    display: block;
-    width: 80px;
-    height: 4px;
-    background-color: var(--accent-color-1); /* استخدام متغير الثيم */
-    margin: 10px auto 30px;
-    border-radius: 2px;
-    transition: background-color 0.5s ease;
-}
-
-.my-courses-page .container p {
+.page-description {
+    font-size: 1.2em;
+    color: var(--text-color);
     text-align: center;
     margin-bottom: 30px;
-    font-size: 1.1em;
+    line-height: 1.6;
+}
+
+/* My Courses Grid */
+.my-courses-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-top: 30px;
+}
+
+.course-card-manage {
+    background-color: var(--secondary-bg-color);
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.5s ease;
+    display: flex;
+    flex-direction: column;
     color: var(--text-color);
 }
 
-.my-courses-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 30px;
-    margin-top: 40px;
-}
-
-.my-course-card {
-    background-color: var(--secondary-bg-color); /* استخدام متغير الثيم */
-    border-radius: 15px;
-    box-shadow: var(--box-shadow); /* ظل خفيف */
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.5s ease, border-color 0.5s ease;
-    border: 1px solid var(--border-color);
-}
-
-.my-course-card:hover {
+.course-card-manage:hover {
     transform: translateY(-8px);
-    box-shadow: var(--box-shadow-hover); /* ظل أقوى عند الهوفر */
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
 }
 
-.my-course-card .my-course-image {
+.course-image-container-manage {
     width: 100%;
-    height: 180px; /* ارتفاع ثابت للصورة */
+    height: 200px;
+    overflow: hidden;
+    position: relative;
+    background-color: var(--primary-bg-color); /* خلفية احتياطية للصورة */
+}
+
+.course-image-manage {
+    width: 100%;
+    height: 100%;
     object-fit: cover;
     display: block;
-    border-bottom: 1px solid var(--border-color);
-    transition: border-color 0.5s ease, transform 0.3s ease;
 }
 
-.my-course-card .my-course-image:hover {
-    transform: scale(1.03); /* تكبير بسيط للصورة */
+.course-status-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: var(--accent-color-2); /* أخضر للحالة المنشورة */
+    color: var(--button-text-color);
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.85em;
+    font-weight: bold;
+    opacity: 0.9;
 }
 
-.my-course-card .my-course-info {
+.course-status-badge.unpublished { /* يمكن إضافة كلاس للحالة غير المنشورة بلون مختلف */
+    background-color: var(--error-color); /* أحمر مثلاً */
+}
+
+.course-info-manage {
     padding: 20px;
-    text-align: right;
-    flex-grow: 1; /* لملء المساحة المتبقية */
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    flex-grow: 1;
 }
 
-.my-course-card .my-course-info h3 {
-    color: var(--heading-color); /* عنوان الكورس */
-    font-size: 1.6em;
-    margin-bottom: 10px;
-    transition: color 0.5s ease;
-}
-
-.my-course-card .my-course-info p {
-    color: var(--text-color); /* نص عادي */
-    font-size: 0.95em;
+.course-info-manage h3 {
+    font-size: 1.5em;
+    color: var(--heading-color);
     margin-bottom: 8px;
-    text-align: right;
-    transition: color 0.5s ease;
+    font-weight: 700;
+    line-height: 1.3;
 }
 
-.my-course-card .my-course-info p.course-price {
+.course-level-subject {
+    font-size: 0.95em;
+    color: var(--text-color);
+    margin-bottom: 10px;
+}
+
+.course-price-manage {
+    font-size: 1.2em;
     font-weight: bold;
-    color: var(--accent-color-1); /* لون مميز للسعر */
+    color: var(--accent-color-1); /* برتقالي للسعر */
+    margin-bottom: 15px;
 }
 
-.my-course-card .course-actions {
+.course-actions-manage {
     display: flex;
-    gap: 10px; /* مسافة بين الزرين */
-    margin-top: 15px;
-    justify-content: center; /* توسيط الأزرار */
+    gap: 10px;
+    margin-top: auto; /* ليدفع الأزرار للأسفل */
+    padding-top: 15px; /* مسافة من المحتوى العلوي */
+    border-top: 1px solid var(--border-color); /* خط فاصل */
 }
 
-.my-course-card .course-actions .btn {
-    flex-grow: 1; /* لجعل الأزرار تأخذ المساحة المتاحة */
-    font-size: 0.9em;
-    padding: 8px 15px;
+.course-actions-manage .btn {
+    flex: 1; /* لجعل الأزرار تتوزع بالتساوي */
+    padding: 10px 15px;
+    font-size: 0.95em;
     border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
 }
 
-/* responsive adjustments */
-@media (max-width: 768px) {
-    .my-courses-grid {
-        grid-template-columns: 1fr; /* عمود واحد في الشاشات الصغيرة */
+.course-actions-manage .btn-primary { /* زر إدارة المحتوى */
+    background-color: var(--accent-color-2); /* أخضر */
+    color: var(--button-text-color);
+    box-shadow: 0 2px 5px rgba(var(--accent-color-2-rgb), 0.2);
+}
+.course-actions-manage .btn-primary:hover {
+    filter: brightness(90%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(var(--accent-color-2-rgb), 0.3);
+}
+
+.course-actions-manage .btn-danger { /* زر الحذف */
+    background-color: var(--error-color);
+    color: var(--button-text-color);
+    box-shadow: 0 2px 5px rgba(var(--error-color-rgb), 0.2);
+}
+.course-actions-manage .btn-danger:hover {
+    filter: brightness(90%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(var(--error-color-rgb), 0.3);
+}
+
+
+/* No Courses Message */
+.no-courses-message {
+    text-align: center;
+    font-size: 1.3em;
+    color: var(--text-color);
+    margin-top: 50px;
+    padding: 20px;
+    background-color: var(--secondary-bg-color);
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.no-courses-message a {
+    color: var(--accent-color-1);
+    text-decoration: none;
+    font-weight: 600;
+}
+.no-courses-message a:hover {
+    text-decoration: underline;
+}
+
+
+/* Error/Loading Messages (reuse Dashboard.css styles) */
+.loading-message-container,
+.error-message-container {
+    padding: 50px 20px;
+    text-align: center;
+}
+.loading-message-container p,
+.error-message-container p {
+    font-size: 1.5em;
+    color: var(--text-color);
+    margin-bottom: 20px;
+}
+.error-message-box {
+    background-color: rgba(var(--error-color-rgb), 0.1);
+    color: var(--error-color);
+    border: 1px solid var(--error-color);
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    text-align: right;
+    font-size: 1em;
+    font-weight: 500;
+}
+.error-message-container .btn-primary {
+    background-color: var(--accent-color-1);
+    color: var(--button-text-color);
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+
+/* Footer (General, consistent across pages) */
+footer {
+    background-color: var(--heading-color);
+    color: var(--button-text-color);
+    padding: 30px 0;
+    text-align: center;
+    font-size: 0.9em;
+    margin-top: 20px;
+    border-radius: 15px;
+}
+footer .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+footer .footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 25px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+footer .footer-links a {
+    color: var(--button-text-color);
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+footer .footer-links a:hover {
+    color: var(--accent-color-1);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 992px) {
+    .page-title {
+        font-size: 2.2em;
     }
-    .my-course-card {
-        max-width: 90%; /* تحديد أقصى عرض للبطاقة في الشاشات الصغيرة */
-        margin: 0 auto; /* توسيط البطاقة */
+    .page-description {
+        font-size: 1em;
+    }
+    .my-courses-grid {
+        grid-template-columns: 1fr; /* عمود واحد على الشاشات الأصغر */
+    }
+    .course-card-manage {
+        margin: 0 10px; /* مسافة جانبية على الشاشات الصغيرة */
+    }
+}
+
+@media (max-width: 768px) {
+    .page-title {
+        font-size: 2em;
+    }
+    .course-image-container-manage {
+        height: 150px;
+    }
+    .course-info-manage h3 {
+        font-size: 1.3em;
+    }
+    .course-price-manage {
+        font-size: 1.1em;
+    }
+    .course-actions-manage {
+        flex-direction: column;
+        gap: 8px;
+    }
+    .course-actions-manage .btn {
+        width: 100%;
+    }
+    .no-courses-message {
+        font-size: 1.1em;
     }
 }

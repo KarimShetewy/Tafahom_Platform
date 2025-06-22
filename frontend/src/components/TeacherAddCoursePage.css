@@ -50,7 +50,7 @@
     font-weight: 700;
 }
 
-/* طبقة شفافة فوق الخلفية المتحركة */
+/* طبقة شفافة فوق الخلفية المتحركة (إذا كانت هناك صورة خلفية) */
 .add-course-hero-overlay {
     position: absolute;
     top: 0;
@@ -62,7 +62,7 @@
                 rgba(var(--primary-bg-color-rgb), 0.8) 0%, 
                 rgba(var(--primary-bg-color-rgb), 0.5) 50%, 
                 rgba(var(--primary-bg-color-rgb), 0.2) 100%);
-    background-image: var(--add-course-background-image, none); /* متغير لصور الخلفية */
+    background-image: var(--add-course-background-image, none); /* متغير لصور الخلفية (يجب تعيينه في JS أو هنا) */
     background-size: cover;
     background-position: center;
     z-index: 0;
@@ -86,15 +86,8 @@
     z-index: 1;
 }
 
-/* Reuse keyframes from index.css or define here if not global */
-@keyframes moveBackground {
-    from {
-        background-position: 0% 0%, 100% 100%, 50% 50%;
-    }
-    to {
-        background-position: 100% 100%, 0% 0%, 0% 0%;
-    }
-}
+/* Animation keyframes (should be global in index.css or defined once) */
+/* @keyframes moveBackground { ... } */
 
 
 /* Form specific styles */
@@ -121,6 +114,7 @@
 }
 
 .course-form label {
+    display: block;
     font-size: 1em;
     color: var(--heading-color);
     margin-bottom: 8px;
@@ -133,13 +127,15 @@
 .course-form textarea,
 .course-form select,
 .course-form input[type="file"] {
+    width: 100%;
     padding: 12px 15px;
     border: 1px solid var(--border-color);
     border-radius: 8px;
-    background-color: var(--primary-bg-color);
-    color: var(--text-color);
+    background-color: var(--primary-bg-color); /* لون خلفية حقول الإدخال */
+    color: var(--text-color); /* لون النص داخل الحقول */
     font-size: 1em;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    box-sizing: border-box; /* لضمان أن البادينغ لا يزيد من العرض الكلي */
 }
 
 .course-form input[type="text"]:focus,
@@ -149,7 +145,7 @@
 .course-form select:focus,
 .course-form input[type="file"]:focus {
     outline: none;
-    border-color: var(--accent-color-1);
+    border-color: var(--accent-color-1); /* البرتقالي عند التركيز */
     box-shadow: 0 0 0 3px rgba(var(--accent-color-1-rgb), 0.3);
 }
 

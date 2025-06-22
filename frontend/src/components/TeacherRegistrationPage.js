@@ -1,9 +1,9 @@
 import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import academicStructure from '../constants/academicStructure'; // استيراد الهيكل الأكاديمي
-import { ToastContext } from '../App'; // استيراد ToastContext
-import LoginIllustration from '../assets/images/login_illustration.png'; // صورة توضيحية لصفحة تسجيل الدخول (استخدمتها كبديل لـ RegisterTeacherIllustration)
+import academicStructure from '../constants/academicStructure'; 
+import { ToastContext } from '../App'; 
+import LoginIllustration from '../assets/images/login_illustration.png'; 
 
 
 function TeacherRegistrationPage() {
@@ -13,8 +13,8 @@ function TeacherRegistrationPage() {
     const [formData, setFormData] = useState({
         email: '',
         password: '',
-        password_confirm: '',
-        user_type: 'teacher', // نوع المستخدم ثابت هنا
+        password_confirm: '', 
+        user_type: 'teacher', 
         first_name: '',
         last_name: '',
         phone_number: '',
@@ -22,20 +22,19 @@ function TeacherRegistrationPage() {
         governorate: '',
         qualifications: '',
         experience: '',
-        category_type: '', // هذا يرسل كـ specialized_subject للـ Backend
+        category_type: '', 
         what_will_you_add: '',
-        personal_id_card: null, // File
-        cv_file: null, // File
+        personal_id_card: null, 
+        cv_file: null, 
         instagram_link: '',
         facebook_link: '',
         website_link: '',
     });
 
     const [currentSection, setCurrentSection] = useState(1);
-    const totalSections = 3;
-    const [errors, setErrors] = useState({}); // لتخزين أخطاء التحقق من الصحة للحقول
+    const totalSections = 3; 
+    const [errors, setErrors] = useState({}); 
     const [loading, setLoading] = useState(false);
-    // const [successMessage, setSuccessMessage] = useState(null); // لم نعد نستخدمها بشكل مباشر، التوست يتولى الأمر
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -43,7 +42,6 @@ function TeacherRegistrationPage() {
             ...prevData,
             [name]: value
         }));
-        // مسح خطأ الحقل المحدد عند تغييره
         if (errors[name]) {
             setErrors(prevErrors => {
                 const newErrors = { ...prevErrors };
@@ -53,15 +51,14 @@ function TeacherRegistrationPage() {
         }
     };
 
-    // دالة مخصصة لـ handleFileChange (لضمان تخزين الملف الفعلي)
     const handleFileChange = (e) => {
         const { name, files } = e.target;
         if (files.length > 0) {
             setFormData(prevData => ({
                 ...prevData,
-                [name]: files[0] // تخزين الملف الفعلي (files[0])
+                [name]: files[0] 
             }));
-            if (errors[name]) { // مسح خطأ الحقل عند اختيار ملف
+            if (errors[name]) { 
                 setErrors(prevErrors => {
                     const newErrors = { ...prevErrors };
                     delete newErrors[name];
@@ -69,7 +66,7 @@ function TeacherRegistrationPage() {
                 });
             }
         } else {
-            setFormData(prevData => ({ // مسح الملف من formData إذا لم يتم اختيار شيء
+            setFormData(prevData => ({ 
                 ...prevData,
                 [name]: null
             }));
@@ -94,12 +91,10 @@ function TeacherRegistrationPage() {
         } else if (currentSection === 2) {
             if (!formData.qualifications) currentErrors.qualifications = 'المؤهلات مطلوبة';
             if (!formData.experience) currentErrors.experience = 'الخبرة مطلوبة';
-            if (!formData.category_type) currentErrors.category_type = 'التخصص مطلوب';
+            if (!formData.category_type) currentErrors.category_type = 'التخصص مطلوب'; 
             if (!formData.what_will_you_add) currentErrors.what_will_you_add = 'ماذا ستضيف مطلوب';
         } else if (currentSection === 3) {
-            // قم بتعيين 'required' في JSX إذا كان الحقل مطلوباً
             if (!formData.personal_id_card) currentErrors.personal_id_card = 'صورة البطاقة الشخصية مطلوبة';
-            // if (!formData.cv_file) currentErrors.cv_file = 'ملف السيرة الذاتية مطلوب'; // إذا كان مطلوباً
         }
 
         setErrors(currentErrors); 
@@ -108,7 +103,7 @@ function TeacherRegistrationPage() {
 
 
     const handleNextSection = () => {
-        if (validateSection()) {
+        if (validateSection()) { 
             if (currentSection < totalSections) {
                 setCurrentSection(currentSection + 1);
                 setErrors({}); 
@@ -129,47 +124,37 @@ function TeacherRegistrationPage() {
         e.preventDefault();
         setLoading(true);
         setErrors({}); 
-        // setSuccessMessage(null);
-
+        
         if (!validateSection()) { 
             showGlobalToast('الرجاء مراجعة جميع الحقول المطلوبة في الأقسام قبل الإرسال.', 'warning');
             setLoading(false);
             return;
         }
-        
-        // NEW: تصحيح الـ API Endpoint ليتطابق مع Backend
-        // المسار الصحيح هو /api/register/teacher/
+
         const apiEndpoint = 'http://127.0.0.1:8000/api/register/teacher/'; 
         
         const dataToSend = new FormData();
         for (const key in formData) {
-            // التعامل مع حقول الملفات بشكل خاص
             if (key === 'personal_id_card' || key === 'cv_file') {
                 if (formData[key] instanceof File) { 
                     dataToSend.append(key, formData[key]);
                 }
             } 
-            // إرسال category_type كـ specialized_subject إلى الـ Backend
             else if (key === 'category_type') {
-                dataToSend.append('specialized_subject', formData.category_type);
-            }
-            // لا نرسل password_confirm إلى الـ backend
-            else if (key === 'password_confirm') {
-                continue;
-            }
-            // إرسال البيانات الأخرى غير الفارغة أو null
+                dataToSend.append('specialized_subject', formData.category_type); 
+            } 
+            // NEW: الآن نرسل password_confirm إلى الـ Backend
+            // الـ Serializer في Backend هو من سيقوم بإزالته بعد التحقق
             else if (formData[key] !== null && formData[key] !== '' && formData[key] !== undefined) {
                 dataToSend.append(key, formData[key]);
             }
         }
-        // التأكد من إرسال user_type بشكل صريح (مهم جداً للـ Backend)
-        dataToSend.append('user_type', formData.user_type);
+        dataToSend.append('user_type', formData.user_type); 
 
         try {
-            // هنا نستخدم axios.post مع FormData مباشرة
             const response = await axios.post(apiEndpoint, dataToSend, {
                 headers: {
-                    'Content-Type': 'multipart/form-data', // ضروري لرفع الملفات
+                    'Content-Type': 'multipart/form-data', 
                 },
             });
 
@@ -180,7 +165,7 @@ function TeacherRegistrationPage() {
             console.error("Registration error details:", err);
             let errorMessage = 'حدث خطأ أثناء إرسال طلب التسجيل. يرجى التحقق من البيانات والمحاولة مرة أخرى.';
 
-            if (err.response) {
+            if (axios.isAxiosError(err) && err.response) {
                 if (err.response.data) {
                     if (err.response.data.detail) {
                         errorMessage = err.response.data.detail;
@@ -193,20 +178,21 @@ function TeacherRegistrationPage() {
                                     'gender': 'الجنس', 'governorate': 'المحافظة',
                                     'qualifications': 'المؤهلات', 'experience': 'الخبرة', 'category_type': 'التخصص',
                                     'what_will_you_add': 'ماذا ستضيف', 'personal_id_card': 'البطاقة الشخصية', 'cv_file': 'ملف السيرة الذاتية',
-                                    'non_field_errors': ''
+                                    'specialized_subject': 'المادة المتخصصة', 
+                                    'non_field_errors': 'خطأ عام' 
                                 }[field] || field;
                                 return `${fieldName}: ${Array.isArray(messages) ? messages.join(', ') : messages}`;
                             })
-                            .join(' | ');
-                        errorMessage = `خطأ في البيانات المدخلة:\n${fieldErrors}`; // عرض الأخطاء في سطر جديد
+                            .join('\n');
+                        errorMessage = `فشل إرسال الطلب:\n${fieldErrors}`; 
                     } else {
-                        errorMessage = 'فشل التسجيل. استجابة غير متوقعة من الخادم.';
+                        errorMessage = `فشل التسجيل. استجابة غير متوقعة من الخادم (الحالة: ${err.response.status}).`;
                     }
                 } else {
                     errorMessage = `خطأ في الخادم (الحالة: ${err.response.status}). يرجى المحاولة لاحقاً.`;
                 }
             } else if (err.request) {
-                errorMessage = 'لا يوجد استجابة من الخادم. يرجى التحقق من اتصالك بالإنترنت.';
+                errorMessage = 'لا يوجد استجابة من الخادم. يرجى التحقق من اتصالك بالإنترنت وأن الخادم يعمل.';
             } else {
                 errorMessage = 'حدث خطأ غير متوقع أثناء إرسال الطلب.';
             }
@@ -225,7 +211,7 @@ function TeacherRegistrationPage() {
                 <section className="registration-section">
                     <div className="container registration-container">
                         <div className="registration-image-wrapper">
-                            <img src={LoginIllustration} alt="Registration Illustration" className="registration-illustration" /> {/* استخدام LoginIllustration إذا كان هذا هو الشائع */}
+                            <img src={LoginIllustration} alt="Registration Illustration" className="registration-illustration" /> 
                             <h3 className="image-title">طلب إنشاء حساب أستاذ</h3>
                         </div>
                         <div className="registration-form-wrapper">
@@ -245,7 +231,6 @@ function TeacherRegistrationPage() {
                             </div>
 
                             {errors.general && <div className="error-message-box">{errors.general}</div>}
-                            {/* لا نستخدم successMessage هنا لأن التوست سيتولى الأمر */}
 
                             <form className="teacher-register-form" onSubmit={handleSubmit}>
                                 {/* القسم الأول: معلومات شخصية ومعلومات الدخول */}
@@ -350,7 +335,7 @@ function TeacherRegistrationPage() {
                                         <h3>القسم الأخير: المستندات</h3>
                                         <div className="form-group upload-group">
                                             <label htmlFor="personal_id_card">صورة البطاقة الشخصية (صورة من الأمام والخلف):</label>
-                                            <input type="file" id="personal_id_card" name="personal_id_card" accept="image/*" onChange={handleFileChange} required />
+                                            <input type="file" id="personal_id_card" name="personal_id_card" onChange={handleFileChange} required />
                                             {errors.personal_id_card && <span className="error-message">{errors.personal_id_card}</span>}
                                         </div>
                                         <div className="form-group upload-group">

@@ -1,10 +1,14 @@
 import React, { useState, useEffect, createContext } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import axios from 'axios'; 
+
+// استيراد جميع مكونات الصفحات
 import HomePage from './components/HomePage';
 import LoginPage from './components/LoginPage';
 import StudentRegistrationPage from './components/StudentRegistrationPage';
 import TeacherRegistrationPage from './components/TeacherRegistrationPage';
 import TeamRegistrationPage from './components/TeamRegistrationPage';
+import RegisterPage from './components/RegisterPage';
 import TeacherDashboard from './components/TeacherDashboard';
 import StudentDashboard from './components/StudentDashboard';
 import TeamDashboard from './components/TeamDashboard';
@@ -14,47 +18,48 @@ import SubjectDetailPage from './components/SubjectDetailPage';
 import TeacherManageCourseContentPage from './components/TeacherManageCourseContentPage';
 import TeacherProfilePage from './components/TeacherProfilePage';
 import CourseDetailPage from './components/CourseDetailPage';
-import ProtectedRoute from './components/ProtectedRoute';
+import ProtectedRoute from './components/ProtectedRoute'; 
 import Navbar from './components/Navbar'; 
 
-import './App.css';
-import './index.css';
+// استيراد جميع ملفات CSS الخاصة بالمكونات لضمان تحميلها
+import './App.css'; 
+import './index.css'; 
 import './components/CourseDetailPage.css';
-import './components/Dashboard.css';
+import './components/Dashboard.css'; 
 import './components/TeacherAddCoursePage.css';
-import './components/LoginPage.css'; // تأكد من استيراده أيضاً
-// استيراد ملفات CSS لباقي الصفحات التي أزلت منها الهيدر لتجنب فقدان تنسيقاتها
+import './components/LoginPage.css'; 
 import './components/SubjectDetailPage.css'; 
 import './components/TeacherMyCoursesPage.css';
 import './components/TeacherProfilePage.css';
-import './components/StudentDashboard.css';
-import './components/TeamDashboard.css';
-import './components/RegisterPage.css';
-import './components/StudentRegistrationPage.css';
-import './components/TeacherRegistrationPage.css';
-import './components/TeamRegistrationPage.css';
+import './components/StudentDashboard.css'; 
+import './components/TeamDashboard.css'; 
+import './components/RegisterPage.css'; 
+import './components/StudentRegistrationPage.css'; 
+import './components/TeacherRegistrationPage.css'; 
+import './components/TeamRegistrationPage.css'; 
 
 
-import Toast from './components/Toast';
+import Toast from './components/Toast'; 
 
-export const ToastContext = createContext(null);
-export const AuthContext = createContext(null);
+// تعريف Contexts لـ React
+export const ToastContext = createContext(null); 
+export const AuthContext = createContext(null); 
 
 function App() {
     const [theme, setTheme] = useState(() => {
         const savedTheme = localStorage.getItem('appTheme');
-        return savedTheme || 'dark';
+        return savedTheme || 'dark'; 
     });
 
     const [toastMessage, setToastMessage] = useState(null);
     const [toastType, setToastType] = useState('info');
-    const [currentToastCallback, setCurrentToastCallback] = useState(null);
+    const [currentToastCallback, setCurrentToastCallback] = useState(null); 
 
     const [user, setUser] = useState(() => {
         const storedToken = sessionStorage.getItem('userToken');
         const storedUserType = sessionStorage.getItem('userType');
         const storedFirstName = sessionStorage.getItem('firstName');
-        const storedLastName = sessionStorage.getItem('lastName');
+        const storedLastName = sessionStorage.getItem('lastName'); 
         const storedUserImage = sessionStorage.getItem('userImage');
         const storedUserId = sessionStorage.getItem('userId');
 
@@ -63,18 +68,46 @@ function App() {
                 token: storedToken,
                 userType: storedUserType,
                 firstName: storedFirstName,
-                lastName: storedLastName,
+                lastName: storedLastName, 
                 userImage: storedUserImage,
                 userId: storedUserId,
             };
         }
-        return null;
+        return null; 
     });
 
+    // إعداد Axios للتعامل مع CSRF Token
     useEffect(() => {
+        axios.defaults.xsrfCookieName = 'csrftoken';
+        axios.defaults.xsrfHeaderName = 'X-CSRFToken';
+        axios.defaults.withCredentials = true; 
+
+        const getCookie = (name) => {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        };
+
+        const csrftoken = getCookie('csrftoken');
+        if (csrftoken) {
+            axios.defaults.headers.common['X-CSRFToken'] = csrftoken;
+        } else {
+            console.warn("CSRFToken cookie not found. This might lead to 403 Forbidden errors for POST requests.");
+        }
+
         document.body.className = theme === 'dark' ? '' : 'light-theme';
         localStorage.setItem('appTheme', theme);
-    }, [theme]);
+
+    }, [theme]); 
 
     const toggleTheme = () => {
         setTheme((prevTheme) => (prevTheme === 'dark' ? 'light' : 'dark'));
@@ -83,7 +116,7 @@ function App() {
     const showGlobalToast = (message, type = 'info', callback = null) => {
         setToastMessage(message);
         setToastType(type);
-        setCurrentToastCallback(() => callback);
+        setCurrentToastCallback(() => callback); 
     };
 
     const dismissGlobalToast = () => {
@@ -102,26 +135,26 @@ function App() {
     };
 
     const logout = () => {
-        sessionStorage.clear();
+        sessionStorage.clear(); 
         setUser(null);
     };
 
 
     return (
-        <AuthContext.Provider value={{ user, login, logout }}>
-            <ToastContext.Provider value={showGlobalToast}>
+        <AuthContext.Provider value={{ user, login, logout }}> 
+            <ToastContext.Provider value={showGlobalToast}> 
                 <Router>
                     <div className="App">
                         <button className="theme-toggle-button" onClick={toggleTheme}>
                             {theme === 'dark' ? 'الوضع النهاري ☀️' : 'الوضع الليلي 🌙'}
                         </button>
 
-                        <Navbar /> {/* استخدام مكون Navbar العام هنا */}
+                        <Navbar /> 
 
                         <Routes>
                             <Route path="/" element={<HomePage />} />
                             <Route path="/login" element={<LoginPage />} />
-                            <Route path="/register" element={<StudentRegistrationPage />} />
+                            <Route path="/register" element={<RegisterPage />} /> 
                             <Route path="/register/student" element={<StudentRegistrationPage />} />
                             <Route path="/register/teacher" element={<TeacherRegistrationPage />} />
                             <Route path="/register/team" element={<TeamRegistrationPage />} />
@@ -142,7 +175,7 @@ function App() {
                                 <Route path="/teacher/profile" element={<TeacherProfilePage />} />
                             </Route>
 
-                            <Route element={<ProtectedRoute allowedUserTypes={['team_member']} />}>
+                            <Route element={<ProtectedRoute allowedUserTypes={['team_member', 'admin']} />}> 
                                 <Route path="/team/dashboard" element={<TeamDashboard />} />
                             </Route>
 
@@ -151,7 +184,7 @@ function App() {
                             <Route path="/courses" element={<p>Courses List Page Content</p>} />
                             <Route path="/contact" element={<p>Contact Page Content</p>} />
 
-                            <Route path="*" element={<p>404 Not Found</p>} />
+                            <Route path="*" element={<p>404 Not Found</p>} /> 
                         </Routes>
                     </div>
                 </Router>

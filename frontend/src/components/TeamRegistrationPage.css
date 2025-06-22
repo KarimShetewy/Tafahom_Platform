@@ -1,160 +1,406 @@
-/* frontend/src/components/TeacherRegistrationPage.css */
+/* frontend/src/components/TeamRegistrationPage.css */
 
-.teacher-registration-page {
-    background-color: var(--primary-bg-color); /* استخدام لون الخلفية الأساسي من الثيم */
-    color: var(--text-color); /* استخدام لون النص الأساسي من الثيم */
+/* General Page Layout */
+.team-registration-page {
+    background-color: var(--primary-bg-color); /* من index.css */
+    color: var(--text-color); /* من index.css */
     min-height: 100vh;
-    transition: background-color 0.5s ease, color 0.5s ease; /* انتقال سلس للثيم */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.5s ease, color 0.5s ease;
 }
 
-/* الأنماط المشتركة لأقسام التسجيل (من App.css أو أنماط عامة أخرى) */
-/* تأكد أن هذه الأنماط موجودة في App.css أو index.css ليتم تطبيقها عالمياً */
-/*
-.register-section {
-    padding: 60px 0;
-}
-.register-container {
+.team-registration-page .main-content {
+    flex-grow: 1; /* لجعل المحتوى الرئيسي يملأ المساحة المتاحة */
     display: flex;
     justify-content: center;
-    align-items: flex-start;
-    gap: 50px;
-    max-width: 1000px;
-    margin: 0 auto;
-    background-color: var(--secondary-bg-color);
-    padding: 40px;
+    align-items: center;
+    width: 100%;
+    padding: 40px 0; /* مسافة داخلية */
+}
+
+/* Registration Section Layout */
+.registration-section {
+    padding: 60px 0;
+    width: 100%;
+}
+
+.registration-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--secondary-bg-color); /* من index.css */
     border-radius: 15px;
-    box-shadow: var(--box-shadow);
-    border: 1px solid var(--border-color);
-    transition: background-color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    max-width: 1000px; /* تحديد أقصى عرض للحاوية */
+    width: 100%;
+    transition: background-color 0.5s ease, box-shadow 0.5s ease;
 }
-.register-image-wrapper {
+
+.registration-image-wrapper {
     flex: 1;
-    min-width: 250px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--primary-bg-color); /* لون خلفية جانب الصورة */
+    padding: 30px;
     text-align: center;
+    transition: background-color 0.5s ease;
 }
-.register-illustration {
-    max-width: 100%;
+
+.registration-illustration {
+    max-width: 90%;
     height: auto;
-    border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    margin-bottom: 20px;
 }
-.image-caption {
-    margin-top: 15px;
-    font-size: 1.1em;
+
+.image-title {
+    font-size: 1.8em;
+    color: var(--heading-color);
+    margin-top: 10px;
+}
+
+.registration-form-wrapper {
+    flex: 1;
+    padding: 40px;
+    background-color: var(--secondary-bg-color); /* لون خلفية الفورم */
     color: var(--text-color);
+    text-align: right; /* محاذاة كل المحتوى لليمين */
 }
-.register-form-wrapper {
-    flex: 2;
-    min-width: 300px;
-    text-align: right;
+
+.registration-form-wrapper h2 {
+    font-size: 2.5em;
+    color: var(--heading-color); /* لون عناوين الفورم */
+    margin-bottom: 30px;
+    text-align: center; /* توسيط العنوان */
 }
-.register-form h2 {
-    font-size: 2.2em;
+
+/* Form sections navigation */
+.student-form-sections-nav,
+.teacher-form-sections-nav,
+.team-form-sections-nav {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 30px;
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 10px;
+}
+
+.section-nav-button {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    font-size: 1.1em;
+    font-weight: 600;
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-bottom: 3px solid transparent;
+}
+
+.section-nav-button.active {
+    color: var(--accent-color-1); /* البرتقالي للقسم النشط */
+    border-bottom-color: var(--accent-color-1);
+}
+
+.section-nav-button:hover:not(.active) {
+    color: var(--accent-color-2); /* الأخضر عند التحويم */
+}
+
+/* Form Sections Content */
+.form-section-content {
+    animation: fadeIn 0.5s ease-out; /* تأثير ظهور القسم */
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.form-section-content h3 {
+    font-size: 1.8em;
     color: var(--heading-color);
     margin-bottom: 25px;
     text-align: center;
-    position: relative;
 }
-.register-form h2::after {
-    content: '';
-    display: block;
-    width: 60px;
-    height: 3px;
-    background-color: var(--accent-color-1);
-    margin: 10px auto 0;
-    border-radius: 2px;
-}
-.form-group {
+
+/* Form Groups */
+.registration-form .form-group {
     margin-bottom: 20px;
+    text-align: right;
 }
-.form-group label {
+
+.registration-form label {
     display: block;
+    font-size: 1em;
+    color: var(--heading-color);
     margin-bottom: 8px;
-    font-weight: 500;
-    color: var(--text-color);
+    font-weight: 600;
 }
-.form-group input,
-.form-group select,
-.form-group textarea {
+
+.registration-form input[type="text"],
+.registration-form input[type="email"],
+.registration-form input[type="password"],
+.registration-form input[type="tel"],
+.registration-form input[type="number"],
+.registration-form input[type="url"],
+.registration-form textarea,
+.registration-form select,
+.registration-form input[type="file"] {
     width: 100%;
     padding: 12px 15px;
-    border-radius: 8px;
     border: 1px solid var(--border-color);
-    background-color: var(--primary-bg-color);
-    color: var(--text-color);
-    font-size: 1em;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.5s ease, color 0.5s ease;
-}
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
-    border-color: var(--accent-color-1);
-    box-shadow: 0 0 0 0.2rem rgba(var(--accent-color-1-rgb), 0.25);
-    outline: none;
-}
-.checkbox-group {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
-}
-.checkbox-group input[type="checkbox"] {
-    width: auto;
-    margin-left: 10px;
-}
-.submit-btn {
-    width: 100%;
-    padding: 12px;
-    font-size: 1.1em;
     border-radius: 8px;
-    margin-top: 15px;
+    background-color: var(--primary-bg-color); /* لون خلفية حقول الإدخال */
+    color: var(--text-color); /* لون النص داخل الحقول */
+    font-size: 1em;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    box-sizing: border-box; /* لضمان أن البادينغ لا يزيد من العرض الكلي */
 }
-.register-links {
-    text-align: center;
+
+.registration-form input[type="text"]:focus,
+.registration-form input[type="email"]:focus,
+.registration-form input[type="password"]:focus,
+.registration-form input[type="tel"]:focus,
+.registration-form input[type="number"]:focus,
+.registration-form input[type="url"]:focus,
+.registration-form textarea:focus,
+.registration-form select:focus,
+.registration-form input[type="file"]:focus {
+    outline: none;
+    border-color: var(--accent-color-1); /* البرتقالي عند التركيز */
+    box-shadow: 0 0 0 3px rgba(var(--accent-color-1-rgb), 0.3);
+}
+
+.registration-form textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+.registration-form select {
+    appearance: none; /* إزالة سهم الاختيار الافتراضي */
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23000000%22%20d%3D%22M287%2C197.386L159.2%2C69.586c-3.7-3.7-8.6-5.6-13.5-5.6s-9.8%2C1.9-13.5%2C5.6L5.386%2C197.386c-7.2%2C7.2-7.2%2C18.9%2C0%2C26.1l11.4%2C11.4c7.2%2C7.2%2C18.9%2C7.2%2C26.1%2C0L145.7%2C150.5c3.7-3.7%2C8.6-5.6%2C13.5-5.6s9.8%2C1.9%2C13.5%2C5.6l98.8%2C98.8c7.2%2C7.2%2C18.9%2C7.2%2C26.1%2C0l11.4-11.4C294.2%2C216.286%2C294.2%2C204.586%2C287%2C197.386z%22%2F%3E%3C%2Fsvg%3E');
+    background-repeat: no-repeat;
+    background-position: left 15px center; /* ضبط موضع السهم لليسار في RTL */
+    background-size: 0.8em;
+    padding-left: 35px; /* مسافة داخلية لليسار للسهم */
+}
+
+.registration-form .error-message {
+    color: var(--error-color);
+    font-size: 0.85em;
+    margin-top: 5px;
+    text-align: right;
+    display: block; /* لجعلها تظهر في سطر جديد */
+}
+
+/* Buttons */
+.registration-form .form-nav-btn {
+    padding: 12px 25px;
+    font-size: 1em;
+    border-radius: 8px;
+    font-weight: 600;
     margin-top: 20px;
-    font-size: 0.95em;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
-.register-links .login-link {
-    color: var(--accent-color-1);
-    font-weight: bold;
+
+.registration-form .form-nav-btn:first-of-type {
+    margin-left: 10px; /* مسافة بين الأزرار */
 }
+
+.registration-form .submit-btn {
+    background-color: var(--accent-color-2); /* أخضر لزر الإرسال النهائي */
+    color: var(--button-text-color);
+    box-shadow: 0 5px 15px rgba(var(--accent-color-2-rgb), 0.3);
+}
+.registration-form .submit-btn:hover {
+    filter: brightness(90%);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(var(--accent-color-2-rgb), 0.4);
+}
+.registration-form .submit-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Upload Group */
+.form-group.upload-group {
+    border: 1px dashed var(--border-color);
+    padding: 20px;
+    border-radius: 8px;
+    background-color: var(--primary-bg-color);
+    text-align: center;
+}
+.form-group.upload-group label {
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+.form-group.upload-group input[type="file"] {
+    border: none;
+    background: none;
+    padding: 0;
+    width: auto; /* للسماح بعرض اسم الملف */
+    margin: 0 auto; /* توسيط حقل الملف */
+}
+
+
+/* Link to login page */
+.has-account-link {
+    margin-top: 30px;
+    text-align: center;
+    font-size: 1em;
+    color: var(--text-color);
+}
+.has-account-link a {
+    color: var(--accent-color-1); /* برتقالي للرابط */
+    text-decoration: none;
+    font-weight: 600;
+}
+.has-account-link a:hover {
+    text-decoration: underline;
+}
+
+
+/* Error/Success Messages */
 .error-message-box {
-    background-color: rgba(var(--error-color-rgb), 0.2);
+    background-color: rgba(var(--error-color-rgb), 0.1);
     color: var(--error-color);
     border: 1px solid var(--error-color);
-    padding: 10px;
-    margin-bottom: 15px;
-    border-radius: 5px;
-    font-size: 0.9rem;
-    text-align: center;
-    font-weight: bold;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    text-align: right;
+    font-size: 0.95em;
+    font-weight: 500;
 }
 .success-message-box {
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
-    padding: 10px;
-    margin-bottom: 15px;
-    border-radius: 5px;
-    font-size: 0.9rem;
-    text-align: center;
-    font-weight: bold;
+    background-color: rgba(var(--success-color-rgb), 0.1);
+    color: var(--success-color);
+    border: 1px solid var(--success-color);
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    text-align: right;
+    font-size: 0.95em;
+    font-weight: 500;
 }
-*/
 
-/* Responsive adjustments for registration pages */
-@media (max-width: 768px) {
-    .register-teacher-container { /* استخدام هذا الكلاس لـ TeacherRegistrationPage */
+/* Footer (General, consistent across pages) */
+footer {
+    background-color: var(--heading-color);
+    color: var(--button-text-color);
+    padding: 20px 0;
+    text-align: center;
+    font-size: 0.85em;
+    width: 100%;
+}
+footer .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+footer .footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+footer .footer-links a {
+    color: var(--button-text-color);
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+footer .footer-links a:hover {
+    color: var(--accent-color-1);
+}
+
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+    .registration-container {
         flex-direction: column;
+        max-width: 90%;
+    }
+    .registration-image-wrapper {
         padding: 20px;
     }
-    .register-image-wrapper, .register-form-wrapper {
-        order: initial; /* لإعادة ترتيب العناصر على الموبايل */
-        text-align: center;
+    .registration-form-wrapper {
+        padding: 30px;
     }
-    .register-form-wrapper h2 {
+    .registration-form-wrapper h2 {
+        font-size: 2.2em;
+    }
+    .form-section-content h3 {
+        font-size: 1.5em;
+    }
+    .section-nav-button {
+        font-size: 0.95em;
+        padding: 8px 10px;
+    }
+    .registration-form .form-group label {
+        font-size: 0.9em;
+    }
+    .registration-form input, 
+    .registration-form textarea, 
+    .registration-form select {
+        padding: 10px 12px;
+        font-size: 0.9em;
+    }
+    .registration-form .form-nav-btn,
+    .registration-form .submit-btn {
+        padding: 10px 20px;
+        font-size: 0.95em;
+    }
+}
+
+@media (max-width: 768px) {
+    .registration-container {
+        max-width: 95%;
+        border-radius: 10px;
+    }
+    .registration-image-wrapper {
+        display: none; 
+    }
+    .registration-form-wrapper {
+        padding: 20px;
+    }
+    .registration-form-wrapper h2 {
         font-size: 1.8em;
     }
-    .image-caption {
+    .form-section-content h3 {
+        font-size: 1.3em;
+    }
+    .student-form-sections-nav,
+    .teacher-form-sections-nav,
+    .team-form-sections-nav {
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: center;
+    }
+    .section-nav-button {
+        width: 100%;
+        max-width: 150px;
+        margin: 0;
+    }
+    .registration-form .form-nav-btn,
+    .registration-form .submit-btn {
+        width: 100%;
+        margin-left: 0 !important;
+    }
+    .registration-form .form-nav-btn:first-of-type {
+        margin-left: 0 !important;
+    }
+    .has-account-link {
         font-size: 0.9em;
     }
 }

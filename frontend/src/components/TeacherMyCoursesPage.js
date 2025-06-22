@@ -1,90 +1,95 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
-import TafahomLogo from '../assets/images/tafahom_logo.png';
-import './TeacherMyCoursesPage.css';
-import academicStructure from '../constants/academicStructure';
-import CoursePlaceholder from '../assets/images/course_placeholder.jpg'; // صورة Placeholder
+// REMOVED: import TafahomLogo from '../assets/images/tafahom_logo.png'; // لم يعد ضروريا هنا بعد نقل Navbar
+import './TeacherMyCoursesPage.css'; // ملف الأنماط الخاص بصفحة كورساتي
+import CoursePlaceholder from '../assets/images/course_placeholder.jpg'; // صورة Placeholder للكورسات
+import academicStructure from '../constants/academicStructure'; // استيراد الهيكل الأكاديمي
+import { AuthContext, ToastContext } from '../App'; // استيراد الـ Contexts
+
 
 function TeacherMyCoursesPage() {
     const navigate = useNavigate();
-    const [myCourses, setMyCourses] = useState([]); // لتخزين قائمة الكورسات
+    const { user } = useContext(AuthContext); // جلب user من AuthContext للتحقق من الصلاحيات
+    const showGlobalToast = useContext(ToastContext); // جلب دالة التوست
+
+    const [courses, setCourses] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const userToken = sessionStorage.getItem('userToken');
-    const userType = sessionStorage.getItem('userType');
-
-    // لست بحاجة إلى useParams هنا لأن هذه الصفحة تعرض جميع الكورسات
-    // const { courseId } = useParams(); 
+    // const userToken = sessionStorage.getItem('userToken'); // لم نعد نستخدمها مباشرة، بل user.token
 
     useEffect(() => {
-        if (!userToken || userType !== 'teacher') {
+        // التحقق من صلاحيات المستخدم: إذا لم يكن معلماً أو غير مسجل الدخول، يتم توجيهه لصفحة تسجيل الدخول
+        if (!user || user.userType !== 'teacher' || !user.token) {
             navigate('/login');
             return;
         }
 
-        const fetchMyCourses = async () => {
+        const fetchTeacherCourses = async () => {
             setLoading(true);
             setError(null);
             try {
-                // جلب قائمة الكورسات الخاصة بالمدرس من API
                 const response = await axios.get('http://127.0.0.1:8000/api/courses/my-courses/', {
-                    headers: { 'Authorization': `Token ${userToken}` }
+                    headers: { 'Authorization': `Token ${user.token}` } // استخدام user.token من الـ Context
                 });
-                setMyCourses(response.data);
+                setCourses(response.data);
             } catch (err) {
-                console.error("Error fetching my courses:", err.response ? err.response.data : err.message);
-                setError("فشل تحميل كورساتي. يرجى المحاولة لاحقاً.");
-                if (err.response && (err.response.status === 401 || err.response.status === 403)) {
-                    navigate('/login');
+                console.error('Error fetching teacher courses:', err.response ? err.response.data : err.message);
+                let errorMessage = 'فشل تحميل كورساتك. يرجى المحاولة لاحقاً.';
+                if (axios.isAxiosError(err) && err.response) {
+                    if (err.response.status === 401 || err.response.status === 403) {
+                        errorMessage = "غير مصرح لك بالوصول لهذه الصفحة. يرجى تسجيل الدخول كمعلم.";
+                        navigate('/login');
+                    } else if (err.response.data && err.response.data.detail) {
+                        errorMessage = err.response.data.detail;
+                    }
                 }
+                setError(errorMessage);
+                showGlobalToast(errorMessage, "error");
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchMyCourses();
-    }, [userToken, userType, navigate]);
-
-
-    const handleImageError = (e) => {
-        e.target.src = CoursePlaceholder; // استخدام صورة Placeholder عند الفشل
-    };
+        fetchTeacherCourses();
+    }, [user, navigate, showGlobalToast]); // user, navigate, showGlobalToast كـ dependencies
 
     const handleDeleteCourse = async (courseIdToDelete) => {
-        if (!window.confirm("هل أنت متأكد من حذف هذا الكورس؟ هذا الإجراء لا يمكن التراجع عنه وسيحذف جميع المحاضرات والمواد المرتبطة به.")) {
-            return;
-        }
-        setLoading(true);
-        setError(null);
-        try {
-            await axios.delete(`http://127.0.0.1:8000/api/courses/${courseIdToDelete}/delete/`, {
-                headers: { 'Authorization': `Token ${userToken}` }
-            });
-            setMyCourses(prevCourses => prevCourses.filter(course => course.id !== courseIdToDelete));
-            // يمكن عرض رسالة نجاح هنا إذا أردت
-            alert("تم حذف الكورس بنجاح!");
-        } catch (err) {
-            console.error("Error deleting course:", err.response ? err.response.data : err.message);
-            setError("فشل حذف الكورس. يرجى المحاولة لاحقاً.");
-        } finally {
-            setLoading(false);
-        }
+        showGlobalToast(
+            "هل أنت متأكد من حذف هذا الكورس؟ هذا الإجراء لا يمكن التراجع عنه.",
+            "confirm", // نوع التوست: "تأكيد"
+            async (confirmed) => { // دالة callback تنفذ بعد اختيار المستخدم في التوست
+                if (confirmed) {
+                    setLoading(true); // إعادة تفعيل التحميل بعد التأكيد
+                    setError(null);
+                    try {
+                        await axios.delete(`http://127.0.0.1:8000/api/courses/${courseIdToDelete}/`, {
+                            headers: { 'Authorization': `Token ${user.token}` } // استخدام user.token
+                        });
+                        setCourses(prevCourses => prevCourses.filter(course => course.id !== courseIdToDelete));
+                        showGlobalToast('تم حذف الكورس بنجاح!', 'success');
+                    } catch (err) {
+                        console.error('Error deleting course:', err.response ? err.response.data : err.message);
+                        let errorMessage = 'فشل حذف الكورس. يرجى المحاولة لاحقاً.';
+                        if (axios.isAxiosError(err) && err.response && err.response.data && err.response.data.detail) {
+                            errorMessage = err.response.data.detail;
+                        }
+                        setError(errorMessage);
+                        showGlobalToast(errorMessage, 'error');
+                    } finally {
+                        setLoading(false);
+                    }
+                }
+            }
+        );
     };
 
 
     if (loading) {
         return (
-            <div className="my-courses-page">
-                <header className="app-header">
-                    <div className="container">
-                        <nav className="navbar">
-                            <div className="logo"><Link to="/"><img src={TafahomLogo} alt="Tafahom Logo" className="navbar-logo" /></Link></div>
-                            <ul className="nav-links"><li><Link to="/teacher/dashboard">لوحة التحكم</Link></li></ul>
-                        </nav>
-                    </div>
-                </header>
-                <main className="main-content">
+            <div className="teacher-my-courses-page">
+                {/* REMOVED: Header/Navbar is now in App.js */}
+                <main className="main-content dashboard-content">
                     <div className="container loading-message-container">
                         <p>جاري تحميل كورساتك...</p>
                     </div>
@@ -95,16 +100,9 @@ function TeacherMyCoursesPage() {
 
     if (error) {
         return (
-            <div className="my-courses-page">
-                <header className="app-header">
-                    <div className="container">
-                        <nav className="navbar">
-                            <div className="logo"><Link to="/"><img src={TafahomLogo} alt="Tafahom Logo" className="navbar-logo" /></Link></div>
-                            <ul className="nav-links"><li><Link to="/teacher/dashboard">لوحة التحكم</Link></li></ul>
-                        </nav>
-                    </div>
-                </header>
-                <main className="main-content">
+            <div className="teacher-my-courses-page">
+                {/* REMOVED: Header/Navbar is now in App.js */}
+                <main className="main-content dashboard-content">
                     <div className="container error-message-container">
                         <p className="error-message-box">{error}</p>
                         <Link to="/teacher/dashboard" className="btn btn-primary">العودة للوحة التحكم</Link>
@@ -115,57 +113,45 @@ function TeacherMyCoursesPage() {
     }
 
     return (
-        <div className="my-courses-page">
-            <header className="app-header">
+        <div className="teacher-my-courses-page">
+            {/* REMOVED: Header/Navbar is now in App.js */}
+            <main className="main-content dashboard-content">
                 <div className="container">
-                    <nav className="navbar">
-                        <div className="logo">
-                            <Link to="/"><img src={TafahomLogo} alt="Tafahom Logo" className="navbar-logo" /></Link>
-                        </div>
-                        <ul className="nav-links">
-                            <li><Link to="/teacher/dashboard">لوحة التحكم</Link></li>
-                            <li><Link to="/teacher/add-course">إضافة كورس جديد</Link></li>
-                            <li><Link to="/teacher/my-courses">إدارة كورساتي</Link></li>
-                        </ul>
-                        <div className="auth-buttons">
-                            {/* يمكن إضافة زر تسجيل خروج هنا */}
-                        </div>
-                    </nav>
-                </div>
-            </header>
-
-            <main className="main-content">
-                <div className="container">
-                    <h2>إدارة كورساتي</h2>
-                    <p>هنا يمكنك عرض وإدارة جميع الكورسات التي قمت بإنشائها.</p>
-
-                    {myCourses.length === 0 ? (
-                        <p>لم تقم بإنشاء أي كورسات بعد. <Link to="/teacher/add-course">اضغط هنا لإضافة كورس جديد</Link>.</p>
-                    ) : (
-                        <div className="my-courses-grid">
-                            {myCourses.map(course => (
-                                <div key={course.id} className="my-course-card">
-                                    <img 
-                                        src={course.image || CoursePlaceholder} 
-                                        alt={course.title} 
-                                        className="my-course-image" 
-                                        onError={handleImageError}
-                                    />
-                                    <div className="my-course-info">
-                                        <h3>{course.title}</h3>
-                                        <p>المادة: {academicStructure.allSubjectsMap[course.subject]?.label || course.subject}</p>
-                                        <p>الصف: {academicStructure[course.academic_level]?.label || course.academic_level}</p>
-                                        <p className="course-price">السعر: {course.price} جنيه</p>
-                                        <p>الحالة: {course.is_published ? 'منشور' : 'غير منشور'}</p>
-                                        <div className="course-actions">
-                                            <Link to={`/teacher/courses/${course.id}/manage-content`} className="btn btn-primary">إدارة المحتوى</Link>
-                                            <button onClick={() => handleDeleteCourse(course.id)} className="btn btn-danger">حذف</button>
+                    <h2 className="page-title">كورساتي</h2>
+                    <p className="page-description">هذه قائمة بالكورسات التي أنشأتها. يمكنك إدارتها من هنا.</p>
+                    
+                    <div className="my-courses-grid">
+                        {courses.length > 0 ? (
+                            courses.map(course => (
+                                <div key={course.id} className="course-card-manage">
+                                    <div className="course-image-container-manage">
+                                        <img 
+                                            src={course.image ? `http://127.0.0.1:8000${course.image}` : CoursePlaceholder} 
+                                            alt={course.title} 
+                                            className="course-image-manage" 
+                                            onError={(e) => { e.target.onerror = null; e.target.src = CoursePlaceholder; }} /* Fallback image */
+                                        />
+                                        <div className="course-status-badge">{course.is_published ? 'منشور' : 'غير منشور'}</div>
+                                    </div>
+                                    <div className="course-info-manage">
+                                        <h3 title={course.title}>{course.title}</h3>
+                                        {/* التأكد من وجود البيانات قبل الوصول إليها لتجنب الأخطاء */}
+                                        <p className="course-level-subject">
+                                            {academicStructure[course.academic_level]?.label || course.academic_level} - {academicStructure.allSubjectsMap[course.subject]?.label || course.subject}
+                                        </p>
+                                        <p className="course-price-manage">{course.price} جنيه</p>
+                                        <div className="course-actions-manage">
+                                            <Link to={`/teacher/courses/${course.id}/manage-content`} className="btn btn-primary btn-sm">إدارة المحتوى</Link>
+                                            <button onClick={() => handleDeleteCourse(course.id)} className="btn btn-danger btn-sm">حذف</button>
                                         </div>
                                     </div>
                                 </div>
-                            ))}
-                        </div>
-                    )}
+                            ))
+                        ) : (
+                            <p className="no-courses-message">لم تقم بإضافة أي كورسات بعد. <Link to="/teacher/add-course">ابدأ بإضافة كورس جديد الآن!</Link></p>
+                        )}
+                    </div>
+
                 </div>
             </main>
 

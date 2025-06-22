@@ -1,20 +1,23 @@
 # users/models.py
+
 from django.db import models
-# يجب أن تستخدم AbstractUser إذا كنت تريد الحفاظ على حقول مثل username, first_name, last_name من Django
 from django.contrib.auth.models import AbstractUser, BaseUserManager, PermissionsMixin
 from django.utils import timezone
 
-# ملاحظة: إذا كنت تستخدم AbstractUser، فلست بحاجة لتعريف حقول مثل email, first_name, last_name, is_active, is_staff, date_joined
-# لأنها تأتي مع AbstractUser. فقط عليك تجاوز USERNAME_FIELD إذا كنت تستخدم البريد الإلكتروني كاسم مستخدم.
+# استيراد الثوابت من tafahom_project.constants
+from tafahom_project.constants import (
+    JOB_POSITION_CHOICES, GENDER_CHOICES, GOVERNORATE_CHOICES, ACADEMIC_LEVEL_CHOICES,
+    ACADEMIC_TRACK_CHOICES, SUBJECT_CHOICES, PARENT_PROFESSION_CHOICES
+)
 
-# إذا كان لديك CustomUserManager معرفاً لدعم create_user / create_superuser، احتفظ به
-class CustomUserManager(BaseUserManager):
+
+class CustomUserManager(BaseUserManager): 
     def create_user(self, email, password=None, **extra_fields):
         if not email:
             raise ValueError('The Email field must be set')
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
-        user.set_password(password)
+        user.set_password(password) 
         user.save(using=self._db)
         return user
 
@@ -22,7 +25,7 @@ class CustomUserManager(BaseUserManager):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         extra_fields.setdefault('is_active', True)
-        extra_fields.setdefault('user_type', 'admin') # نوع المستخدم الافتراضي للأدمن
+        extra_fields.setdefault('user_type', 'admin') 
         
         if extra_fields.get('is_staff') is not True:
             raise ValueError('Superuser must have is_staff=True.')
@@ -32,16 +35,14 @@ class CustomUserManager(BaseUserManager):
         return self.create_user(email, password, **extra_fields)
 
 
-# تغيير CustomUser ليرث من AbstractUser
-class CustomUser(AbstractUser): # NEW: يرث من AbstractUser
-    # AbstractUser يحتوي بالفعل على username, first_name, last_name, email, is_staff, is_active, date_joined
-    # لذا لا داعي لإعادة تعريفها هنا إلا إذا كنت تريد تغيير خصائصها.
-    email = models.EmailField(unique=True) # إعادة تعريف لضمان unique
+# Custom User Model
+class CustomUser(AbstractUser): 
+    email = models.EmailField(unique=True, verbose_name='البريد الإلكتروني') 
     
-    # إزالة first_name و last_name إذا كنت تستخدمهما من AbstractUser
-    # إذا كنت لا تستخدم username وحذفْتَه، فعليك تعيين USERNAME_FIELD
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['first_name', 'last_name', 'user_type'] # هذا سيظل مطلوباً لتغيير AbstractUser
+    username = None # تعيين username إلى None
+
+    USERNAME_FIELD = 'email' 
+    REQUIRED_FIELDS = ['first_name', 'last_name', 'user_type'] 
 
     USER_TYPE_CHOICES = (
         ('student', 'طالب'),
@@ -56,17 +57,40 @@ class CustomUser(AbstractUser): # NEW: يرث من AbstractUser
         verbose_name='نوع المستخدم'
     )
     
-    # حقول إضافية
+    # حقول إضافية عامة لجميع المستخدمين أو اختيارية
     image = models.ImageField(upload_to='profile_pics/', blank=True, null=True, verbose_name='الصورة الشخصية') 
-    gender = models.CharField(max_length=10, choices=[('male', 'ذكر'), ('female', 'أنثى')], blank=True, null=True, verbose_name='الجنس')
-    governorate = models.CharField(max_length=50, blank=True, null=True, verbose_name='المحافظة')
+    gender = models.CharField(max_length=10, choices=GENDER_CHOICES, blank=True, null=True, verbose_name='الجنس')
+    governorate = models.CharField(max_length=50, choices=GOVERNORATE_CHOICES, blank=True, null=True, verbose_name='المحافظة')
     phone_number = models.CharField(max_length=15, blank=True, null=True, verbose_name='رقم الهاتف')
-    specialized_subject = models.CharField(max_length=100, blank=True, null=True, verbose_name='المادة المتخصصة') # للمدرسين
+    
+    # NEW: حقول خاصة بالمعلمين (لكن موجودة في CustomUser واختيارية)
+    specialized_subject = models.CharField(max_length=100, choices=SUBJECT_CHOICES, blank=True, null=True, verbose_name='المادة المتخصصة')
+    qualifications = models.TextField(blank=True, null=True, verbose_name='المؤهلات')
+    experience = models.TextField(blank=True, null=True, verbose_name='الخبرة')
+    what_will_you_add = models.TextField(blank=True, null=True, verbose_name='ما الذي سيضيفه للمنصة؟')
+    instagram_link = models.URLField(max_length=200, blank=True, null=True, verbose_name='رابط انستجرام')
+    facebook_link = models.URLField(max_length=200, blank=True, null=True, verbose_name='رابط فيسبوك')
+    website_link = models.URLField(max_length=200, blank=True, null=True, verbose_name='رابط الموقع الإلكتروني')
 
-    # ملاحظة: AbstractUser يأتي مع groups و user_permissions جاهزة، لا داعي لإعادة تعريفها هنا
-    # إذا كانت لديك تعريفات مكررة لها، قم بإزالتها.
+    # NEW: حقول خاصة بالطلاب (لكن موجودة في CustomUser واختيارية)
+    academic_level = models.CharField(max_length=50, choices=ACADEMIC_LEVEL_CHOICES, blank=True, null=True, verbose_name='الصف الدراسي') 
+    academic_track = models.CharField(max_length=50, choices=ACADEMIC_TRACK_CHOICES, blank=True, null=True, verbose_name='المسار الدراسي') 
+    second_name = models.CharField(max_length=100, blank=True, null=True, verbose_name='الاسم الثاني (الأب)')
+    third_name = models.CharField(max_length=100, blank=True, null=True, verbose_name='الاسم الثالث (الجد)')
+    parent_father_phone_number = models.CharField(max_length=15, blank=True, null=True, verbose_name='رقم هاتف الأب')
+    parent_mother_phone_number = models.CharField(max_length=15, blank=True, null=True, verbose_name='رقم هاتف الأم')
+    school_name = models.CharField(max_length=255, blank=True, null=True, verbose_name='اسم المدرسة')
+    parent_profession = models.CharField(max_length=50, choices=PARENT_PROFESSION_CHOICES, blank=True, null=True, verbose_name='مهنة ولي الأمر') 
+    teacher_name_for_student = models.CharField(max_length=255, blank=True, null=True, verbose_name='اسم الأستاذ للطالب')
 
-    objects = CustomUserManager() # استخدام الـ Manager الخاص بك
+    # NEW: حقول خاصة بفريق العمل (لكن موجودة في CustomUser واختيارية)
+    job_position = models.CharField(max_length=50, choices=JOB_POSITION_CHOICES, blank=True, null=True, verbose_name='الوظيفة المطلوبة') 
+    expected_salary = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True, verbose_name='الراتب المتوقع')
+    address = models.TextField(blank=True, null=True, verbose_name='العنوان بالتفصيل')
+    previous_work_experience = models.TextField(blank=True, null=True, verbose_name='خبرة العمل السابقة')
+
+
+    objects = CustomUserManager() 
 
     class Meta:
         verbose_name = 'مستخدم'
@@ -75,9 +99,14 @@ class CustomUser(AbstractUser): # NEW: يرث من AbstractUser
     def __str__(self):
         return self.email
     
-    # يمكنك الاحتفاظ بـ get_full_name و get_short_name إذا كنت تستخدمهما
-    # AbstractUser يوفر أيضاً get_full_name و get_short_name بشكل افتراضي
+    def get_full_name(self):
+        return f"{self.first_name} {self.last_name}"
 
+    def get_short_name(self):
+        return self.first_name
+
+# موديل لطلبات إنشاء الحساب (Account Requests)
+# هذا الموديل سيحتوي على نفس الحقول لأنواع المستخدمين التي ترسل من Frontend
 class AccountRequest(models.Model):
     REQUEST_STATUS_CHOICES = (
         ('pending', 'قيد المراجعة'),
@@ -91,7 +120,7 @@ class AccountRequest(models.Model):
     )
 
     email = models.EmailField(unique=True, verbose_name='البريد الإلكتروني')
-    password = models.CharField(max_length=128, verbose_name='كلمة المرور المشفرة') # سيتم تشفيرها قبل الحفظ
+    password = models.CharField(max_length=128, verbose_name='كلمة المرور (خام)') # ستكون نصاً خاماً
     user_type = models.CharField(
         max_length=20,
         choices=REQUEST_USER_TYPE_CHOICES,
@@ -100,28 +129,28 @@ class AccountRequest(models.Model):
     first_name = models.CharField(max_length=100, verbose_name='الاسم الأول')
     last_name = models.CharField(max_length=100, verbose_name='الاسم الأخير')
     phone_number = models.CharField(max_length=15, blank=True, null=True, verbose_name='رقم الهاتف')
-    gender = models.CharField(max_length=10, choices=[('male', 'ذكر'), ('female', 'أنثى')], blank=True, null=True, verbose_name='الجنس')
-    governorate = models.CharField(max_length=50, blank=True, null=True, verbose_name='المحافظة')
+    gender = models.CharField(max_length=10, choices=GENDER_CHOICES, blank=True, null=True, verbose_name='الجنس')
+    governorate = models.CharField(max_length=50, choices=GOVERNORATE_CHOICES, blank=True, null=True, verbose_name='المحافظة')
 
-    # حقول خاصة بالطلاب
+    # Student-specific fields (duplicated from CustomUser, but stored here for request)
     second_name = models.CharField(max_length=100, blank=True, null=True, verbose_name='الاسم الثاني (الأب)')
     third_name = models.CharField(max_length=100, blank=True, null=True, verbose_name='الاسم الثالث (الجد)')
     parent_father_phone_number = models.CharField(max_length=15, blank=True, null=True, verbose_name='رقم هاتف الأب')
     parent_mother_phone_number = models.CharField(max_length=15, blank=True, null=True, verbose_name='رقم هاتف الأم')
     school_name = models.CharField(max_length=255, blank=True, null=True, verbose_name='اسم المدرسة')
-    parent_profession = models.CharField(max_length=50, blank=True, null=True, verbose_name='مهنة ولي الأمر') # يجب أن تكون choices=PARENT_PROFESSION_CHOICES
+    parent_profession = models.CharField(max_length=50, choices=PARENT_PROFESSION_CHOICES, blank=True, null=True, verbose_name='مهنة ولي الأمر') 
     teacher_name_for_student = models.CharField(max_length=255, blank=True, null=True, verbose_name='اسم الأستاذ للطالب')
-    academic_level = models.CharField(max_length=50, blank=True, null=True, verbose_name='الصف الدراسي') # يجب أن تكون choices=ACADEMIC_LEVEL_CHOICES
-    academic_track = models.CharField(max_length=50, blank=True, null=True, verbose_name='المسار الدراسي') # يجب أن تكون choices=ACADEMIC_TRACK_CHOICES
+    academic_level = models.CharField(max_length=50, choices=ACADEMIC_LEVEL_CHOICES, blank=True, null=True, verbose_name='الصف الدراسي') 
+    academic_track = models.CharField(max_length=50, choices=ACADEMIC_TRACK_CHOICES, blank=True, null=True, verbose_name='المسار الدراسي') 
 
-    # حقول خاصة بالأساتذة
+    # Teacher-specific fields (duplicated from CustomUser)
     qualifications = models.TextField(blank=True, null=True, verbose_name='المؤهلات (للأستاذ)')
     experience = models.TextField(blank=True, null=True, verbose_name='الخبرة (للأستاذ)')
-    category_type = models.CharField(max_length=50, blank=True, null=True, verbose_name='الفئة المطلوبة (للأستاذ)') # يجب أن تكون choices=CATEGORY_CHOICES
+    category_type = models.CharField(max_length=50, choices=SUBJECT_CHOICES, blank=True, null=True, verbose_name='الفئة المطلوبة (للأستاذ)') 
     what_will_you_add = models.TextField(blank=True, null=True, verbose_name='ما الذي ستضيفه للمنصة؟')
 
-    # حقول خاصة بفريق العمل
-    job_position = models.CharField(max_length=50, blank=True, null=True, verbose_name='الوظيفة المطلوبة (لفريق العمل)') # يجب أن تكون choices=JOB_POSITION_CHOICES
+    # Team Member-specific fields (duplicated from CustomUser)
+    job_position = models.CharField(max_length=50, choices=JOB_POSITION_CHOICES, blank=True, null=True, verbose_name='الوظيفة المطلوبة (لفريق العمل)') 
     expected_salary = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True, verbose_name='الراتب المتوقع')
     address = models.TextField(blank=True, null=True, verbose_name='العنوان بالتفصيل')
     previous_work_experience = models.TextField(blank=True, null=True, verbose_name='خبرة العمل السابقة (لفريق العمل)')

@@ -1,23 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import academicStructure from '../constants/academicStructure';
-import CoursePlaceholder from '../assets/images/course_placeholder.jpg';
+// REMOVED: import TafahomLogo from '../assets/images/tafahom_logo.png'; // لم يعد ضروريا هنا بعد نقل Navbar
+import academicStructure from '../constants/academicStructure'; // استيراد الهيكل الأكاديمي
+import CoursePlaceholder from '../assets/images/course_placeholder.jpg'; // صورة Placeholder للكورسات
+
 
 function SubjectDetailPage() {
-    const { levelKey, subjectName } = useParams();
+    const { levelKey, subjectName } = useParams(); // levelKey و subjectName يأتيان من الـ URL
     const navigate = useNavigate();
     const [courses, setCourses] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    const userToken = sessionStorage.getItem('userToken');
+    const userToken = sessionStorage.getItem('userToken'); // للحصول على التوكن إذا كان المستخدم مسجلاً دخوله
+
 
     useEffect(() => {
         const fetchCoursesBySubject = async () => {
             setLoading(true);
             setError(null);
             try {
+                // التأكد من أن levelKey و subjectName صالحين قبل إرسال الطلب
                 if (!academicStructure[levelKey]) {
                     setError("الصف الدراسي غير صالح.");
                     setLoading(false);
@@ -32,7 +36,7 @@ function SubjectDetailPage() {
 
                 const response = await axios.get(`http://127.0.0.1:8000/api/courses/?academic_level=${levelKey}&subject=${subjectValue}`, {
                     headers: {
-                        'Authorization': userToken ? `Token ${userToken}` : ''
+                        'Authorization': userToken ? `Token ${userToken}` : '' // إرسال التوكن إذا كان موجوداً
                     }
                 });
                 setCourses(response.data);
@@ -45,8 +49,10 @@ function SubjectDetailPage() {
         };
 
         fetchCoursesBySubject();
-    }, [levelKey, subjectName, userToken]);
+    }, [levelKey, subjectName, userToken]); // أعد جلب البيانات إذا تغير الصف أو المادة أو التوكن
 
+
+    // جلب التسميات المعربة للصف والمادة للعرض في الواجهة
     const academicLevelLabel = academicStructure[levelKey]?.label || 'غير معروف';
     const subjectLabel = academicStructure.allSubjectsMap[decodeURIComponent(subjectName)]?.label || 'غير معروف';
 
@@ -54,7 +60,7 @@ function SubjectDetailPage() {
     if (loading) {
         return (
             <div className="subject-detail-page">
-                {/* REMOVED: Header/Navbar is now in App.js */}
+                {/* REMOVED: Header/Navbar is now in App.js and is handled globally. */}
                 <main className="main-content">
                     <div className="container loading-message-container">
                         <p>جاري تحميل كورسات مادة {subjectLabel} لـ {academicLevelLabel}...</p>
@@ -67,11 +73,12 @@ function SubjectDetailPage() {
     if (error) {
         return (
             <div className="subject-detail-page">
-                {/* REMOVED: Header/Navbar is now in App.js */}
+                {/* REMOVED: Header/Navbar is now in App.js and is handled globally. */}
                 <main className="main-content">
                     <div className="container error-message-container">
                         <p className="error-message-box">{error}</p>
-                        <Link to="/" className="btn btn-primary">العودة للصفحة الرئيسية</Link>
+                        {/* يمكنك تعديل هذا الرابط ليعود لصفحة الكورسات العامة بدلاً من الرئيسية */}
+                        <Link to="/" className="btn btn-primary">العودة للصفحة الرئيسية</Link> 
                     </div>
                 </main>
             </div>
@@ -83,7 +90,8 @@ function SubjectDetailPage() {
             {/* REMOVED: Header/Navbar is now in App.js */}
 
             <main className="main-content">
-                <section className="subject-hero-section">
+                {/* قسم Hero لصفحة تفاصيل المادة */}
+                <section className="subject-hero-section"> 
                     <div className="container subject-hero-container">
                         <div className="subject-hero-content">
                             <h1 className="subject-title">كورسات مادة <span className="subject-highlight">{subjectLabel}</span></h1>
@@ -94,6 +102,7 @@ function SubjectDetailPage() {
                             </p>
                         </div>
                     </div>
+                    {/* طبقة شفافة وتأثير الجزيئات كما في CourseDetailPage */}
                     <div className="subject-hero-overlay"></div>
                 </section>
 

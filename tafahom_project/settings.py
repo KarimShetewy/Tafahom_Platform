@@ -32,8 +32,8 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'corsheaders',
     'djoser',
-    'users',
-    'courses',
+    'users', 
+    'courses', 
 ]
 
 MIDDLEWARE = [
@@ -41,7 +41,7 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware', 
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware', # هذا Middleware هو المسؤول عن فحص CSRF
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -52,7 +52,6 @@ ROOT_URLCONF = 'tafahom_project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        # NEW: إضافة المسار إلى مجلد build الخاص بـ React
         'DIRS': [os.path.join(BASE_DIR, 'frontend', 'build')], 
         'APP_DIRS': True,
         'OPTIONS': {
@@ -112,37 +111,53 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-# NEW: إعدادات لملفات Static الخاصة بـ React (بعد npm run build)
-# سيبحث Django هنا عن ملفات static (CSS, JS) داخل مجلد build الخاص بالـ frontend
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'frontend', 'build', 'static'),
 ]
-# هذه الإعدادات تخدم ملفات static من مجلد build/static
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') # مكان تجميع الملفات الثابتة في الإنتاج
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') 
 
 
-# إعدادات Media Files (الملفات التي يرفعها المستخدم مثل الصور)
+# Media Files (User Uploaded)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media') 
 
 
 # Default primary key field type
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# ربط CustomUser بموديل المستخدم الافتراضي في Django
+# Custom User Model
 AUTH_USER_MODEL = 'users.CustomUser'
 
 
-# إعدادات CORSHEADERS
+# CORSHEADERS Settings
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000", 
     "http://127.0.0.1:3000",
 ]
 CORS_ALLOW_CREDENTIALS = True 
 
+# NEW: إعدادات CSRF_TRUSTED_ORIGINS
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
 
-# إعدادات REST_FRAMEWORK
+# NEW: إعدادات الكوكيز لـ CSRF و SESSION
+# هذا مهم جداً لبيئة التطوير مع React على منفذ مختلف
+CSRF_COOKIE_SAMESITE = 'Lax' 
+SESSION_COOKIE_SAMESITE = 'Lax' # تأكد أن هذا أيضاً مضبوط
+
+# بما أننا نعمل على HTTP في التطوير، يجب أن يكون CSRF_COOKIE_SECURE = False
+# وإلا لن يتم إرسال الكوكي عبر HTTP
+CSRF_COOKIE_SECURE = False 
+SESSION_COOKIE_SECURE = False # أيضاً لـ Session cookie
+
+# تعيين الدومين لـ None يسمح للكوكيز بالعمل على نفس الـ IP/Domain
+CSRF_COOKIE_DOMAIN = None 
+SESSION_COOKIE_DOMAIN = None 
+
+
+# REST_FRAMEWORK Settings
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication', 
@@ -153,7 +168,7 @@ REST_FRAMEWORK = {
     )
 }
 
-# إعدادات DJOSER
+# DJOSER Settings
 DJOSER = {
     'PASSWORD_RESET_CONFIRM_URL': '#/password/reset/confirm/{uid}/{token}',
     'USERNAME_RESET_CONFIRM_URL': '#/username/reset/confirm/{uid}/{token}',

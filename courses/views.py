@@ -1,370 +1,257 @@
-import json # NEW: لاستيراد json
-from rest_framework import generics, status
+# courses/views.py
+
+from rest_framework import generics, status, permissions
 from rest_framework.response import Response
-from rest_framework.views import APIView
-from rest_framework.permissions import AllowAny, IsAuthenticated, BasePermission
-from .models import Course, Lecture, Material, QuizOrAssignment, Question, Choice, Submission, StudentAnswer
+from .models import Course, Lecture, Material, QuizOrAssignment, Question, Choice
 from .serializers import (
-    CourseSerializer, CourseCreateUpdateSerializer,
-    LectureSerializer, MaterialSerializer,
-    QuizOrAssignmentSerializer, QuestionSerializer, ChoiceSerializer,
-    SubmissionSerializer, StudentAnswerSerializer,
-    # NEW: استيراد السيريالايزر المتداخل للإنشاء
-    QuizOrAssignmentCreateSerializer 
+    CourseSerializer, LectureSerializer, MaterialSerializer,
+    QuizOrAssignmentSerializer, QuestionSerializer, ChoiceSerializer
 )
-from django.db.models import Q
-from users.models import CustomUser
-from users.serializers import TeacherProfileSerializer 
+from users.models import CustomUser # لاستخدام موديل CustomUser الخاص بك
 
 
-class IsTeacherOwnerOrAdmin(BasePermission):
-    def has_object_permission(self, request, view, obj):
-        if request.method in ['GET', 'HEAD', 'OPTIONS']:
-            return True
-        if request.user and request.user.is_authenticated:
-            if request.user.is_staff or (hasattr(request.user, 'user_type') and request.user.user_type == 'admin'):
-                return True
-            if isinstance(obj, Course):
-                return obj.teacher == request.user
-            elif isinstance(obj, Lecture):
-                return obj.course.teacher == request.user
-            elif isinstance(obj, Material):
-                # إذا كانت المادة مرتبطة بواجب/امتحان، تحقق من ملكية الكورس الأصلية
-                if obj.quiz_assignment:
-                    return obj.quiz_assignment.lecture.course.teacher == request.user
-                return obj.lecture.course.teacher == request.user
-            elif isinstance(obj, QuizOrAssignment):
-                return obj.lecture.course.teacher == request.user
-            elif isinstance(obj, Question):
-                return obj.quiz_or_assignment.lecture.course.teacher == request.user
-            elif isinstance(obj, Choice):
-                return obj.question.quiz_or_assignment.lecture.course.teacher == request.user
-        return False
-
-class IsTeacher(BasePermission):
-    def has_permission(self, request, view):
-        if request.user and request.user.is_authenticated:
-            return request.user.user_type == 'teacher'
-        return False
-
-class CourseListAPIView(generics.ListAPIView):
-    queryset = Course.objects.filter(is_published=True)
+# ViewSet لجلب وإنشاء الكورسات
+class CourseListCreateAPIView(generics.ListCreateAPIView):
+    queryset = Course.objects.all().select_related('teacher') # جلب بيانات المعلم مع الكورس
     serializer_class = CourseSerializer
-    permission_classes = [AllowAny]
-
-    def get_serializer_context(self):
-        return {'request': self.request}
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly] # السماح بالقراءة للجميع، الإنشاء للمسجلين
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        academic_level = self.request.query_params.get('level')
+        # تصفية الكورسات حسب الصف الدراسي والمادة إذا تم تمريرها في الـ query params
+        academic_level = self.request.query_params.get('academic_level')
         subject = self.request.query_params.get('subject')
-        teacher_id = self.request.query_params.get('teacher_id')
-        course_type = self.request.query_params.get('course_type')
 
         if academic_level:
             queryset = queryset.filter(academic_level=academic_level)
         if subject:
             queryset = queryset.filter(subject=subject)
-        if teacher_id:
-            queryset = queryset.filter(teacher__id=teacher_id)
-        if course_type:
-            queryset = queryset.filter(course_type=course_type)
         
-        return queryset
+        # تصفية الكورسات المنشورة فقط للمستخدمين غير المصادقين
+        # أو عرض كل الكورسات للمعلمين المسجلين
+        if not self.request.user.is_authenticated:
+            queryset = queryset.filter(is_published=True)
+        elif self.request.user.user_type == 'teacher':
+            # المعلم يمكنه رؤية جميع كورساته (المنشورة وغير المنشورة)
+            # ولكن هذه الـ View تجلب كل الكورسات، لذلك لا داعي لفلترة إضافية هنا
+            pass 
 
-class CourseDetailAPIView(generics.RetrieveAPIView):
-    queryset = Course.objects.filter(is_published=True)
-    serializer_class = CourseSerializer
-    permission_classes = [AllowAny]
-    lookup_field = 'pk'
-
-    def get_serializer_context(self):
-        return {'request': self.request}
-
-class CourseCreateAPIView(generics.CreateAPIView):
-    queryset = Course.objects.all()
-    serializer_class = CourseCreateUpdateSerializer
-    permission_classes = [IsAuthenticated, IsTeacher]
-
-    def get_serializer_context(self):
-        return {'request': self.request}
+        return queryset.order_by('-created_at') # ترتيب أحدث الكورسات أولاً
 
     def perform_create(self, serializer):
-        if self.request.user.user_type == 'teacher' and self.request.user.specialized_subject:
-            serializer.save(
-                teacher=self.request.user,
-                subject=self.request.user.specialized_subject,
-                academic_track=None 
-            )
-        else:
-            return Response({"detail": "تخصص المدرس غير محدد."}, status=status.HTTP_400_BAD_REQUEST)
-
-
-class CourseUpdateAPIView(generics.RetrieveUpdateAPIView):
-    queryset = Course.objects.all()
-    serializer_class = CourseCreateUpdateSerializer
-    permission_classes = [IsAuthenticated, IsTeacherOwnerOrAdmin]
-    lookup_field = 'pk'
-
-    def get_serializer_context(self):
-        return {'request': self.request}
-
-
-class CourseDestroyAPIView(generics.DestroyAPIView):
-    queryset = Course.objects.all()
-    serializer_class = CourseSerializer
-    permission_classes = [IsAuthenticated, IsTeacherOwnerOrAdmin]
-    lookup_field = 'pk'
-
-class TeacherMyCoursesListView(generics.ListAPIView):
-    serializer_class = CourseSerializer
-    permission_classes = [IsAuthenticated, IsTeacher]
-
-    def get_serializer_context(self):
-        return {'request': self.request}
-
-    def get_queryset(self):
-        queryset = Course.objects.filter(teacher=self.request.user)
-        academic_level = self.request.query_params.get('level')
-        subject = self.request.query_params.get('subject')
-        course_type = self.request.query_params.get('course_type')
-        
-        if academic_level:
-            queryset = queryset.filter(academic_level=academic_level)
-        if subject:
-            queryset = queryset.filter(subject=subject)
-        if course_type:
-            queryset = queryset.filter(course_type=course_type)
+        # عند إنشاء كورس جديد، المعلم يجب أن يكون هو المنشئ
+        if self.request.user.user_type == 'teacher':
+            # تعيين مادة الكورس تلقائياً من تخصص المعلم (specialized_subject)
+            # تأكد أن specialized_subject موجود في موديل CustomUser
+            course_subject = self.request.user.specialized_subject 
+            if not course_subject:
+                raise serializers.ValidationError({"subject": "تخصص المعلم غير محدد. لا يمكن إنشاء كورس."})
             
-        return queryset
+            serializer.save(teacher=self.request.user, subject=course_subject)
+        else:
+            raise permissions.PermissionDenied("فقط المعلمون يمكنهم إنشاء الكورسات.")
 
-class TeacherListAPIView(generics.ListAPIView):
-    queryset = CustomUser.objects.filter(user_type='teacher')
-    serializer_class = TeacherProfileSerializer
-    permission_classes = [AllowAny]
+# ViewSet للكورسات الخاصة بالمعلم الحالي (كورساتي)
+class TeacherCourseListAPIView(generics.ListAPIView):
+    serializer_class = CourseSerializer
+    permission_classes = [permissions.IsAuthenticated] # فقط المستخدمون المسجلون يمكنهم الوصول
 
     def get_queryset(self):
-        queryset = super().get_queryset()
-        academic_level = self.request.query_params.get('level')
-        subject = self.request.query_params.get('subject')
+        # فقط المعلم يمكنه رؤية كورساته
+        if self.request.user.user_type == 'teacher':
+            return Course.objects.filter(teacher=self.request.user).order_by('-created_at')
+        raise permissions.PermissionDenied("فقط المعلمون يمكنهم رؤية كورساتهم.")
 
-        if academic_level:
-            queryset = queryset.filter(courses__academic_level=academic_level, courses__is_published=True).distinct()
-        if subject:
-            queryset = queryset.filter(courses__subject=subject, courses__is_published=True).distinct()
+# ViewSet لجلب وتعديل وحذف كورس معين
+class CourseRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Course.objects.all().select_related('teacher')
+    serializer_class = CourseSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def get_object(self):
+        obj = super().get_object()
+        # السماح لمالك الكورس (المعلم) فقط بالتعديل أو الحذف
+        # والسماح بالقراءة للجميع
+        if self.request.method in permissions.SAFE_METHODS: # GET, HEAD, OPTIONS
+            return obj # السماح بالقراءة للجميع (إذا كان منشوراً أو لديه صلاحيات)
         
-        return queryset
+        if obj.teacher == self.request.user and self.request.user.user_type == 'teacher':
+            return obj
+        raise permissions.PermissionDenied("ليس لديك صلاحية لتعديل أو حذف هذا الكورس.")
 
+    def perform_update(self, serializer):
+        # التأكد من أن subject لا يتغير إذا لم يتم تمريره، ويظل تخصص المعلم
+        if 'subject' in serializer.validated_data and serializer.validated_data['subject'] != self.request.user.specialized_subject:
+             raise serializers.ValidationError({"subject": "لا يمكنك تغيير مادة الكورس لتخصص مختلف عن تخصصك."})
+        
+        serializer.save(teacher=self.request.user) # التأكد من بقاء المعلم الحالي هو المالك
 
+# ViewSet لجلب وإنشاء المحاضرات
 class LectureListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = LectureSerializer
-    permission_classes = [IsAuthenticated, IsTeacher]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         course_id = self.kwargs['course_id']
-        return Lecture.objects.filter(course_id=course_id, course__teacher=self.request.user).order_by('order')
+        # التأكد من أن المستخدم الحالي هو معلم هذا الكورس
+        course = generics.get_object_or_404(Course, id=course_id, teacher=self.request.user)
+        return Lecture.objects.filter(course=course).order_by('order')
 
     def perform_create(self, serializer):
         course_id = self.kwargs['course_id']
-        try:
-            course = Course.objects.get(id=course_id, teacher=self.request.user)
-        except Course.DoesNotExist:
-            return Response({"detail": "الكورس غير موجود أو لا تملكه."}, status=status.HTTP_404_NOT_FOUND)
+        course = generics.get_object_or_404(Course, id=course_id, teacher=self.request.user)
         serializer.save(course=course)
 
+# ViewSet لجلب وتعديل وحذف محاضرة معينة
 class LectureRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = LectureSerializer
-    permission_classes = [IsAuthenticated, IsTeacherOwnerOrAdmin]
     queryset = Lecture.objects.all()
-    lookup_field = 'pk'
+    serializer_class = LectureSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
+    def get_object(self):
+        obj = generics.get_object_or_404(Lecture, pk=self.kwargs['pk'])
+        # التأكد من أن المستخدم الحالي هو معلم الكورس الذي تنتمي إليه المحاضرة
+        if obj.course.teacher != self.request.user or self.request.user.user_type != 'teacher':
+            raise permissions.PermissionDenied("ليس لديك صلاحية للوصول لهذه المحاضرة.")
+        return obj
 
+# ViewSet لجلب وإنشاء المواد التعليمية
 class MaterialListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = MaterialSerializer
-    permission_classes = [IsAuthenticated, IsTeacher]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         lecture_id = self.kwargs['lecture_id']
-        return Material.objects.filter(lecture_id=lecture_id, lecture__course__teacher=self.request.user).order_by('order')
-
-    def create(self, request, *args, **kwargs):
-        material_type = request.data.get('type')
-        lecture_id = self.kwargs['lecture_id']
-
-        try:
-            lecture = Lecture.objects.get(id=lecture_id, course__teacher=request.user)
-        except Lecture.DoesNotExist:
-            return Response({"detail": "المحاضرة غير موجودة أو لا تملك صلاحية الوصول إليها."}, status=status.HTTP_404_NOT_FOUND)
-
-        if material_type in ['quiz', 'exam']:
-            # إذا كان نوع المادة واجب أو امتحان، سننشئ QuizOrAssignment أولاً
-            quiz_details_str = request.data.get('quiz_details')
-            if not quiz_details_str:
-                return Response({"quiz_details": "تفاصيل الواجب/الامتحان مطلوبة لهذا النوع من المواد."}, status=status.HTTP_400_BAD_REQUEST)
-            
-            try:
-                quiz_details = json.loads(quiz_details_str) # تحليل الـ JSON string
-            except json.JSONDecodeError:
-                return Response({"quiz_details": "صيغة تفاصيل الواجب/الامتحان غير صحيحة."}, status=status.HTTP_400_BAD_REQUEST)
-
-            # تحضير بيانات QuizOrAssignment
-            quiz_data = {
-                'lecture': lecture.id,
-                'title': quiz_details.get('title', f"{material_type} جديد"), # يمكن أن يكون العنوان من المادة
-                'type': material_type, # نوع الواجب/الامتحان
-                'duration_minutes': quiz_details.get('duration_minutes'),
-                'passing_score_percentage': quiz_details.get('passing_score_percentage'),
-                'questions': quiz_details.get('questions', []) # الأسئلة والخيارات
-            }
-            
-            # استخدام QuizOrAssignmentCreateSerializer لإنشاء الواجب/الامتحان والأسئلة والخيارات
-            quiz_serializer = QuizOrAssignmentCreateSerializer(data=quiz_data, context={'request': request})
-            if quiz_serializer.is_valid():
-                quiz_instance = quiz_serializer.save(lecture=lecture) # حفظ الواجب/الامتحان
-
-                # الآن ننشئ المادة Material ونربطها بالواجب/الامتحان الذي تم إنشاؤه
-                material_data = {
-                    'lecture': lecture.id,
-                    'title': request.data.get('title'),
-                    'type': material_type,
-                    'order': request.data.get('order', 0),
-                    'is_published': request.data.get('is_published', False),
-                    'description': request.data.get('description'),
-                    'quiz_assignment': quiz_instance.id # ربط المادة بالواجب/الامتحان الذي تم إنشاؤه
-                }
-                material_serializer = self.get_serializer(data=material_data)
-                material_serializer.is_valid(raise_exception=True)
-                material_serializer.save(lecture=lecture) # حفظ المادة
-
-                # إذا كانت المحاضرة ستُقفل بهذا الواجب/الامتحان
-                if quiz_details.get('locks_next_lecture'):
-                    lecture.is_locked = True
-                    lecture.required_quiz_or_exam = quiz_instance
-                    lecture.save()
-
-                return Response(material_serializer.data, status=status.HTTP_201_CREATED)
-            else:
-                return Response(quiz_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        else:
-            # للأنواع الأخرى من المواد (فيديو، PDF، نص، رابط)
-            serializer = self.get_serializer(data=request.data)
-            serializer.is_valid(raise_exception=True)
-            serializer.save(lecture=lecture)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-class MaterialRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = MaterialSerializer
-    permission_classes = [IsAuthenticated, IsTeacherOwnerOrAdmin]
-    queryset = Material.objects.all()
-    lookup_field = 'pk'
-
-
-class QuizOrAssignmentListCreateAPIView(generics.ListCreateAPIView):
-    serializer_class = QuizOrAssignmentSerializer
-    permission_classes = [IsAuthenticated, IsTeacher]
-
-    def get_queryset(self):
-        lecture_id = self.kwargs['lecture_id']
-        return QuizOrAssignment.objects.filter(lecture_id=lecture_id, lecture__course__teacher=self.request.user)
+        lecture = generics.get_object_or_404(Lecture, id=lecture_id)
+        # التأكد من أن المستخدم الحالي هو معلم الكورس الذي تنتمي إليه المحاضرة
+        if lecture.course.teacher != self.request.user or self.request.user.user_type != 'teacher':
+            raise permissions.PermissionDenied("ليس لديك صلاحية للوصول لمواد هذه المحاضرة.")
+        return Material.objects.filter(lecture=lecture).order_by('order')
 
     def perform_create(self, serializer):
         lecture_id = self.kwargs['lecture_id']
-        lecture = Lecture.objects.get(id=lecture_id, course__teacher=self.request.user)
-        serializer.save(lecture=lecture)
+        lecture = generics.get_object_or_404(Lecture, id=lecture_id)
+        if lecture.course.teacher != self.request.user or self.request.user.user_type != 'teacher':
+            raise permissions.PermissionDenied("ليس لديك صلاحية لإضافة مواد لهذه المحاضرة.")
+        
+        # إذا كان نوع المادة QuizOrAssignment، يتم إنشاء QuizOrAssignment تلقائياً
+        material_type = serializer.validated_data.get('type')
+        if material_type == 'quiz' or material_type == 'exam':
+            quiz_details = self.request.data.get('quiz_details') # يتم إرسالها كـ JSON string من Frontend
+            if quiz_details:
+                quiz_details_dict = json.loads(quiz_details) # تحويل JSON string إلى Python dict
+                material_instance = serializer.save(lecture=lecture)
+                QuizOrAssignment.objects.create(material=material_instance, **quiz_details_dict)
+            else:
+                raise serializers.ValidationError({"quiz_details": "بيانات الواجب/الامتحان مطلوبة."})
+        else:
+            serializer.save(lecture=lecture)
 
+# ViewSet لجلب وتعديل وحذف مادة تعليمية معينة
+class MaterialRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Material.objects.all()
+    serializer_class = MaterialSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_object(self):
+        obj = generics.get_object_or_404(Material, pk=self.kwargs['pk'])
+        # التأكد من أن المستخدم الحالي هو معلم الكورس الذي تنتمي إليه المادة
+        if obj.lecture.course.teacher != self.request.user or self.request.user.user_type != 'teacher':
+            raise permissions.PermissionDenied("ليس لديك صلاحية للوصول لهذه المادة.")
+        return obj
+
+    def perform_update(self, serializer):
+        # إذا تم تحديث مادة من نوع Quiz/Exam، يجب تحديث QuizOrAssignment المرتبط بها
+        material_type = serializer.validated_data.get('type', self.get_object().type)
+        if material_type == 'quiz' or material_type == 'exam':
+            quiz_details = self.request.data.get('quiz_details') # قد تكون موجودة في request.data
+            if quiz_details:
+                # تحديث تفاصيل الواجب/الامتحان المرتبطة
+                quiz_details_dict = json.loads(quiz_details)
+                quiz_instance, created = QuizOrAssignment.objects.get_or_create(material=self.get_object())
+                quiz_serializer = QuizOrAssignmentSerializer(quiz_instance, data=quiz_details_dict, partial=True)
+                quiz_serializer.is_valid(raise_exception=True)
+                quiz_serializer.save()
+            elif hasattr(self.get_object(), 'quiz_details'): # إذا كانت Quiz/Exam وتم إزالة تفاصيلها
+                self.get_object().quiz_details.delete()
+
+        serializer.save()
+
+
+# ViewSets للواجبات/الامتحانات والأسئلة والخيارات
 class QuizOrAssignmentRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = QuizOrAssignmentSerializer
-    permission_classes = [IsAuthenticated, IsTeacherOwnerOrAdmin]
     queryset = QuizOrAssignment.objects.all()
-    lookup_field = 'pk'
+    serializer_class = QuizOrAssignmentSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
+    def get_object(self):
+        obj = generics.get_object_or_404(QuizOrAssignment, pk=self.kwargs['pk'])
+        # التأكد من أن المستخدم الحالي هو معلم الكورس الذي تنتمي إليه المادة المرتبطة بالواجب/الامتحان
+        if obj.material.lecture.course.teacher != self.request.user or self.request.user.user_type != 'teacher':
+            raise permissions.PermissionDenied("ليس لديك صلاحية للوصول لهذا الواجب/الامتحان.")
+        return obj
 
 class QuestionListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = QuestionSerializer
-    permission_classes = [IsAuthenticated, IsTeacher]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         quiz_id = self.kwargs['quiz_id']
-        return Question.objects.filter(quiz_or_assignment_id=quiz_id, quiz_or_assignment__lecture__course__teacher=self.request.user).order_by('order')
+        quiz_or_assignment = generics.get_object_or_404(QuizOrAssignment, id=quiz_id)
+        # التأكد من صلاحية المعلم
+        if quiz_or_assignment.material.lecture.course.teacher != self.request.user or self.request.user.user_type != 'teacher':
+            raise permissions.PermissionDenied("ليس لديك صلاحية لإدارة أسئلة هذا الاختبار.")
+        return Question.objects.filter(quiz_or_assignment=quiz_or_assignment)
 
     def perform_create(self, serializer):
         quiz_id = self.kwargs['quiz_id']
-        quiz_or_assignment = QuizOrAssignment.objects.get(id=quiz_id, lecture__course__teacher=self.request.user)
+        quiz_or_assignment = generics.get_object_or_404(QuizOrAssignment, id=quiz_id)
+        if quiz_or_assignment.material.lecture.course.teacher != self.request.user or self.request.user.user_type != 'teacher':
+            raise permissions.PermissionDenied("ليس لديك صلاحية لإضافة أسئلة لهذا الاختبار.")
         serializer.save(quiz_or_assignment=quiz_or_assignment)
 
-
 class QuestionRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = QuestionSerializer
-    permission_classes = [IsAuthenticated, IsTeacherOwnerOrAdmin]
     queryset = Question.objects.all()
-    lookup_field = 'pk'
+    serializer_class = QuestionSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_object(self):
+        obj = generics.get_object_or_404(Question, pk=self.kwargs['pk'])
+        # التأكد من صلاحية المعلم
+        if obj.quiz_or_assignment.material.lecture.course.teacher != self.request.user or self.request.user.user_type != 'teacher':
+            raise permissions.PermissionDenied("ليس لديك صلاحية للوصول لهذا السؤال.")
+        return obj
 
 class ChoiceListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = ChoiceSerializer
-    permission_classes = [IsAuthenticated, IsTeacher]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         question_id = self.kwargs['question_id']
-        return Choice.objects.filter(question_id=question_id, question__quiz_or_assignment__lecture__course__teacher=self.request.user)
+        question = generics.get_object_or_404(Question, id=question_id)
+        # التأكد من صلاحية المعلم
+        if question.quiz_or_assignment.material.lecture.course.teacher != self.request.user or self.request.user.user_type != 'teacher':
+            raise permissions.PermissionDenied("ليس لديك صلاحية لإدارة خيارات هذا السؤال.")
+        return Choice.objects.filter(question=question)
 
     def perform_create(self, serializer):
         question_id = self.kwargs['question_id']
-        question = Question.objects.get(id=question_id, quiz_or_assignment__lecture__course__teacher=self.request.user)
+        question = generics.get_object_or_404(Question, id=question_id)
+        if question.quiz_or_assignment.material.lecture.course.teacher != self.request.user or self.request.user.user_type != 'teacher':
+            raise permissions.PermissionDenied("ليس لديك صلاحية لإضافة خيارات لهذا السؤال.")
         serializer.save(question=question)
 
 class ChoiceRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = ChoiceSerializer
-    permission_classes = [IsAuthenticated, IsTeacherOwnerOrAdmin]
     queryset = Choice.objects.all()
-    lookup_field = 'pk'
+    serializer_class = ChoiceSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
+    def get_object(self):
+        obj = generics.get_object_or_404(Choice, pk=self.kwargs['pk'])
+        # التأكد من صلاحية المعلم
+        if obj.question.quiz_or_assignment.material.lecture.course.teacher != self.request.user or self.request.user.user_type != 'teacher':
+            raise permissions.PermissionDenied("ليس لديك صلاحية للوصول لهذا الخيار.")
+        return obj
 
-class SubmissionListCreateAPIView(generics.ListCreateAPIView):
-    serializer_class = SubmissionSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get_queryset(self):
-        if self.request.user.user_type == 'student':
-            return Submission.objects.filter(student=self.request.user).order_by('-submitted_at')
-        elif self.request.user.user_type == 'teacher':
-            quiz_id = self.kwargs.get('quiz_id')
-            if quiz_id:
-                return Submission.objects.filter(
-                    quiz_or_assignment_id=quiz_id,
-                    quiz_or_assignment__lecture__course__teacher=self.request.user
-                ).order_by('-submitted_at')
-            return Submission.objects.none()
-
-    def perform_create(self, serializer):
-        serializer.save(student=self.request.user)
-
-class SubmissionDetailAPIView(generics.RetrieveAPIView):
-    serializer_class = SubmissionSerializer
-    permission_classes = [IsAuthenticated]
-    queryset = Submission.objects.all()
-
-    def get_queryset(self):
-        if self.request.user.user_type == 'student':
-            return Submission.objects.filter(quiz_or_assignment__lecture__course__students_enrolled=self.request.user) # Placeholder
-        elif self.request.user.user_type == 'teacher':
-            return Submission.objects.filter(quiz_or_assignment__lecture__course__teacher=self.request.user)
-        return Submission.objects.none()
-
-class StudentAnswerListCreateAPIView(generics.ListCreateAPIView):
-    serializer_class = StudentAnswerSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get_queryset(self):
-        submission_id = self.kwargs['submission_id']
-        return StudentAnswer.objects.filter(submission_id=submission_id, submission__student=self.request.user)
-
-    def perform_create(self, serializer):
-        submission_id = self.kwargs['submission_id']
-        submission = Submission.objects.get(id=submission_id, student=self.request.user)
-        serializer.save(submission=submission)
-
-class StudentAnswerRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = StudentAnswerSerializer
-    permission_classes = [IsAuthenticated]
-    queryset = StudentAnswer.objects.all()
+# يجب استيراد json إذا كنت تستخدمه لتحويل الـ json string
+import json # NEW: إضافة استيراد json هنا

@@ -1,85 +1,93 @@
+# courses/admin.py
+
 from django.contrib import admin
-from .models import Course, Lecture, Material, QuizOrAssignment, Question, Choice, Submission, StudentAnswer
+from .models import Course, Lecture, Material, QuizOrAssignment, Question, Choice, Submission, StudentAnswer # NEW: استيراد الموديلات الجديدة
 
+# تسجيل موديل الكورس
+@admin.register(Course)
 class CourseAdmin(admin.ModelAdmin):
-    list_display = ('title', 'teacher', 'academic_level', 'academic_track', 'subject', 'course_type', 'is_published', 'created_at') # NEW: إضافة course_type
-    list_filter = ('is_published', 'academic_level', 'academic_track', 'subject', 'course_type', 'teacher__user_type') # NEW: يمكن تصفية الكورسات حسب نوعها
+    list_display = ('title', 'teacher', 'academic_level', 'subject', 'price', 'is_published', 'created_at')
+    list_filter = ('is_published', 'academic_level', 'subject', 'course_type', 'teacher__user_type') # إضافة تصفية حسب نوع المعلم
     search_fields = ('title', 'description', 'teacher__first_name', 'teacher__last_name')
+    raw_id_fields = ('teacher',) # لتحسين أداء اختيار المعلم في لوحة الإدارة
+    actions = ['make_published', 'make_unpublished']
 
-admin.site.register(Course, CourseAdmin)
+    def make_published(self, request, queryset):
+        queryset.update(is_published=True)
+        self.message_user(request, "تم نشر الكورسات المختارة بنجاح.")
+    make_published.short_description = "نشر الكورسات المختارة"
 
+    def make_unpublished(self, request, queryset):
+        queryset.update(is_published=False)
+        self.message_user(request, "تم إلغاء نشر الكورسات المختارة بنجاح.")
+    make_unpublished.short_description = "إلغاء نشر الكورسات المختارة"
 
-class MaterialInline(admin.TabularInline):
-    model = Material
-    extra = 1
-    fields = ('title', 'type', 'file', 'url', 'text_content', 'order', 'is_published', 'description')
-    ordering = ('order',)
+# تسجيل موديل المحاضرة
+@admin.register(Lecture)
+class LectureAdmin(admin.ModelAdmin):
+    list_display = ('title', 'course', 'order', 'is_published', 'is_locked', 'required_quiz_or_exam')
+    list_filter = ('is_published', 'is_locked', 'course__academic_level', 'course__subject')
+    search_fields = ('title', 'description', 'course__title')
+    raw_id_fields = ('course', 'required_quiz_or_exam') # لتحسين أداء اختيار الكورس والواجب/الامتحان
 
+# تسجيل موديل المواد التعليمية
+@admin.register(Material)
+class MaterialAdmin(admin.ModelAdmin):
+    list_display = ('title', 'lecture', 'type', 'order', 'is_published')
+    list_filter = ('type', 'is_published', 'lecture__course__academic_level', 'lecture__course__subject')
+    search_fields = ('title', 'text_content', 'lecture__title')
+    raw_id_fields = ('lecture',)
 
+# Inline لخيارات السؤال (لإضافتها مباشرة عند تعديل السؤال)
 class ChoiceInline(admin.TabularInline):
     model = Choice
-    extra = 4
-    fields = ('choice_text', 'is_correct')
+    extra = 1 # عدد الخيارات الإضافية الفارغة تلقائياً
 
-
+# Inline لأسئلة الواجب/الامتحان (لإضافتها مباشرة عند تعديل الواجب/الامتحان)
 class QuestionInline(admin.TabularInline):
     model = Question
+    inlines = [ChoiceInline] # تضمين الخيارات داخل الأسئلة
     extra = 1
-    fields = ('question_text', 'points', 'order')
-    inlines = [ChoiceInline]
-    ordering = ('order',)
 
-
-class QuizOrAssignmentInline(admin.TabularInline):
-    model = QuizOrAssignment
-    extra = 1
-    fields = ('title', 'type', 'duration_minutes', 'passing_score_percentage')
-
+# تسجيل موديل الواجب/الامتحان
+@admin.register(QuizOrAssignment)
 class QuizOrAssignmentAdmin(admin.ModelAdmin):
-    list_display = ('title', 'lecture', 'type', 'duration_minutes', 'passing_score_percentage')
-    list_filter = ('type', 'lecture__course__title', 'lecture__title')
-    search_fields = ('title', 'lecture__title', 'lecture__course__title')
-    inlines = [QuestionInline]
+    list_display = ('material', 'duration_minutes', 'passing_score_percentage')
+    search_fields = ('material__title',)
+    raw_id_fields = ('material',)
+    inlines = [QuestionInline] # تضمين الأسئلة مباشرة
 
-admin.site.register(QuizOrAssignment, QuizOrAssignmentAdmin)
-
-
-class LectureAdmin(admin.ModelAdmin):
-    list_display = ('title', 'course', 'order', 'is_published', 'created_at')
-    list_filter = ('course', 'is_published')
-    search_fields = ('title', 'description', 'course__title')
-    inlines = [MaterialInline, QuizOrAssignmentInline]
-    fieldsets = (
-        (None, {
-            'fields': ('course', 'title', 'description', 'order', 'is_published')
-        }),
-    )
-
-admin.site.register(Lecture, LectureAdmin)
-
-
-class MaterialAdmin(admin.ModelAdmin):
-    list_display = ('title', 'lecture', 'type', 'order', 'is_published', 'created_at')
-    list_filter = ('type', 'lecture__course', 'lecture', 'is_published')
-    search_fields = ('title', 'description', 'lecture__title', 'lecture__course__title')
-    
-admin.site.register(Material, MaterialAdmin)
-
+# Inline لإجابات الطالب (لإضافتها مباشرة عند تعديل التقديم)
 class StudentAnswerInline(admin.TabularInline):
     model = StudentAnswer
-    extra = 1
-    fields = ('question', 'chosen_choice', 'is_correct')
-    readonly_fields = ('is_correct',)
+    extra = 0 # لا يوجد خيارات إضافية فارغة تلقائياً
+    readonly_fields = ('question', 'chosen_choice', 'answer_text', 'is_correct') # للقراءة فقط
 
+# تسجيل موديل تقديمات الواجبات/الامتحانات
+@admin.register(Submission)
 class SubmissionAdmin(admin.ModelAdmin):
-    list_display = ('student', 'quiz_or_assignment', 'score', 'is_passed', 'submitted_at')
-    list_filter = ('quiz_or_assignment__type', 'is_passed', 'submitted_at')
-    search_fields = ('student__email', 'quiz_or_assignment__title')
-    inlines = [StudentAnswerInline]
-    readonly_fields = ('score', 'is_passed', 'submitted_at')
+    list_display = ('quiz_or_assignment', 'student', 'submitted_at', 'score', 'is_graded', 'passed')
+    list_filter = ('is_graded', 'passed', 'quiz_or_assignment__material__lecture__course__academic_level', 'student__user_type')
+    search_fields = ('quiz_or_assignment__material__title', 'student__first_name', 'student__last_name')
+    raw_id_fields = ('quiz_or_assignment', 'student')
+    inlines = [StudentAnswerInline] # تضمين إجابات الطلاب
+    actions = ['mark_as_graded', 'mark_as_passed', 'mark_as_failed']
 
-admin.site.register(Submission, SubmissionAdmin)
+    def mark_as_graded(self, request, queryset):
+        queryset.update(is_graded=True)
+        self.message_user(request, "تم تعليم التقديمات المختارة كمصححة.")
+    mark_as_graded.short_description = "تعليم التقديمات كمصححة"
 
-admin.site.register(Question)
-admin.site.register(Choice)
-admin.site.register(StudentAnswer)
+    def mark_as_passed(self, request, queryset):
+        queryset.update(passed=True, is_graded=True)
+        self.message_user(request, "تم تعليم التقديمات المختارة كـ ناجحة.")
+    mark_as_passed.short_description = "تعليم التقديمات كـ ناجحة"
+
+    def mark_as_failed(self, request, queryset):
+        queryset.update(passed=False, is_graded=True)
+        self.message_user(request, "تم تعليم التقديمات المختارة كـ راسبة.")
+    mark_as_failed.short_description = "تعليم التقديمات كـ راسبة"
+
+
+# تسجيل موديل إجابات الطلاب (غالباً لا يتم إدارته بشكل مباشر، بل من خلال SubmissionInline)
+# admin.site.register(StudentAnswer) # يمكن تسجيله إذا أردت إدارة فردية

@@ -1,227 +1,157 @@
-/* Register Page specific styles */
+/* frontend/src/components/RegisterPage.css */
+
+/* General Page Layout */
 .register-page {
-    text-align: right; /* محاذاة النص لليمين */
-    /* لون الخلفية العام سيأتي من index.css */
-    color: #f0f2f5; /* لون النص الأساسي */
+    background-color: var(--primary-bg-color); /* من index.css */
+    color: var(--text-color); /* من index.css */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.5s ease, color 0.5s ease;
 }
 
-/* Register Section */
-.register-section {
+.register-page .main-content {
+    flex-grow: 1; /* لجعل المحتوى الرئيسي يملأ المساحة المتاحة */
     display: flex;
     justify-content: center;
-    align-items: flex-start;
-    min-height: 80vh;
-    padding: 40px 0;
+    align-items: center;
+    width: 100%;
+    padding: 40px 0; /* مسافة داخلية */
 }
 
-.register-container {
-    display: flex;
-    gap: 40px;
-    background-color: #1a223a; /* خلفية الكونتينر بلون أفتح */
-    padding: 40px;
-    border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    flex-wrap: wrap;
-    max-width: 1000px; /* أقصى عرض للكونتينر */
-    width: 90%;
-}
-
-.register-form-wrapper {
-    flex: 2; /* النموذج يأخذ مساحة أكبر */
-    min-width: 300px;
-    order: 1; /* النموذج على اليسار في RTL */
-}
-
-.register-form-wrapper h2 {
-    color: #009465; /* لون عنوان النموذج */
-    margin-bottom: 25px;
+/* Registration Section Layout */
+.registration-section-landing {
+    padding: 60px 0;
+    width: 100%;
+    max-width: 800px; /* تحديد أقصى عرض للحاوية */
+    background-color: var(--secondary-bg-color);
+    border-radius: 15px;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
     text-align: center;
+    transition: background-color 0.5s ease, box-shadow 0.5s ease;
 }
 
-/* Form Steps Indicator - مؤشر التقدم / أزرار الأقسام */
-.form-steps-indicator {
-    display: flex;
-    justify-content: space-around;
+.registration-section-landing h2 {
+    font-size: 2.8em;
+    color: var(--heading-color);
     margin-bottom: 30px;
-    background-color: #0c142b;
-    padding: 10px;
-    border-radius: 8px;
-    box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+    font-weight: 700;
 }
 
-.step-button {
-    background-color: transparent;
-    color: #f0f2f5;
-    border: 1px solid #4b8357;
-    padding: 10px 15px;
-    border-radius: 5px;
-    transition: all 0.3s ease;
-    flex: 1;
-    margin: 0 5px;
-    font-weight: bold;
+.registration-type-selection {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 400px;
+    margin: 0 auto; /* توسيط الأزرار */
+    padding: 0 20px;
 }
 
-.step-button.active {
-    background-color: #e2613d;
-    color: #fff;
-    border-color: #e2613d;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(226, 97, 61, 0.4);
-}
-
-.step-button:hover:not(.active) {
-    background-color: #4b8357;
-    color: #fff;
-    transform: translateY(-2px);
-}
-
-/* Form Step Content */
-.form-step h3 {
-    color: #96724a; /* عنوان القسم الفرعي بلون بني فاتح */
-    margin-bottom: 20px;
-    text-align: right;
-}
-
-.form-group {
-    margin-bottom: 20px;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 8px;
-    color: #e0e0e0;
-    font-weight: bold;
-}
-
-.register-form input[type="text"],
-.register-form input[type="email"],
-.register-form input[type="password"],
-.register-form input[type="tel"],
-.register-form select,
-.register-form textarea {
-    width: 100%;
-    padding: 12px 15px;
-    border: 1px solid #4b8357;
-    border-radius: 5px;
-    background-color: #0c142b;
-    color: #f0f2f5;
-    font-size: 1em;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.register-form input[type="file"] {
-    color: #f0f2f5;
-    padding-top: 5px;
-}
-
-.register-form input:focus,
-.register-form select:focus,
-.register-form textarea:focus {
-    border-color: #e2613d;
-    box-shadow: 0 0 8px rgba(226, 97, 61, 0.5);
-    outline: none;
-}
-
-/* Style for textarea scrollbar */
-.register-form textarea::-webkit-scrollbar {
-    width: 8px;
-}
-.register-form textarea::-webkit-scrollbar-track {
-    background: #0c142b;
-    border-radius: 10px;
-}
-.register-form textarea::-webkit-scrollbar-thumb {
-    background: #4b8357;
-    border-radius: 10px;
-}
-.register-form textarea::-webkit-scrollbar-thumb:hover {
-    background: #009465;
-}
-
-/* Form Navigation Buttons (Previous/Next) */
-.form-nav-btn {
-    margin-top: 20px;
-    padding: 12px 25px;
-    font-size: 1em;
-    margin-left: 10px; /* مسافة بين الأزرار */
-}
-
-/* Submit Button (Last Step) */
-.submit-btn {
-    width: 100%;
-    padding: 15px;
+.registration-type-selection .btn {
+    padding: 18px 30px;
     font-size: 1.1em;
-    background-color: #e2613d;
-    color: #fff;
-    border-radius: 5px;
-    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-}
-
-.submit-btn:hover {
-    background-color: #d15631;
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(226, 97, 61, 0.4);
-}
-
-/* Has Account Link */
-.has-account-link {
-    margin-top: 25px;
+    border-radius: 10px;
+    font-weight: 600;
+    transition: all 0.3s ease;
     text-align: center;
-    color: #e0e0e0;
+    display: block; /* لجعل الروابط تملأ العرض */
+    width: 100%;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-.has-account-link a {
-    color: #009465;
-    font-weight: bold;
+.registration-type-selection .btn-primary { /* زر إنشاء حساب جديد (عادة طالب) */
+    background-color: var(--accent-color-2); /* أخضر */
+    color: var(--button-text-color);
+}
+.registration-type-selection .btn-primary:hover {
+    filter: brightness(90%);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(var(--accent-color-2-rgb), 0.3);
 }
 
-.has-account-link a:hover {
-    color: #e2613d;
+.registration-type-selection .btn-secondary { /* زر إنشاء حساب أستاذ/فريق عمل (برتقالي) */
+    background-color: var(--accent-color-1); /* برتقالي */
+    color: var(--button-text-color);
+}
+.registration-type-selection .btn-secondary:hover {
+    filter: brightness(90%);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(var(--accent-color-1-rgb), 0.3);
 }
 
-/* Right Side Image Wrapper */
-.register-image-wrapper {
-    flex: 1; /* تأخذ مساحة أقل */
+
+/* Link to login page */
+.login-link-register-page {
+    margin-top: 30px;
+    font-size: 1em;
+    color: var(--text-color);
+}
+.login-link-register-page a {
+    color: var(--accent-color-1); /* برتقالي للرابط */
+    text-decoration: none;
+    font-weight: 600;
+}
+.login-link-register-page a:hover {
+    text-decoration: underline;
+}
+
+
+/* Footer (General, consistent across pages) */
+footer {
+    background-color: var(--heading-color); /* من index.css */
+    color: var(--button-text-color); /* من index.css */
+    padding: 20px 0;
+    text-align: center;
+    font-size: 0.85em;
+    width: 100%;
+}
+footer .container {
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 10px;
+}
+footer .footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
     justify-content: center;
-    text-align: center;
-    min-width: 250px;
-    order: 2; /* الصورة على اليمين في تخطيط RTL */
+}
+footer .footer-links a {
+    color: var(--button-text-color);
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+footer .footer-links a:hover {
+    color: var(--accent-color-1);
 }
 
-.registration-illustration-img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 8px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-}
-
-.image-title {
-    margin-top: 20px;
-    font-size: 1.8em;
-    color: #009465; /* عنوان "طلب إنشاء حساب" على الصورة */
-    font-weight: 700;
-    text-shadow: 2px 2px 5px rgba(0,0,0,0.5);
-}
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-    .register-container {
-        flex-direction: column;
-        padding: 20px;
+    .registration-section-landing {
+        padding: 40px 20px;
+        max-width: 95%;
     }
-    .register-form-wrapper, .register-image-wrapper {
-        order: initial; /* إلغاء الترتيب الخاص بـ RTL عشان يكونوا فوق بعض عادي */
+    .registration-section-landing h2 {
+        font-size: 2.2em;
     }
-    .form-steps-indicator {
-        flex-wrap: wrap; /* لجعل الأزرار تظهر في أكثر من سطر */
-        gap: 5px;
+    .registration-type-selection {
+        max-width: 300px;
     }
-    .step-button {
-        margin: 0;
-        flex-basis: 48%; /* عشان زرارين يظهروا في السطر الواحد */
-        font-size: 0.9em;
+    .registration-type-selection .btn {
+        padding: 15px 20px;
+        font-size: 1em;
+    }
+}
+
+@media (max-width: 480px) {
+    .registration-section-landing h2 {
+        font-size: 1.8em;
     }
 }

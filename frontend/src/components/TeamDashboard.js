@@ -1,129 +1,72 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-// REMOVED: import TafahomLogo from '../assets/images/tafahom_logo.png';
-import DefaultUserImage from '../assets/images/default_user.png';
-import DashboardTeacherHero from '../assets/images/dashboard_teacher_hero.png';
-import './Dashboard.css';
-import { AuthContext, ToastContext } from '../App';
+// REMOVED: import TafahomLogo from '../assets/images/tafahom_logo.png'; // لم يعد ضروريا هنا بعد نقل Navbar
+import DefaultUserImage from '../assets/images/default_user.png'; // صورة افتراضية للمستخدم
+import './TeamDashboard.css'; // ملف الأنماط الخاص بلوحة تحكم فريق العمل
+import { AuthContext, ToastContext } from '../App'; // استيراد الـ Contexts
 
-function TeacherDashboard() {
+
+function TeamDashboard() {
     const navigate = useNavigate();
-    const { user, logout } = useContext(AuthContext);
-    const showGlobalToast = useContext(ToastContext);
-
-    // REMOVED: const [firstName, setFirstName] = useState('');
-    // REMOVED: const [userType, setUserType] = useState('');
-    // REMOVED: const [token, setToken] = useState('');
-    // REMOVED: const [userImage, setUserImage] = useState('');
-    // REMOVED: const [userFullName, setUserFullName] = useState('');
-
+    // جلب بيانات المستخدم ودالة تسجيل الخروج من AuthContext
+    const { user, logout } = useContext(AuthContext); 
+    // جلب دالة إظهار التوست من ToastContext
+    const showGlobalToast = useContext(ToastContext); 
 
     useEffect(() => {
-        if (!user || user.userType !== 'teacher' || !user.token) {
+        // التحقق من صلاحيات المستخدم: إذا لم يكن عضو فريق عمل أو غير مسجل الدخول، يتم توجيهه لصفحة تسجيل الدخول
+        if (!user || user.userType !== 'team_member' || !user.token) {
             navigate('/login');
         }
-    }, [navigate, user]);
+    }, [navigate, user]); // user كـ dependency لـ useEffect للتفاعل مع تغيير حالة المستخدم
 
-    const handleLogoutConfirm = () => {
+    // دالة لتأكيد تسجيل الخروج باستخدام التوست التفاعلي
+    const handleLogoutConfirm = () => { 
         showGlobalToast(
             'هل أنت متأكد من تسجيل الخروج؟',
-            'confirm',
-            (confirmed) => {
+            'confirm', // نوع التوست: "تأكيد"
+            (confirmed) => { // دالة callback تنفذ بعد اختيار المستخدم في التوست
                 if (confirmed) {
-                    logout();
-                    navigate('/login');
+                    logout(); // تنفيذ دالة تسجيل الخروج من الـ Context (لمسح الجلسة)
+                    navigate('/login'); // التوجيه لصفحة تسجيل الدخول
                 }
             }
         );
     };
 
-    if (!user || user.userType !== 'teacher') {
+    // رسالة تحميل/تحقق من الصلاحيات إذا لم يكن المستخدم مؤهلاً
+    if (!user || user.userType !== 'team_member') {
         return <p>جاري التحقق من الصلاحيات...</p>;
     }
 
     return (
-        <div className="dashboard-page">
-            {/* REMOVED: Header/Navbar is now in App.js */}
-            {/* <header className="app-header">
+        <div className="team-dashboard-page">
+            {/* REMOVED: Header/Navbar is now in App.js and is handled globally. */}
+            {/* You should not have a <header> element here to avoid duplicates. */}
+
+            <main className="main-content">
                 <div className="container">
-                    <nav className="navbar">
-                        <div className="logo">
-                            <Link to="/"><img src={TafahomLogo} alt="Tafahom Logo" className="navbar-logo" /></Link>
-                        </div>
-                        <ul className="nav-links">
-                            <li><Link to="/teacher/dashboard">لوحة التحكم</Link></li>
-                            <li><Link to="/teacher/add-course">إضافة كورس جديد</Link></li>
-                            <li><Link to="/teacher/my-courses">إدارة كورساتي</Link></li>
-                        </ul>
-                        <div className="auth-buttons">
-                            <div className="user-profile-widget">
-                                <img 
-                                    src={user.userImage || DefaultUserImage} 
-                                    alt={user.firstName} 
-                                    className="user-profile-image" 
-                                    onError={(e) => e.target.src = DefaultUserImage} 
-                                />
-                                <span className="user-profile-name">أهلاً، {user.firstName}</span>
-                            </div>
-                            <button onClick={handleLogoutConfirm} className="btn btn-secondary">تسجيل الخروج</button>
-                        </div>
-                    </nav>
-                </div>
-            </header> */}
-
-            <main className="main-content dashboard-content">
-                <section className="teacher-dashboard-hero-section">
-                    <div className="container teacher-hero-container">
-                        <div className="teacher-hero-content">
-                            <h1 className="teacher-welcome-title">
-                                أهلاً بك، <span className="teacher-name-highlight">أستاذ {user.firstName}!</span>
-                            </h1>
-                            <p className="teacher-dashboard-intro">من هنا يمكنك إدارة كورساتك ومتابعة طلابك بكل سهولة.</p>
-                            <div className="teacher-hero-stats">
-                                <div className="stat-item">
-                                    <span className="stat-icon">📚</span>
-                                    <span className="stat-value">5+</span>
-                                    <span className="stat-label">كورسات نشطة</span>
-                                </div>
-                                <div className="stat-item">
-                                    <span className="stat-icon">🎓</span>
-                                    <span className="stat-value">250+</span>
-                                    <span className="stat-label">طالب مسجل</span>
-                                </div>
-                                <div className="stat-item">
-                                    <span className="stat-icon">⭐</span>
-                                    <span className="stat-value">4.8</span>
-                                    <span className="stat-label">متوسط التقييم</span>
-                                </div>
-                            </div>
-                            <div className="teacher-hero-actions">
-                                <Link to="/teacher/add-course" className="btn btn-primary">ابدأ إضافة كورس</Link>
-                                <Link to="/teacher/my-courses" className="btn btn-secondary">إدارة الكورسات</Link>
-                            </div>
-                        </div>
-                    </div>
-                    {/* طبقة شفافة وتأثير الجزيئات كما في CourseDetailPage */}
-                    <div className="teacher-hero-overlay" style={{ backgroundImage: `url(${DashboardTeacherHero})` }}></div>
-                </section>
-
-                <div className="container dashboard-sections-wrapper">
-                    <div className="dashboard-sections-grid">
-                        <Link to="/teacher/add-course" className="dashboard-section-card">
-                            <h3>إضافة كورس جديد</h3>
-                            <p>ابدأ في إنشاء كورس تعليمي جديد.</p>
+                    <h2 className="team-welcome-title">أهلاً بك، {user.firstName}!</h2> {/* استخدام user.firstName مباشرة من الـ Context */}
+                    <p className="dashboard-intro">هذه لوحة تحكم فريق العمل. من هنا يمكنك متابعة المهام والإحصائيات.</p>
+                    
+                    <div className="team-dashboard-grid">
+                        {/* يمكنك إضافة روابط لصفحات الإدارة الخاصة بفريق العمل هنا */}
+                        <Link to="/team/tasks" className="team-dashboard-card"> {/* مسار افتراضي للمهام */}
+                            <h3>مهامي</h3>
+                            <p>عرض المهام المخصصة لك ومتابعة تقدمها.</p>
                         </Link>
-                        <Link to="/teacher/my-courses" className="dashboard-section-card">
-                            <h3>إدارة كورساتي</h3>
-                            <p>عرض وتعديل وحذف كورساتك الموجودة.</p>
-                        </Link>
-                        <div className="dashboard-section-card">
-                            <h3>الطلاب المشتركين</h3>
-                            <p>شاهد قائمة الطلاب المشتركين في كورساتك.</p>
-                        </div>
-                        <div className="dashboard-section-card">
+                        <Link to="/team/reports" className="team-dashboard-card"> {/* مسار افتراضي للتقارير */}
                             <h3>التقارير والإحصائيات</h3>
-                            <p>اطلع على أداء كورساتك وإحصائيات الأرباح.</p>
-                        </div>
+                            <p>اطلع على تقارير الأداء والإحصائيات العامة للمنصة.</p>
+                        </Link>
+                        <Link to="/team/users-management" className="team-dashboard-card"> {/* مسار افتراضي لإدارة المستخدمين */}
+                            <h3>إدارة المستخدمين</h3>
+                            <p>مراجعة طلبات الحسابات وإدارة المستخدمين (إذا كانت لديك صلاحيات).</p>
+                        </Link>
+                        <Link to="/team/content-management" className="team-dashboard-card"> {/* مسار افتراضي لإدارة المحتوى */}
+                            <h3>إدارة المحتوى</h3>
+                            <p>إدارة محتوى الكورسات والمواد التعليمية (إذا كانت لديك صلاحيات).</p>
+                        </Link>
                     </div>
                 </div>
             </main>
@@ -137,4 +80,4 @@ function TeacherDashboard() {
     );
 }
 
-export default TeacherDashboard;
+export default TeamDashboard;

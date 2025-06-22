@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-// REMOVED: import TafahomLogo from '../assets/images/tafahom_logo.png'; // لم يعد ضروريا هنا
-import CoursePlaceholder from '../assets/images/course_placeholder.jpg';
+// REMOVED: import TafahomLogo from '../assets/images/tafahom_logo.png'; // لم يعد ضروريا هنا بعد نقل Navbar
+import CoursePlaceholder from '../assets/images/course_placeholder.jpg'; // صورة Placeholder للكورسات
 import academicStructure from '../constants/academicStructure';
-import { ToastContext } from '../App';
-// REMOVED: import { AuthContext } from '../App'; // لم يعد ضروريا هنا بشكل مباشر للـ Navbar
+import { ToastContext } from '../App'; // استيراد ToastContext
+// REMOVED: import { AuthContext } from '../App'; // لم يعد ضروريا هنا بشكل مباشر للوصول للـ user object
 
-// Icons
+// Icons (using simple emojis for now, can be replaced with actual icon libraries like Lucide React or FontAwesome)
 const VIDEO_ICON = '▶️';
 const PDF_ICON = '📄';
 const QUIZ_ICON = '📝';
@@ -101,16 +101,47 @@ function CourseDetailPage() {
 
 
     if (loading) {
-        return <p className="loading-message">جاري تحميل تفاصيل الكورس...</p>;
+        return (
+            <div className="course-detail-page">
+                {/* REMOVED: Header/Navbar is now in App.js and is handled globally. */}
+                {/* You should not have a <header> element here to avoid duplicates. */}
+                <main className="main-content">
+                    <div className="container loading-message-container">
+                        <p>جاري تحميل تفاصيل الكورس...</p>
+                    </div>
+                </main>
+            </div>
+        );
     }
 
     if (error) {
-        return <p className="error-message-box">{error}</p>;
+        return (
+            <div className="course-detail-page">
+                {/* REMOVED: Header/Navbar is now in App.js and is handled globally. */}
+                <main className="main-content">
+                    <div className="container error-message-container">
+                        <p className="error-message-box">{error}</p>
+                        <Link to="/courses" className="btn btn-primary">العودة لصفحة الكورسات</Link>
+                    </div>
+                </main>
+            </div>
+        );
     }
 
     if (!course) {
-        return <p>لم يتم العثور على الكورس.</p>;
+        return (
+            <div className="course-detail-page">
+                {/* REMOVED: Header/Navbar is now in App.js and is handled globally. */}
+                <main className="main-content">
+                    <div className="container">
+                        <p className="error-message-box">لم يتم العثور على الكورس.</p>
+                        <Link to="/courses" className="btn btn-primary">العودة لصفحة الكورسات</Link>
+                    </div>
+                </main>
+            </div>
+        );
     }
+
 
     const courseSubjectLabel = academicStructure.allSubjectsMap[course.subject]?.label || course.subject;
     const courseAcademicLevelLabel = academicStructure[course.academic_level]?.label || course.academic_level;
@@ -123,19 +154,6 @@ function CourseDetailPage() {
     return (
         <div className="course-detail-page">
             {/* REMOVED: Header/Navbar is now in App.js */}
-            {/* <header className="app-header">
-                <div className="container">
-                    <nav className="navbar">
-                        <div className="logo"><Link to="/"><img src={TafahomLogo} alt="Tafahom Logo" className="navbar-logo" /></Link></div>
-                        <ul className="nav-links">
-                            <li><Link to="/">الرئيسية</Link></li>
-                            <li><Link to="/courses">الكورسات</Link></li>
-                        </ul>
-                        <div className="auth-buttons">
-                        </div>
-                    </nav>
-                </div>
-            </header> */}
 
             <main className="main-content course-detail-content">
                 <section className="course-hero-section">

@@ -17,7 +17,9 @@
 }
 
 /* Header/Navbar Styles (أزرار تسجيل الدخول في الـ navbar لصفحة تفاصيل الكورس) */
-/* هذه الأنماط موجودة في HomePage.css لكنها قد تتكرر أو تحتاج تنسيقًا خاصًا هنا */
+/* هذه الأنماط أصبحت تُدار من Navbar.css العام. يمكن حذفها هنا إذا لم يكن هناك تعارض محدد */
+/* لضمان التناسق، سأبقيها هنا مؤقتاً إذا كنت لا تريد حذفها من هذا الملف، 
+   ولكن الأفضل هو أن تكون الأنماط العامة في Navbar.css */
 .app-header .auth-buttons .btn {
     padding: 10px 20px;
     border-radius: 8px;
@@ -27,7 +29,7 @@
 }
 
 .app-header .auth-buttons .btn-primary { /* زر "إنشاء حساب جديد" */
-    background-color: var(--accent-color-1); /* البرتقالي */
+    background-color: var(--accent-color-1);
     color: var(--button-text-color);
     box-shadow: 0 2px 5px rgba(var(--accent-color-1-rgb), 0.2);
 }
@@ -37,8 +39,8 @@
     transform: translateY(-2px);
 }
 
-.app-header .auth-buttons .btn-secondary { /* NEW: زر "تسجيل الدخول" - لونه أخضر هنا أيضاً */
-    background-color: var(--accent-color-2); /* الأخضر #009465 */
+.app-header .auth-buttons .btn-secondary { /* زر "تسجيل الدخول" - لونه أخضر هنا أيضاً */
+    background-color: var(--accent-color-2);
     color: var(--button-text-color);
     box-shadow: 0 2px 5px rgba(var(--accent-color-2-rgb), 0.2);
     border: none;
@@ -104,9 +106,9 @@
     width: 100%;
     height: 100%;
     background: linear-gradient(to left, 
-                rgba(var(--primary-bg-color-rgb, 10, 10, 10), 0.9) 0%, /* استخدام الألوان الجديدة */
-                rgba(var(--primary-bg-color-rgb, 10, 10, 10), 0.7) 50%, 
-                rgba(var(--heading-color-rgb, 255, 255, 255), 0.3) 100%);
+                rgba(var(--primary-bg-color-rgb), 0.9) 0%,
+                rgba(var(--primary-bg-color-rgb), 0.7) 50%, 
+                rgba(var(--heading-color-rgb), 0.3) 100%);
     z-index: 0;
 }
 
@@ -120,9 +122,9 @@
     width: 100%;
     height: 100%;
     background: 
-        radial-gradient(circle at 10% 20%, rgba(var(--accent-color-1-rgb, 226, 97, 61), 0.15) 0%, transparent 50%), /* استخدام البرتقالي */
-        radial-gradient(circle at 90% 80%, rgba(var(--accent-color-2-rgb, 0, 148, 101), 0.2) 0%, transparent 60%), /* استخدام الأخضر */
-        radial-gradient(circle at 50% 50%, rgba(var(--heading-color-rgb, 255, 255, 255), 0.08) 0%, transparent 40%);
+        radial-gradient(circle at 10% 20%, rgba(var(--accent-color-1-rgb), 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 90% 80%, rgba(var(--accent-color-2-rgb), 0.2) 0%, transparent 60%),
+        radial-gradient(circle at 50% 50%, rgba(var(--heading-color-rgb), 0.08) 0%, transparent 40%);
     background-size: 800px 800px;
     opacity: 0.9;
     animation: moveBackground 30s linear infinite;
@@ -154,7 +156,7 @@
     position: absolute;
     top: -20px;
     right: 0;
-    background-color: var(--accent-color-2); /* اللون الأخضر للشارة */
+    background-color: var(--accent-color-2);
     color: var(--button-text-color);
     padding: 8px 18px;
     border-radius: 20px;
@@ -203,7 +205,7 @@
 }
 .course-hero-meta .icon {
     font-size: 1.2em;
-    color: var(--accent-color-1); /* البرتقالي للأيقونات */
+    color: var(--accent-color-1);
 }
 
 
@@ -233,34 +235,38 @@
     text-shadow: none;
 }
 
-.course-hero-subscribe-btn, .course-hero-action-btn {
+.course-hero-action-btn, .course-hero-subscribe-btn {
     padding: 15px 35px;
     font-size: 1.2em;
     border-radius: 8px;
-    background-color: var(--accent-color-1); /* البرتقالي لزر الاشتراك/الإدارة */
-    color: var(--button-text-color);
-    box-shadow: 0 5px 15px rgba(var(--accent-color-1-rgb), 0.4);
-    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    transition: all 0.3s ease;
     text-transform: capitalize;
     letter-spacing: 0;
     font-weight: 600;
 }
-.course-hero-subscribe-btn:hover, .course-hero-action-btn:hover {
+
+.course-hero-action-btn { 
+    background-color: var(--accent-color-2);
+    color: var(--button-text-color);
+    box-shadow: 0 5px 15px rgba(var(--accent-color-2-rgb), 0.4);
+}
+.course-hero-action-btn:hover {
+    background-color: var(--accent-color-2);
+    filter: brightness(90%);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(var(--accent-color-2-rgb), 0.6);
+}
+
+.course-hero-subscribe-btn {
+    background-color: var(--accent-color-1);
+    color: var(--button-text-color);
+    box-shadow: 0 5px 15px rgba(var(--accent-color-1-rgb), 0.4);
+}
+.course-hero-subscribe-btn:hover {
     background-color: var(--accent-color-1);
     filter: brightness(90%);
     transform: translateY(-3px);
     box-shadow: 0 8px 20px rgba(var(--accent-color-1-rgb), 0.6);
-}
-
-/* NEW: زر الدخول للكورس باللون الأخضر */
-.course-hero-action-btn.btn-primary { /* هذا هو زر "الدخول للكورس" في Hero Section */
-    background-color: var(--accent-color-2); /* الأخضر #009465 */
-    box-shadow: 0 5px 15px rgba(var(--accent-color-2-rgb), 0.4);
-}
-.course-hero-action-btn.btn-primary:hover {
-    background-color: var(--accent-color-2);
-    filter: brightness(90%);
-    box-shadow: 0 8px 20px rgba(var(--accent-color-2-rgb), 0.6);
 }
 
 
@@ -290,10 +296,11 @@
     padding: 8px 15px;
     border-radius: 25px;
     box-shadow: 0 2px 5px var(--shadow-color);
+    font-weight: 500;
 }
 .meta-icon {
     font-size: 1.5em;
-    color: var(--accent-color-2); /* الأخضر للأيقونات */
+    color: var(--accent-color-2);
 }
 .meta-label {
     font-weight: 600;
@@ -323,7 +330,7 @@
     display: block;
     width: 70px;
     height: 4px;
-    background-color: var(--accent-color-1); /* البرتقالي للخط تحت العنوان */
+    background-color: var(--accent-color-1);
     margin: 10px auto 0;
     border-radius: 2px;
 }
@@ -360,7 +367,7 @@
 }
 
 .lecture-item.expanded .lecture-header {
-    background-color: var(--accent-color-1); /* البرتقالي لرأس المحاضرة المفتوحة */
+    background-color: var(--accent-color-1);
     color: var(--button-text-color);
     border-bottom: none;
     border-radius: 10px 10px 0 0;
@@ -422,7 +429,7 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: rgba(var(--secondary-bg-color-rgb, 26, 26, 26), 0.95);
+    background-color: rgba(var(--secondary-bg-color-rgb), 0.95);
     padding: 8px 12px;
     border-radius: 6px;
     color: var(--error-color);
@@ -442,7 +449,7 @@
 .material-icon {
     font-size: 1.6em;
     margin-left: 12px;
-    color: var(--accent-color-1); /* البرتقالي للأيقونات */
+    color: var(--accent-color-1);
     flex-shrink: 0;
 }
 
@@ -470,14 +477,14 @@
 
 /* Expanded Material Details */
 .material-details-expanded {
-    background-color: rgba(var(--primary-bg-color-rgb, 10, 10, 10), 0.9);
+    background-color: rgba(var(--primary-bg-color-rgb), 0.9);
     padding: 15px 20px;
     border-radius: 6px;
     margin-top: 8px;
     margin-bottom: 15px;
     font-size: 0.9em;
     color: var(--text-color);
-    border: 1px solid rgba(var(--accent-color-1-rgb, 226, 97, 61), 0.3);
+    border: 1px solid rgba(var(--accent-color-1-rgb), 0.3);
     box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
     line-height: 1.6;
     animation: fadeIn 0.4s ease-out;
@@ -493,7 +500,7 @@
 .material-details-expanded pre {
     white-space: pre-wrap;
     word-break: break-all;
-    background-color: rgba(var(--secondary-bg-color-rgb, 26, 26, 26), 0.8);
+    background-color: rgba(var(--secondary-bg-color-rgb), 0.8);
     padding: 10px;
     border-radius: 4px;
     font-family: 'Consolas', 'Courier New', monospace;
@@ -503,7 +510,7 @@
     overflow-x: auto;
 }
 .material-details-expanded a {
-    color: var(--accent-color-1); /* البرتقالي للروابط */
+    color: var(--accent-color-1);
     text-decoration: underline;
     font-weight: bold;
 }
@@ -539,11 +546,11 @@ footer .footer-links a {
     transition: color 0.3s ease;
 }
 footer .footer-links a:hover {
-    color: var(--accent-color-1); /* البرتقالي في التحويم */
+    color: var(--accent-color-1);
 }
 
 
-/* Responsive adjustments (already updated) */
+/* Responsive adjustments */
 @media (max-width: 992px) {
     .hero-container, .join-team-container {
         flex-direction: column;
@@ -578,7 +585,7 @@ footer .footer-links a:hover {
         font-size: 2.2em;
     }
     .section-description {
-        font-size: 1em;
+        font-size: 1.1em;
     }
     .teachers-grid, .courses-grid, .all-levels-materials-grid {
         grid-template-columns: 1fr;

@@ -1,202 +1,283 @@
 /* frontend/src/components/TeacherProfilePage.css */
 
+/* General Page Layout */
 .teacher-profile-page {
-    background-color: var(--primary-bg-color);
-    color: var(--text-color);
+    background-color: var(--primary-bg-color); /* من index.css */
+    color: var(--text-color); /* من index.css */
     min-height: 100vh;
     transition: background-color 0.5s ease, color 0.5s ease;
 }
 
 .teacher-profile-page .main-content {
-    padding-top: 40px;
+    padding-top: 60px; /* مسافة من أعلى بسبب الناف بار الثابت */
     padding-bottom: 60px;
 }
 
-.loading-message-container, .error-message-container {
-    text-align: center;
-    padding: 50px 0;
-    font-size: 1.2em;
-}
-.error-message-container .error-message-box {
-    margin: 20px auto;
-    max-width: 500px;
-}
-.error-message-container .btn {
-    margin-top: 20px;
+.teacher-profile-page .container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 20px;
 }
 
-
-.teacher-profile-hero-section {
-    /* الخلفية الرئيسية للقسم الذي يحتوي الصورة والاسم */
-    background-color: var(--secondary-bg-color); /* يمكن أن يكون هذا اللون أيضاً */
-    padding: 0; /* تم إزالة padding هنا ليتم وضعه داخل teacher-profile-hero-container */
+/* Teacher Profile Header Section */
+.profile-header-section {
+    background-color: var(--secondary-bg-color);
     border-radius: 15px;
-    box-shadow: var(--box-shadow);
-    margin-bottom: 40px;
-    border: 1px solid var(--border-color);
-    transition: background-color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
-}
-
-.teacher-profile-hero-container {
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+    padding: 40px;
+    margin-bottom: 30px;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
-    position: relative;
-    padding: 50px 20px 30px 20px; /* NEW: إضافة padding هنا بدلاً من .teacher-profile-hero-section */
-    /* NEW: الخلفية الخضراء الرئيسية لهذا القسم */
-    background: linear-gradient(135deg, rgba(var(--heading-color-rgb), 0.8), rgba(var(--heading-color-rgb), 1)); /* تدرج أخضر أكثر وضوحاً */
-    color: var(--button-text-color); /* لجعل النص فاتحاً فوق الخلفية الداكنة الجديدة */
-    border-radius: 15px; /* لضمان تطابق الحواف مع القسم الأم */
-    overflow: hidden; /* لمنع أي تجاوزات */
+    transition: background-color 0.5s ease, box-shadow 0.5s ease;
 }
 
-/* NEW: لكي يرث h1 و p اللون الأبيض من الـ container الجديد */
-.teacher-profile-hero-container h1,
-.teacher-profile-hero-container .teacher-specialty {
-    color: inherit; /* ليرث اللون من العنصر الأب (الأبيض) */
+.profile-image-container {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-bottom: 20px;
+    border: 5px solid var(--accent-color-1); /* حدود برتقالية حول الصورة */
+    box-shadow: 0 0 0 5px rgba(var(--accent-color-1-rgb), 0.2);
 }
 
-
-/* الخلفية الزخرفية (الأشكال) خلف الصورة - عنصر جديد */
-.teacher-profile-hero-container::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
+.profile-image {
     width: 100%;
     height: 100%;
-    /* NEW: استخدام نمط أخضر فاتح جداً كخلفية شفافة */
-    background: radial-gradient(circle at top left, rgba(255,255,255,0.05), transparent 50%),
-                radial-gradient(circle at bottom right, rgba(255,255,255,0.05), transparent 50%);
-    background-size: 200px 200px; /* حجم النمط */
-    background-position: top left, bottom right;
-    opacity: 1; /* جعلها مرئية أكثر */
-    z-index: 0; /* خلف المحتوى */
-    border-radius: 15px;
-}
-
-
-/* قسم صورة البروفايل - لكي تكون مربعة بحواف دائرية ومع خلفية زخرفية */
-.profile-image-section {
-    width: 300px; /* **تم تكبير الحجم** */
-    height: 300px; /* **تم تكبير الحجم** */
-    position: relative;
-    overflow: hidden;
-    border-radius: 15px;
-    border: 5px solid var(--accent-color-1);
-    margin-bottom: 25px;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.4);
-    transition: border-color 0.5s ease, box-shadow 0.3s ease;
-    z-index: 1; /* لجعلها فوق الخلفية الزخرفية */
-    /* NEW: خلفية الهالة حول الصورة لتكون بلون فاتح من الثيم */
-    background: radial-gradient(circle at center, var(--secondary-bg-color) 0%, transparent 70%); /* هالة بلون secondary-bg */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-/* الصورة نفسها داخل حاوية البروفايل */
-.teacher-profile-image {
-    width: 90%;
-    height: 90%;
     object-fit: cover;
-    object-position: center;
-    border-radius: 10px;
-    z-index: 2;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    transition: transform 0.3s ease;
 }
 
-.teacher-profile-image:hover {
-    transform: scale(1.03);
-}
-
-
-.profile-details-section h1 {
+.profile-name {
     font-size: 2.8em;
-    color: var(--button-text-color); /* تم تغيير لون الاسم ليتناسق مع الخلفية الخضراء الداكنة */
+    color: var(--heading-color);
     margin-bottom: 10px;
+    font-weight: 800;
 }
 
-.teacher-specialty {
-    font-size: 1.4em;
-    color: var(--button-text-color); /* تم تغيير لون التخصص ليتناسق مع الخلفية الخضراء الداكنة */
+.profile-specialty {
+    font-size: 1.5em;
+    color: var(--text-color);
     margin-bottom: 20px;
-    font-weight: bold;
+    font-weight: 600;
 }
 
-.teacher-bio {
+.profile-bio {
     font-size: 1.1em;
     color: var(--text-color);
-    line-height: 1.8;
-    max-width: 800px;
-    margin: 0 auto 15px auto;
+    line-height: 1.7;
+    max-width: 700px;
+    margin-bottom: 30px;
+}
+
+.profile-social-links {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+.profile-social-links a {
+    color: var(--accent-color-2); /* أخضر للروابط الاجتماعية */
+    font-size: 1.8em;
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+.profile-social-links a:hover {
+    transform: translateY(-3px);
+    color: var(--accent-color-1); /* برتقالي عند التحويم */
+}
+
+/* Profile Details Grid */
+.profile-details-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+.detail-card {
+    background-color: var(--primary-bg-color);
+    border-radius: 15px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 25px;
+    text-align: right;
+    color: var(--text-color);
+    transition: background-color 0.5s ease, box-shadow 0.3s ease;
+}
+
+.detail-card h3 {
+    font-size: 1.8em;
+    color: var(--heading-color);
+    margin-bottom: 15px;
+    font-weight: 700;
+    border-bottom: 2px solid var(--accent-color-1); /* خط برتقالي تحت العنوان */
+    padding-bottom: 10px;
+}
+
+.detail-card ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.detail-card ul li {
+    margin-bottom: 10px;
+    font-size: 1em;
+    line-height: 1.5;
+}
+.detail-card ul li strong {
+    color: var(--heading-color);
 }
 
 
-.teacher-courses-section, .separate-courses-section {
-    background-color: var(--primary-bg-color);
-    padding: 40px 0;
+/* No Data Message */
+.no-data-message {
+    text-align: center;
+    font-size: 1.3em;
+    color: var(--text-color);
+    margin-top: 50px;
+    padding: 20px;
+    background-color: var(--secondary-bg-color);
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.no-data-message a {
+    color: var(--accent-color-1);
+    text-decoration: none;
+    font-weight: 600;
+}
+.no-data-message a:hover {
+    text-decoration: underline;
+}
+
+
+/* Error/Loading Messages */
+.loading-message-container,
+.error-message-container {
+    padding: 50px 20px;
     text-align: center;
 }
-
-.teacher-courses-section h2, .separate-courses-section h2 {
-    font-size: 2.2em;
-    color: var(--heading-color);
-    margin-bottom: 40px;
-    position: relative;
+.loading-message-container p,
+.error-message-container p {
+    font-size: 1.5em;
+    color: var(--text-color);
+    margin-bottom: 20px;
 }
-
-.teacher-courses-section h2::after, .separate-courses-section h2::after {
-    content: '';
-    display: block;
-    width: 70px;
-    height: 3px;
+.error-message-box {
+    background-color: rgba(var(--error-color-rgb), 0.1);
+    color: var(--error-color);
+    border: 1px solid var(--error-color);
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    text-align: right;
+    font-size: 1em;
+    font-weight: 500;
+}
+.error-message-container .btn-primary {
     background-color: var(--accent-color-1);
-    margin: 10px auto 0;
-    border-radius: 2px;
+    color: var(--button-text-color);
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
 }
 
-/* إعادة استخدام أنماط الـ courses-grid والـ course-card من HomePage.css */
-/* لضمان تناسق التصميم */
 
+/* Footer (General, consistent across pages) */
+footer {
+    background-color: var(--heading-color);
+    color: var(--button-text-color);
+    padding: 30px 0;
+    text-align: center;
+    font-size: 0.9em;
+    margin-top: 20px;
+    border-radius: 15px;
+}
+footer .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+footer .footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 25px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+footer .footer-links a {
+    color: var(--button-text-color);
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+footer .footer-links a:hover {
+    color: var(--accent-color-1);
+}
 
-/* Responsive adjustments */
-@media (min-width: 768px) {
-    .teacher-profile-hero-container {
-        flex-direction: row;
-        text-align: right;
-        gap: 50px;
-        align-items: flex-start;
+/* Responsive Adjustments */
+@media (max-width: 992px) {
+    .profile-header-section {
+        padding: 30px;
     }
-    .profile-image-section {
-        flex-shrink: 0;
-        margin-bottom: 0;
+    .profile-name {
+        font-size: 2.2em;
+    }
+    .profile-specialty {
+        font-size: 1.2em;
+    }
+    .profile-bio {
+        font-size: 1em;
+    }
+    .profile-details-grid {
+        grid-template-columns: 1fr;
+    }
+    .detail-card h3 {
+        font-size: 1.5em;
     }
 }
 
 @media (max-width: 768px) {
-    .teacher-profile-hero-section {
-        padding: 30px 15px;
+    .profile-header-section {
+        padding: 25px;
     }
-    .profile-image-section {
-        width: 180px; /* أصغر قليلاً على الموبايل */
-        height: 180px;
+    .profile-image-container {
+        width: 120px;
+        height: 120px;
     }
-    .profile-details-section h1 {
-        font-size: 2.2em;
+    .profile-name {
+        font-size: 2em;
     }
-    .teacher-specialty {
-        font-size: 1.2em;
-    }
-    .teacher-bio {
+    .profile-specialty {
         font-size: 1em;
     }
-    .teachers-for-subject-section h2, .courses-for-subject-section h2, .teacher-courses-section h2, .separate-courses-section h2 {
+    .profile-bio {
+        font-size: 0.9em;
+    }
+}
+
+@media (max-width: 576px) {
+    .profile-header-section {
+        padding: 20px;
+    }
+    .profile-image-container {
+        width: 100px;
+        height: 100px;
+        border-width: 3px;
+    }
+    .profile-name {
         font-size: 1.8em;
     }
-    .teachers-grid, .courses-grid {
-        grid-template-columns: 1fr;
+    .profile-social-links {
+        gap: 15px;
+    }
+    .profile-social-links a {
+        font-size: 1.5em;
+    }
+    .detail-card {
+        padding: 20px;
+    }
+    .detail-card h3 {
+        font-size: 1.3em;
     }
 }

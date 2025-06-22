@@ -1,104 +1,129 @@
 /* frontend/src/components/TeacherManageCourseContentPage.css */
 
+/* General Page Layout */
 .teacher-manage-course-content-page {
-    background-color: var(--primary-bg-color);
-    color: var(--text-color);
+    background-color: var(--primary-bg-color); /* من index.css */
+    color: var(--text-color); /* من index.css */
     min-height: 100vh;
     transition: background-color 0.5s ease, color 0.5s ease;
 }
 
 .teacher-manage-course-content-page .main-content {
-    padding: 40px 0;
+    padding-top: 60px; /* مسافة من أعلى بسبب الناف بار الثابت */
+    padding-bottom: 60px;
 }
 
-.teacher-manage-course-content-page .page-title {
-    font-size: 2.5em;
+.teacher-manage-course-content-page .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Page Title and Subtitle */
+.page-title {
+    font-size: 2.8em;
     color: var(--heading-color);
-    margin-bottom: 10px;
     text-align: center;
+    margin-bottom: 10px;
+    font-weight: 700;
 }
 
-.teacher-manage-course-content-page .course-subtitle,
-.teacher-manage-course-content-page .course-status {
-    font-size: 1.1em;
+.course-subtitle {
+    font-size: 1.2em;
     color: var(--text-color);
     text-align: center;
-    margin-bottom: 5px;
-}
-.teacher-manage-course-content-page .course-status {
-    font-weight: bold;
-    margin-bottom: 30px;
+    margin-bottom: 10px;
 }
 
-
-/* قسم تحديد عدد المحاضرات */
-.manage-lectures-count-section {
-    background-color: var(--secondary-bg-color);
-    padding: 30px;
-    border-radius: 15px;
-    box-shadow: var(--box-shadow);
-    margin-bottom: 40px;
+.course-status {
+    font-size: 1em;
+    color: var(--text-color);
     text-align: center;
-    border: 1px solid var(--border-color);
-    transition: background-color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
+    margin-bottom: 30px;
+    font-weight: 500;
 }
 
+/* Common Section Card Style */
+.course-section-card {
+    background-color: var(--secondary-bg-color);
+    border-radius: 15px;
+    padding: 30px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.5s ease, box-shadow 0.5s ease;
+}
+
+/* Manage Lectures Count Section */
 .manage-lectures-count-section h3 {
-    color: var(--accent-color-1);
-    font-size: 1.8em;
-    margin-bottom: 20px;
+    font-size: 2em;
+    color: var(--heading-color);
+    text-align: center;
+    margin-bottom: 25px;
+    font-weight: 600;
 }
 
 .manage-lectures-count-section .form-group {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
-    gap: 15px;
     margin-bottom: 20px;
 }
-
-.manage-lectures-count-section .form-group label {
+.manage-lectures-count-section label {
     font-size: 1.1em;
-    color: var(--text-color);
-    font-weight: 500;
+    color: var(--heading-color);
+    margin-bottom: 10px;
+    font-weight: 600;
 }
-
-.manage-lectures-count-section .form-group input[type="number"] {
-    width: 100px;
-    text-align: center;
-    padding: 8px 12px;
-    border-radius: 8px;
+.manage-lectures-count-section input[type="number"] {
+    width: 100%;
+    max-width: 200px;
+    padding: 10px 15px;
     border: 1px solid var(--border-color);
+    border-radius: 8px;
     background-color: var(--primary-bg-color);
     color: var(--text-color);
+    font-size: 1em;
+    text-align: center;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
-
+.manage-lectures-count-section input[type="number"]:focus {
+    outline: none;
+    border-color: var(--accent-color-1);
+    box-shadow: 0 0 0 3px rgba(var(--accent-color-1-rgb), 0.3);
+}
 .manage-lectures-count-section .btn-primary {
-    /* أزرار عادية، أنماطها من index.css */
+    padding: 12px 30px;
+    font-size: 1.1em;
+    border-radius: 8px;
+    background-color: var(--accent-color-1); /* برتقالي لزر التحديث */
+    color: var(--button-text-color);
+    box-shadow: 0 5px 15px rgba(var(--accent-color-1-rgb), 0.3);
+    transition: all 0.3s ease;
+    margin-top: 20px;
+}
+.manage-lectures-count-section .btn-primary:hover {
+    filter: brightness(90%);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(var(--accent-color-1-rgb), 0.4);
+}
+.manage-lectures-count-section .btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
 }
 
 
-/* قائمة المحاضرات */
+/* Lectures List Section (Accordion) */
 .lectures-list-section {
     margin-top: 40px;
 }
-
 .lectures-list-section h3 {
     font-size: 2em;
     color: var(--heading-color);
-    margin-bottom: 30px;
     text-align: center;
-    position: relative;
-}
-
-.lectures-list-section h3::after {
-    content: '';
-    display: block;
-    width: 60px;
-    height: 3px;
-    background-color: var(--accent-color-1);
-    margin: 10px auto 0;
-    border-radius: 2px;
+    margin-bottom: 25px;
+    font-weight: 600;
 }
 
 .lecture-card {
@@ -107,8 +132,8 @@
     border-radius: 10px;
     margin-bottom: 15px;
     overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.5s ease, border-color 0.5s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.4s ease;
 }
 
 .lecture-card.expanded {
@@ -117,26 +142,28 @@
 
 .lecture-header {
     padding: 18px 25px;
-    background-color: var(--primary-bg-color);
-    color: var(--text-color);
+    background-color: var(--secondary-bg-color);
+    color: var(--heading-color);
     cursor: pointer;
     display: flex;
     justify-content: space-between;
     align-items: center;
     border-bottom: 1px solid var(--border-color);
-    transition: background-color 0.3s ease, border-color 0.3s ease;
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
 }
 
 .lecture-card.expanded .lecture-header {
-    background-color: var(--accent-color-2); /* لون مختلف عند الفتح */
+    background-color: var(--accent-color-1); /* البرتقالي لرأس المحاضرة المفتوحة */
     color: var(--button-text-color);
     border-bottom: none;
+    border-radius: 10px 10px 0 0;
 }
 
 .lecture-header h4 {
     margin: 0;
     font-size: 1.3em;
-    color: inherit; /* ليرث اللون من الـ header */
+    color: inherit;
+    font-weight: 600;
 }
 
 .lecture-header .expand-icon {
@@ -150,63 +177,79 @@
 }
 
 .lecture-content {
-    padding: 25px;
-    background-color: var(--secondary-bg-color); /* لون المحتوى */
+    padding: 20px 25px;
+    background-color: var(--secondary-bg-color);
     transition: background-color 0.5s ease;
 }
 
 .lecture-content .form-group {
     margin-bottom: 15px;
+    text-align: right;
 }
-
-.lecture-content .form-group label {
+.lecture-content label {
     display: block;
+    font-size: 0.95em;
+    color: var(--heading-color);
     margin-bottom: 8px;
-    font-weight: 500;
-    color: var(--text-color);
+    font-weight: 600;
 }
-
-.lecture-content .form-group input[type="text"],
-.lecture-content .form-group textarea,
-.lecture-content .form-group select,
-.lecture-content .form-group input[type="url"],
-.lecture-content .form-group input[type="file"] {
+.lecture-content input[type="text"],
+.lecture-content textarea {
     width: 100%;
-    padding: 10px 15px;
-    border-radius: 8px;
+    padding: 10px 12px;
     border: 1px solid var(--border-color);
+    border-radius: 8px;
     background-color: var(--primary-bg-color);
     color: var(--text-color);
-    transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.5s ease, color 0.5s ease;
+    font-size: 0.95em;
+    box-sizing: border-box;
 }
-
-.lecture-content .form-group input[type="text"]:focus,
-.lecture-content .form-group textarea:focus,
-.lecture-content .form-group select:focus,
-.lecture-content .form-group input[type="url"]:focus,
-.lecture-content .form-group input[type="file"]:focus {
-    border-color: var(--accent-color-1);
-    box-shadow: 0 0 0 0.2rem rgba(var(--accent-color-1-rgb), 0.25);
+.lecture-content textarea {
+    min-height: 60px;
+    resize: vertical;
+}
+.lecture-content input[type="text"]:focus,
+.lecture-content textarea:focus {
     outline: none;
+    border-color: var(--accent-color-1);
+    box-shadow: 0 0 0 3px rgba(var(--accent-color-1-rgb), 0.3);
 }
 
+.lecture-content .checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+.lecture-content .checkbox-group input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--accent-color-2);
+    margin: 0;
+}
+.lecture-content .checkbox-group label {
+    margin-bottom: 0;
+    cursor: pointer;
+}
+
+/* Material List within Lecture */
 .lecture-materials-section {
-    margin-top: 30px;
     border-top: 1px dashed var(--border-color);
     padding-top: 20px;
+    margin-top: 20px;
 }
-
 .lecture-materials-section h5 {
-    color: var(--accent-color-1);
-    font-size: 1.2em;
+    font-size: 1.3em;
+    color: var(--heading-color);
     margin-bottom: 15px;
+    text-align: right;
+    font-weight: 600;
 }
-
 .materials-list {
     margin-bottom: 20px;
 }
-
-.material-item {
+.materials-list .material-item {
     background-color: var(--primary-bg-color);
     border: 1px solid var(--border-color);
     padding: 10px 15px;
@@ -216,94 +259,253 @@
     justify-content: space-between;
     align-items: center;
     font-size: 0.95em;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-    transition: background-color 0.5s ease, border-color 0.5s ease, box-shadow 0.3s ease;
+    color: var(--text-color);
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
 }
-
-.material-item .material-actions .btn-sm {
-    padding: 5px 10px;
-    font-size: 0.8em;
+.materials-list .material-item .material-actions {
+    display: flex;
+    gap: 8px;
+}
+.materials-list .material-item .btn-sm {
+    padding: 6px 12px;
+    font-size: 0.85em;
     border-radius: 5px;
-    margin-left: 5px;
 }
-
-.add-material-form {
-    background-color: var(--primary-bg-color);
-    border: 1px dashed var(--border-color);
-    padding: 20px;
-    border-radius: 10px;
-    text-align: center;
-    margin-bottom: 20px;
+.materials-list .material-item .btn-primary {
+    background-color: var(--accent-color-1);
+    color: var(--button-text-color);
 }
-
-.add-material-form h6 {
-    color: var(--accent-color-2);
-    font-size: 1.1em;
-    margin-bottom: 15px;
-}
-
-.add-material-form select.form-control {
-    width: calc(100% - 20px);
-    margin: 0 auto;
-    display: block;
-    background-color: var(--secondary-bg-color);
+.materials-list .material-item .btn-danger {
+    background-color: var(--error-color);
+    color: var(--button-text-color);
 }
 
 
-.save-lecture-btn {
-    width: 100%;
-    padding: 12px;
-    font-size: 1.1em;
-    border-radius: 8px;
-    margin-top: 20px;
-}
-
+/* Add New Material Form */
 .add-material-btn {
-    margin-bottom: 20px; /* مسافة تحت زر إضافة مادة */
+    background-color: var(--accent-color-2); /* أخضر لزر إضافة مادة */
+    color: var(--button-text-color);
+    padding: 10px 20px;
+    font-size: 1em;
+    border-radius: 8px;
+    margin-top: 10px;
+    box-shadow: 0 2px 5px rgba(var(--accent-color-2-rgb), 0.2);
+}
+.add-material-btn:hover {
+    filter: brightness(90%);
 }
 
 .new-material-form-card {
     background-color: var(--primary-bg-color);
-    border: 1px solid var(--border-color);
+    border: 1px dashed var(--accent-color-1);
     border-radius: 10px;
     padding: 20px;
-    margin-top: 15px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    text-align: right;
+    margin-top: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 0.4s ease-out;
 }
 .new-material-form-card h6 {
-    text-align: center;
+    font-size: 1.1em;
     color: var(--heading-color);
-    font-size: 1.2em;
     margin-bottom: 20px;
+    text-align: center;
+    font-weight: 700;
 }
-.new-material-form-card .btn-sm {
-    margin-top: 15px;
+.new-material-form-card .form-group {
+    margin-bottom: 15px;
+}
+.new-material-form-card .form-group label {
+    font-size: 0.9em;
+}
+.new-material-form-card .btn-primary,
+.new-material-form-card .btn-secondary {
+    padding: 8px 15px;
+    font-size: 0.9em;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+.new-material-form-card .btn-primary {
+    background-color: var(--accent-color-1);
+    color: var(--button-text-color);
     margin-left: 10px;
 }
-.new-material-form-card .note-message {
-    font-size: 0.85em;
-    color: var(--accent-color-2);
-    margin-bottom: 15px;
-    text-align: center;
+.new-material-form-card .btn-secondary {
+    background-color: var(--border-color);
+    color: var(--text-color);
+}
+.new-material-form-card .btn-secondary:hover {
+    background-color: var(--primary-bg-color);
+}
+
+.note-message {
+    font-size: 0.9em;
+    color: var(--info-color);
+    border: 1px solid var(--info-color);
+    background-color: rgba(var(--info-color-rgb), 0.1);
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 15px;
+    text-align: right;
 }
 
 
-/* responsive adjustments */
-@media (max-width: 768px) {
-    .manage-lectures-count-section,
-    .lecture-card {
-        padding: 20px;
+/* Save Lecture Button */
+.save-lecture-btn {
+    background-color: var(--accent-color-2); /* أخضر لزر حفظ المحاضرة */
+    color: var(--button-text-color);
+    padding: 15px 30px;
+    font-size: 1.1em;
+    border-radius: 8px;
+    margin-top: 30px;
+    box-shadow: 0 5px 15px rgba(var(--accent-color-2-rgb), 0.3);
+    transition: all 0.3s ease;
+}
+.save-lecture-btn:hover {
+    filter: brightness(90%);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(var(--accent-color-2-rgb), 0.4);
+}
+.save-lecture-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+
+/* Error/Success Messages */
+.loading-message-container,
+.error-message-container {
+    padding: 50px 20px;
+    text-align: center;
+}
+.loading-message-container p,
+.error-message-container p {
+    font-size: 1.5em;
+    color: var(--text-color);
+    margin-bottom: 20px;
+}
+.error-message-box {
+    background-color: rgba(var(--error-color-rgb), 0.1);
+    color: var(--error-color);
+    border: 1px solid var(--error-color);
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    text-align: right;
+    font-size: 1em;
+    font-weight: 500;
+}
+
+
+/* Footer (General, consistent across pages) */
+footer {
+    background-color: var(--heading-color);
+    color: var(--button-text-color);
+    padding: 30px 0;
+    text-align: center;
+    font-size: 0.9em;
+    margin-top: 20px;
+    border-radius: 15px;
+}
+footer .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+footer .footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 25px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+footer .footer-links a {
+    color: var(--button-text-color);
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+footer .footer-links a:hover {
+    color: var(--accent-color-1);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 992px) {
+    .page-title {
+        font-size: 2.2em;
     }
-    .manage-lectures-count-section .form-group {
+    .course-subtitle {
+        font-size: 1.1em;
+    }
+    .manage-lectures-count-section h3,
+    .lectures-list-section h3 {
+        font-size: 1.8em;
+    }
+    .manage-lectures-count-section input[type="number"] {
+        max-width: 150px;
+    }
+    .manage-lectures-count-section .btn-primary {
+        font-size: 1em;
+        padding: 10px 25px;
+    }
+    .lecture-header h4 {
+        font-size: 1.1em;
+    }
+    .lecture-content label {
+        font-size: 0.9em;
+    }
+    .lecture-content input, 
+    .lecture-content textarea, 
+    .lecture-content select {
+        font-size: 0.85em;
+        padding: 8px 10px;
+    }
+    .materials-list .material-item {
+        font-size: 0.9em;
         flex-direction: column;
+        align-items: flex-end;
+        text-align: right;
         gap: 10px;
     }
-    .manage-lectures-count-section .form-group input {
+    .materials-list .material-item .material-actions {
         width: 100%;
+        justify-content: flex-end;
     }
-    .add-material-form select,
-    .new-material-form-card select {
+    .new-material-form-card h6 {
+        font-size: 1em;
+    }
+    .save-lecture-btn {
+        font-size: 1em;
+        padding: 12px 25px;
+    }
+}
+
+@media (max-width: 768px) {
+    .page-title {
+        font-size: 2em;
+    }
+    .manage-lectures-count-section h3,
+    .lectures-list-section h3 {
+        font-size: 1.5em;
+    }
+    .lecture-header {
+        padding: 15px 20px;
+    }
+    .lecture-header h4 {
+        font-size: 1em;
+    }
+    .lecture-content {
+        padding: 15px 20px;
+    }
+    .new-material-form-card .btn-primary,
+    .new-material-form-card .btn-secondary {
+        width: 100%;
+        margin-left: 0;
+    }
+    .save-lecture-btn {
         width: 100%;
     }
 }

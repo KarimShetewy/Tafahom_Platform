@@ -1,104 +1,352 @@
-/* Subject Detail Page specific styles */
-.subject-detail-page {
-    text-align: right;
-    color: var(--text-color);
-}
+/* frontend/src/components/SubjectDetailPage.css */
 
-/* Subject Hero Section */
+/* Hero Section for Subject Detail Page */
 .subject-hero-section {
-    background-color: var(--secondary-bg-color);
-    padding: 60px 0;
-    text-align: center;
-    border-bottom: 1px solid var(--border-color);
-    transition: background-color 0.5s ease, border-color 0.5s ease;
+    position: relative;
+    overflow: hidden;
+    padding: 0;
+    min-height: 450px; /* ارتفاع مناسب */
+    display: flex;
+    align-items: center;
+    justify-content: center; /* توسيط المحتوى */
+    text-align: center; /* توسيط النص */
+    padding-top: 80px; /* لإفساح مجال للهيدر */
+    background-color: var(--primary-bg-color); /* خلفية أساسية Hero */
 }
 
-.subject-hero-section h1 {
-    font-size: 3em;
+.subject-hero-container {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 900px; /* عرض محدود للمحتوى */
+    padding: 40px 20px;
+}
+
+.subject-hero-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.subject-title {
+    font-size: 3.5em;
     color: var(--heading-color);
     margin-bottom: 15px;
-    transition: color 0.5s ease;
+    line-height: 1.2;
+    font-weight: 800;
 }
 
-.subject-hero-section p {
-    font-size: 1.2em;
+.subject-title .subject-highlight {
+    color: var(--accent-color-2); /* اللون الأخضر للمادة المميزة */
+    font-weight: 900;
+}
+
+.subject-meta {
+    font-size: 1.5em;
     color: var(--text-color);
-    max-width: 800px;
-    margin: 0 auto;
-    transition: color 0.5s ease;
+    margin-bottom: 10px;
+    font-weight: 600;
 }
 
-/* Common Section Styling */
-.teachers-for-subject-section, .courses-for-subject-section {
-    padding: 50px 0;
-    background-color: var(--primary-bg-color);
-    transition: background-color 0.5s ease;
+.subject-description {
+    font-size: 1.1em;
+    color: var(--text-color);
+    line-height: 1.8;
+    margin-bottom: 30px;
+    max-width: 700px;
 }
 
-.teachers-for-subject-section h2, .courses-for-subject-section h2 {
-    font-size: 2.2em;
+/* طبقة شفافة فوق الخلفية المتحركة (إذا كانت هناك صورة خلفية) */
+.subject-hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to top, 
+                rgba(var(--primary-bg-color-rgb), 0.8) 0%, 
+                rgba(var(--primary-bg-color-rgb), 0.5) 50%, 
+                rgba(var(--primary-bg-color-rgb), 0.2) 100%);
+    /* يمكنك إضافة background-image هنا إذا أردت صورة محددة لكل مادة */
+    /* background-image: url('../assets/images/subject_hero_placeholder.png'); */
+    background-size: cover;
+    background-position: center;
+    z-index: 0;
+}
+
+/* تأثير الجزيئات المتوهجة / الخلفية المتحركة (نسخ من CourseDetailPage/Dashboard) */
+.subject-hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 10% 20%, rgba(var(--accent-color-1-rgb), 0.15) 0%, transparent 50%), /* برتقالي */
+        radial-gradient(circle at 90% 80%, rgba(var(--accent-color-2-rgb), 0.2) 0%, transparent 60%), /* أخضر */
+        radial-gradient(circle at 50% 50%, rgba(var(--heading-color-rgb), 0.08) 0%, transparent 40%);
+    background-size: 800px 800px;
+    opacity: 0.8;
+    animation: moveBackground 30s linear infinite;
+    z-index: 1;
+}
+
+/* Animation keyframes (should be global in index.css or defined once) */
+/* @keyframes moveBackground { ... } */
+
+
+/* Courses List Section (نفس أنماط Courses Section في HomePage) */
+.courses-list-section {
+    background-color: var(--secondary-bg-color);
+    padding: 60px 0;
+    margin-top: -80px; /* لسحب هذا القسم للأعلى فوق جزء من الـ Hero */
+    position: relative;
+    z-index: 5;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.courses-list-section .section-heading {
+    font-size: 2.8em;
     color: var(--heading-color);
     margin-bottom: 40px;
     text-align: center;
     position: relative;
-    transition: color 0.5s ease;
+    font-weight: 700;
 }
-
-.teachers-for-subject-section h2::after, .courses-for-subject-section h2::after {
+.courses-list-section .section-heading::after {
     content: '';
     display: block;
-    width: 80px;
+    width: 70px;
     height: 4px;
     background-color: var(--accent-color-1);
     margin: 10px auto 0;
     border-radius: 2px;
-    transition: background-color 0.5s ease;
 }
 
-/* Grid for Teachers and Courses (reusing HomePage styles) */
-/*
-  These classes (.teachers-grid, .teacher-card, .teacher-image-container, .teacher-image, .teacher-info-content,
-  .courses-grid, .course-card, .course-image, .course-info) should ideally be defined once in HomePage.css
-  or a global styles file (like App.css/index.css) and reused here to avoid duplication.
-  If HomePage.css is imported globally or its styles are shared, you might not need to redefine them here.
-  Assuming HomePage.css is loaded, we only need to define specific overrides or unique elements.
-*/
-
-/* If you want to customize these cards specifically for this page,
-   you would add more styles here, overriding the HomePage.css ones.
-   For now, we rely on HomePage.css for the main card styles.
-*/
-.teachers-grid, .courses-grid { /* هذه الأنماط موجودة في HomePage.css لكن تكرارها لضمان تطبيقها هنا */
+.courses-list-section .courses-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 30px;
-    margin-bottom: 40px;
 }
 
-.subject-detail-content .error-message, .subject-detail-content .loading-message {
-    color: var(--text-color);
-    font-size: 1.1em;
-    text-align: center;
-    margin-top: 20px;
+.courses-list-section .course-card {
+    background-color: var(--primary-bg-color);
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
 }
-
-.subject-detail-content .error-message-box {
-    background-color: rgba(var(--error-color-rgb), 0.2);
-    color: var(--error-color);
-    padding: 10px 15px;
+.courses-list-section .course-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+.courses-list-section .course-image-container-new {
+    width: 100%;
+    height: 180px;
+    overflow: hidden;
+    position: relative;
+}
+.courses-list-section .course-image-new {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.courses-list-section .course-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: var(--accent-color-2);
+    color: white;
+    padding: 5px 10px;
     border-radius: 5px;
-    margin-bottom: 20px;
-    text-align: center;
+    font-size: 0.8em;
     font-weight: bold;
-    border: 1px solid var(--error-color);
+}
+.courses-list-section .course-info-new {
+    padding: 15px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.courses-list-section .course-info-new h3 {
+    font-size: 1.2em;
+    margin-bottom: 8px;
+    color: var(--heading-color);
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.courses-list-section .course-note {
+    font-size: 0.9em;
+    color: var(--text-color);
+    line-height: 1.5;
+    margin-bottom: 15px;
+}
+.courses-list-section .course-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    font-size: 0.9em;
+    color: var(--text-color);
+}
+.courses-list-section .course-price-new {
+    font-weight: bold;
+    color: var(--accent-color-1);
+    font-size: 1.1em;
+}
+.courses-list-section .course-teacher-name {
+    color: var(--text-color);
+}
+.courses-list-section .course-actions-new {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: auto;
+}
+.courses-list-section .course-action-btn, .courses-list-section .subscribe-btn {
+    flex: 1;
+    padding: 10px 15px;
+    font-size: 0.95em;
+    border-radius: 8px;
+}
+.courses-list-section .course-action-btn.btn-primary {
+    background-color: var(--accent-color-2);
+    color: var(--button-text-color);
+    box-shadow: 0 2px 5px rgba(var(--accent-color-2-rgb), 0.2);
+}
+.courses-list-section .course-action-btn.btn-primary:hover {
+    filter: brightness(90%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(var(--accent-color-2-rgb), 0.3);
 }
 
-/* responsive adjustments */
-@media (max-width: 768px) {
-    .subject-hero-section h1 {
-        font-size: 2.5em;
+.courses-list-section .course-action-btn-outline {
+    background-color: transparent;
+    border: 1px solid var(--accent-color-1);
+    color: var(--accent-color-1);
+}
+.courses-list-section .course-action-btn-outline:hover {
+    background-color: var(--accent-color-1);
+    color: var(--button-text-color);
+}
+
+.courses-list-section .subscribe-btn {
+    background-color: var(--accent-color-1);
+    color: var(--button-text-color);
+    box-shadow: 0 2px 5px rgba(var(--accent-color-1-rgb), 0.2);
+}
+.courses-list-section .subscribe-btn:hover {
+    filter: brightness(90%);
+}
+
+.no-courses-message {
+    text-align: center;
+    font-size: 1.2em;
+    color: var(--text-color);
+    margin-top: 50px;
+}
+
+
+/* Footer (General, consistent across pages) */
+footer {
+    background-color: var(--heading-color);
+    color: var(--button-text-color);
+    padding: 30px 0;
+    text-align: center;
+    font-size: 0.9em;
+    margin-top: 20px;
+    border-radius: 15px;
+}
+footer .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+footer .footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 25px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+footer .footer-links a {
+    color: var(--button-text-color);
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+footer .footer-links a:hover {
+    color: var(--accent-color-1);
+}
+
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+    .subject-hero-section {
+        min-height: 350px;
+        padding-top: 60px;
     }
-    .teachers-grid, .courses-grid {
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    .subject-title {
+        font-size: 2.8em;
+    }
+    .subject-meta {
+        font-size: 1.2em;
+    }
+    .subject-description {
+        font-size: 1em;
+    }
+    .courses-list-section {
+        margin-top: -60px;
+        padding: 40px 0;
+    }
+    .courses-list-section .section-heading {
+        font-size: 2.2em;
+    }
+    .courses-list-section .courses-grid {
+        grid-template-columns: 1fr;
+    }
+    .courses-list-section .course-action-btn, 
+    .courses-list-section .subscribe-btn, 
+    .courses-list-section .course-action-btn-outline {
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .subject-hero-section {
+        min-height: 300px;
+        padding-top: 50px;
+    }
+    .subject-title {
+        font-size: 2.2em;
+    }
+    .subject-meta {
+        font-size: 1em;
+    }
+    .subject-description {
+        font-size: 0.9em;
+    }
+    .courses-list-section {
+        margin-top: -40px;
+        padding: 30px 0;
+    }
+    .courses-list-section .section-heading {
+        font-size: 1.8em;
+    }
+}
+
+@media (max-width: 576px) {
+    .courses-list-section .course-card {
+        margin: 0 10px;
     }
 }

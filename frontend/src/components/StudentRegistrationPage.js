@@ -5,12 +5,6 @@ import academicStructure from '../constants/academicStructure'; // استيرا�
 import { ToastContext } from '../App'; // استيراد ToastContext
 import LoginIllustration from '../assets/images/login_illustration.png'; // صورة توضيحية (أو صورة تسجيل الطالب)
 
-// لم نعد نحتاج لتعريف هذه الثوابت هنا، بل سنستوردها من academicStructure.js
-// const GENDER_CHOICES = [...];
-// const ALL_GOVERNORATES_FOR_SELECT = [...];
-// const PARENT_PROFESSION_CHOICES = [...];
-// const TEACHER_NAME_CHOICES = [...];
-
 function StudentRegistrationPage() {
     const navigate = useNavigate();
     const showGlobalToast = useContext(ToastContext);
@@ -18,26 +12,28 @@ function StudentRegistrationPage() {
     const [formData, setFormData] = useState({
         email: '',
         password: '',
-        password_confirm: '',
+        password_confirm: '', // تأكيد كلمة المرور
+        user_type: 'student', // نوع المستخدم ثابت هنا
         first_name: '',
         second_name: '',
         third_name: '',
         last_name: '',
         phone_number: '',
-        gender: '',
-        governorate: '',
         parent_father_phone_number: '',
         parent_mother_phone_number: '',
         school_name: '',
         parent_profession: '',
         teacher_name_for_student: '',
+        gender: '',
+        governorate: '',
         academic_level: '',
         academic_track: '',
-        personal_id_card: null,
-        user_type: 'student', // هذا يجب أن يكون ثابتًا لصفحة تسجيل الطالب
+        personal_id_card: null, // File
     });
 
-    const [errors, setErrors] = useState({}); // أخطاء التحقق من الصحة في الـ Frontend
+    const [currentSection, setCurrentSection] = useState(1); // حالة لتتبع القسم الحالي
+    const totalSections = 3; // إجمالي عدد الأقسام
+    const [errors, setErrors] = useState({}); // لتخزين أخطاء التحقق من الصحة للحقول
     const [loading, setLoading] = useState(false);
 
     const handleInputChange = (e) => {
@@ -46,19 +42,39 @@ function StudentRegistrationPage() {
             ...prevData,
             [name]: value
         }));
+        if (errors[name]) {
+            setErrors(prevErrors => {
+                const newErrors = { ...prevErrors };
+                delete newErrors[name];
+                return newErrors;
+            });
+        }
     };
 
     const handleFileChange = (e) => {
         const { name, files } = e.target;
-        setFormData(prevData => ({
-            ...prevData,
-            [name]: files[0]
-        }));
+        if (files.length > 0) {
+            setFormData(prevData => ({
+                ...prevData,
+                [name]: files[0] 
+            }));
+            if (errors[name]) { 
+                setErrors(prevErrors => {
+                    const newErrors = { ...prevErrors };
+                    delete newErrors[name];
+                    return newErrors;
+                });
+            }
+        } else {
+            setFormData(prevData => ({ 
+                ...prevData,
+                [name]: null
+            }));
+        }
     };
 
     const validateSection = () => {
         let currentErrors = {};
-        // التحقق من القسم الأول
         if (currentSection === 1) {
             if (!formData.first_name) currentErrors.first_name = 'الاسم الأول مطلوب';
             if (!formData.last_name) currentErrors.last_name = 'الاسم الأخير مطلوب';
@@ -66,13 +82,11 @@ function StudentRegistrationPage() {
             if (!formData.gender) currentErrors.gender = 'الجنس مطلوب';
             if (!formData.governorate) currentErrors.governorate = 'المحافظة مطلوبة';
             if (!formData.academic_level) currentErrors.academic_level = 'الصف الدراسي مطلوب';
-            // academic_track اختياري في الموديل، ولكن قد يكون مطلوباً لبعض المستويات
             if (formData.academic_level && academicStructure[formData.academic_level]?.tracks && Object.keys(academicStructure[formData.academic_level].tracks).length > 0 && !formData.academic_track) {
                  currentErrors.academic_track = 'المسار الدراسي مطلوب لهذا الصف.';
             }
 
         } 
-        // التحقق من القسم الثاني
         else if (currentSection === 2) {
             if (!formData.email) currentErrors.email = 'البريد الإلكتروني مطلوب';
             if (!formData.password) currentErrors.password = 'كلمة المرور مطلوبة';
@@ -84,20 +98,20 @@ function StudentRegistrationPage() {
             if (!formData.school_name) currentErrors.school_name = 'اسم المدرسة مطلوب';
             if (!formData.parent_profession) currentErrors.parent_profession = 'مهنة ولي الأمر مطلوبة';
         } 
-        // التحقق من القسم الثالث
         else if (currentSection === 3) {
             if (!formData.personal_id_card) currentErrors.personal_id_card = 'صورة البطاقة/شهادة الميلاد مطلوبة';
         }
 
-        setErrors(currentErrors);
-        return Object.keys(currentErrors).length === 0;
+        setErrors(currentErrors); 
+        return Object.keys(currentErrors).length === 0; 
     };
 
 
     const handleNextSection = () => {
-        if (validateSection()) {
+        if (validateSection()) { 
             if (currentSection < totalSections) {
                 setCurrentSection(currentSection + 1);
+                setErrors({}); 
             }
         } else {
             showGlobalToast('الرجاء ملء جميع الحقول المطلوبة في هذا القسم قبل المتابعة.', 'warning');
@@ -107,110 +121,103 @@ function StudentRegistrationPage() {
     const handlePrevSection = () => {
         if (currentSection > 1) {
             setCurrentSection(currentSection - 1);
+            setErrors({}); 
         }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        setErrors({}); // مسح الأخطاء السابقة
-        // setSuccessMessage(null); // لا نستخدم successMessage هنا لأن التوست سيتولى الأمر
+        setErrors({}); 
 
-        if (!validateSection()) { // التحقق من القسم الحالي
+        if (!validateSection()) { 
             showGlobalToast('الرجاء مراجعة جميع الحقول المطلوبة في الأقسام قبل الإرسال.', 'warning');
             setLoading(false);
             return;
         }
         
-        // NEW: تصحيح الـ API Endpoint ليتطابق مع Backend
-        // المسار الصحيح هو /api/register/student/
         const apiEndpoint = 'http://127.0.0.1:8000/api/register/student/'; 
         
         const dataToSend = new FormData();
-        // إضافة جميع بيانات النموذج إلى FormData
         for (const key in formData) {
-            if (formData[key] !== null && formData[key] !== '' && formData[key] !== undefined) {
-                // التعامل مع الملفات بشكل خاص
-                if (key === 'personal_id_card') {
-                    if (formData[key]) {
-                        dataToSend.append(key, formData[key]);
-                    }
-                } else if (key === 'password_confirm') {
-                    // لا نرسل password_confirm إلى الـ backend
-                    continue; 
-                }
-                else {
+            if (key === 'personal_id_card') {
+                if (formData[key] instanceof File) { 
                     dataToSend.append(key, formData[key]);
                 }
+            } 
+            // NEW: الآن نرسل password_confirm إلى الـ Backend
+            // الـ Serializer في Backend هو من سيقوم بإزالته بعد التحقق
+            else if (formData[key] !== null && formData[key] !== '' && formData[key] !== undefined) {
+                dataToSend.append(key, formData[key]);
             }
         }
-        // تأكد من إرسال user_type بشكل صريح
         dataToSend.append('user_type', formData.user_type); 
 
         try {
             const response = await axios.post(apiEndpoint, dataToSend, {
                 headers: {
-                    'Content-Type': 'multipart/form-data', // ضروري لرفع الملفات
+                    'Content-Type': 'multipart/form-data', 
                 },
             });
 
             showGlobalToast('تم إرسال طلب حساب الطالب بنجاح. سيتم مراجعته قريباً.', 'success');
-            navigate('/login'); // توجيه لصفحة تسجيل الدخول بعد النجاح
+            navigate('/login'); 
 
         } catch (err) {
             console.error("Registration error details:", err);
             let errorMessage = 'حدث خطأ أثناء إرسال طلب التسجيل. يرجى التحقق من البيانات والمحاولة مرة أخرى.';
 
-            if (err.response) {
+            if (axios.isAxiosError(err) && err.response) {
                 if (err.response.data) {
                     if (err.response.data.detail) {
                         errorMessage = err.response.data.detail;
                     } else if (typeof err.response.data === 'object') {
-                        // جمع كل رسائل الخطأ من الحقول المختلفة
                         const fieldErrors = Object.entries(err.response.data)
                             .map(([field, messages]) => {
                                 const fieldName = {
                                     email: 'البريد الإلكتروني', 'password': 'كلمة المرور', 'password_confirm': 'تأكيد كلمة المرور',
                                     'first_name': 'الاسم الأول', 'second_name': 'الاسم الثاني', 'third_name': 'الاسم الثالث',
-                                    'last_name': 'الاسم الأخير', 'phone_number': 'رقم الهاتف', 'gender': 'الجنس',
-                                    'governorate': 'المحافظة', 'parent_father_phone_number': 'رقم هاتف الأب',
+                                    'last_name': 'الاسم الأخير', 'phone_number': 'رقم الهاتف', 'parent_father_phone_number': 'رقم هاتف الأب',
                                     'parent_mother_phone_number': 'رقم هاتف الأم', 'school_name': 'اسم المدرسة',
                                     'parent_profession': 'مهنة ولي الأمر', 'teacher_name_for_student': 'اسم الأستاذ للطالب',
+                                    'gender': 'الجنس', 'governorate': 'المحافظة',
                                     'academic_level': 'الصف الدراسي', 'academic_track': 'المسار الدراسي',
                                     'personal_id_card': 'البطاقة الشخصية/شهادة الميلاد', 'non_field_errors': ''
                                 }[field] || field;
                                 return `${fieldName}: ${Array.isArray(messages) ? messages.join(', ') : messages}`;
                             })
                             .join(' | ');
-                        errorMessage = `خطأ في البيانات المدخلة: ${fieldErrors}`;
+                        errorMessage = `خطأ في البيانات المدخلة:\n${fieldErrors}`; 
                     } else {
-                        errorMessage = 'فشل التسجيل. استجابة غير متوقعة من الخادم.';
+                        errorMessage = `فشل التسجيل. استجابة غير متوقعة من الخادم (الحالة: ${err.response.status}).`;
                     }
                 } else {
                     errorMessage = `خطأ في الخادم (الحالة: ${err.response.status}). يرجى المحاولة لاحقاً.`;
                 }
             } else if (err.request) {
-                errorMessage = 'لا يوجد استجابة من الخادم. يرجى التحقق من اتصالك بالإنترنت.';
+                errorMessage = 'لا يوجد استجابة من الخادم. يرجى التحقق من اتصالك بالإنترنت وأن الخادم يعمل.';
             } else {
                 errorMessage = 'حدث خطأ غير متوقع أثناء إرسال الطلب.';
             }
             
-            setErrors({general: errorMessage}); // عرض رسالة الخطأ العامة
+            setErrors({general: errorMessage}); 
             showGlobalToast(errorMessage, 'error');
         } finally {
             setLoading(false);
         }
     };
 
-    const [currentSection, setCurrentSection] = useState(1); // حالة لتتبع القسم الحالي
-    const totalSections = 3; // إجمالي عدد الأقسام
-
-    // دالة مساعدة لجلب المسارات الدراسية بناءً على الصف المختار
-    const getAcademicTracks = () => {
-        if (!formData.academic_level) return [];
-        const levelData = academicStructure[formData.academic_level];
-        return levelData && levelData.tracks ? Object.keys(levelData.tracks) : [];
-    };
+    // Helper function to get available tracks for the selected academic level
+    function getAcademicTracks() {
+        if (
+            formData.academic_level &&
+            academicStructure[formData.academic_level] &&
+            academicStructure[formData.academic_level].tracks
+        ) {
+            return Object.keys(academicStructure[formData.academic_level].tracks);
+        }
+        return [];
+    }
 
     return (
         <div className="student-registration-page">
@@ -219,7 +226,7 @@ function StudentRegistrationPage() {
                 <section className="registration-section">
                     <div className="container registration-container">
                         <div className="registration-image-wrapper">
-                            <img src={LoginIllustration} alt="Registration Illustration" className="registration-illustration" />
+                            <img src={LoginIllustration} alt="Registration Illustration" className="registration-illustration" /> 
                             <h3 className="image-title">طلب إنشاء حساب طالب</h3>
                         </div>
                         <div className="registration-form-wrapper">
@@ -239,7 +246,6 @@ function StudentRegistrationPage() {
                             </div>
 
                             {errors.general && <div className="error-message-box">{errors.general}</div>}
-                            {/* لا نستخدم successMessage هنا لأن التوست سيتولى الأمر */}
 
                             <form className="student-register-form" onSubmit={handleSubmit}>
                                 {/* القسم الأول: معلومات شخصية وعامة */}

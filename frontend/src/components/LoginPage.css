@@ -24,7 +24,6 @@
 .login-section {
     padding: 60px 0;
     width: 100%;
-    /* لا توجد خلفية ديناميكية هنا بشكل افتراضي، تعتمد على primary-bg-color */
 }
 
 .login-container {

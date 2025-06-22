@@ -2,53 +2,38 @@ from djoser.serializers import UserCreateSerializer, UserSerializer
 from rest_framework import serializers
 from .models import CustomUser, AccountRequest 
 from rest_framework.authtoken.models import Token 
-from django.contrib.auth.hashers import make_password 
 
 
 class CustomUserCreateSerializer(UserCreateSerializer):
-    """
-    Serializer لإنشاء مستخدم جديد (عند التسجيل).
-    يوسع Djoser's UserCreateSerializer لإضافة حقول مخصصة.
-    """
     class Meta(UserCreateSerializer.Meta):
         model = CustomUser
-        # تأكد من تضمين جميع الحقول المخصصة التي تريدها عند إنشاء المستخدم
         fields = ('id', 'email', 'first_name', 'last_name', 'password', 'user_type', 'gender', 'governorate', 'specialized_subject', 'phone_number') 
-        # أضفت phone_number هنا بناءً على موديلك
-
-        # إذا كنت تسمح برفع user_image عند التسجيل، أضفها هنا أيضاً
-        # fields = ('id', 'email', 'first_name', 'last_name', 'password', 'user_type', 'gender', 'governorate', 'specialized_subject', 'image')
 
 
 class CustomUserSerializer(UserSerializer):
-    """
-    Serializer لعرض تفاصيل المستخدم الحالي (مثل عند الوصول إلى /api/auth/users/me/).
-    يوسع Djoser's UserSerializer لإضافة حقول مخصصة.
-    """
-    # هذا الحقل سيقوم ببناء الـ URL الكامل لصورة المستخدم
     user_image = serializers.SerializerMethodField()
 
     class Meta(UserSerializer.Meta):
         model = CustomUser
-        # الحقول التي سيتم إرجاعها عند جلب بيانات المستخدم
-        fields = ('id', 'email', 'first_name', 'last_name', 'user_type', 'user_image', 'specialized_subject', 'gender', 'governorate', 'phone_number')
-        read_only_fields = ('email',) 
+        fields = ['id', 'email', 'first_name', 'last_name', 'user_type', 'user_image', 'specialized_subject', 
+                  'gender', 'governorate', 'phone_number', 
+                  'qualifications', 'experience', 'what_will_you_add', 
+                  'instagram_link', 'facebook_link', 'website_link',
+                  'academic_level', 'academic_track', 'second_name', 'third_name', 
+                  'parent_father_phone_number', 'parent_mother_phone_number', 
+                  'school_name', 'parent_profession', 'teacher_name_for_student',
+                  'job_position', 'expected_salary', 'address', 'previous_work_experience']
+        read_only_fields = fields 
 
     def get_user_image(self, obj):
-        """
-        دالة مساعدة لبناء الـ URL الكامل لصورة المستخدم.
-        تتطلب أن يكون حقل 'image' موجوداً في موديل CustomUser وأن تكون STATIC_URL و MEDIA_URL/ROOT مضبوطة.
-        """
         if obj.image and hasattr(obj.image, 'url'): 
             request = self.context.get('request')
             if request is not None:
                 return request.build_absolute_uri(obj.image.url)
-            return obj.image.url 
+            return None 
         return None 
 
-# LoginSerializer الخاص بك:
-# هذا Serializer لم يعد مستخدماً في الـ LoginView إذا كنت تستخدم Djoser's TokenCreateView/TokenCreateSerializer.
-# سأتركه هنا فقط إذا كنت ما زلت تستخدمه في مكان آخر، لكن تأكد أنك لا تستخدمه للمصادقة الرئيسية.
+
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField(write_only=True)
     password = serializers.CharField(write_only=True, style={'input_type': 'password'})
@@ -93,7 +78,6 @@ class LoginSerializer(serializers.Serializer):
         else:
             raise serializers.ValidationError('يجب توفير البريد الإلكتروني وكلمة المرور.')
 
-# AccountRequestSerializer الخاص بك (لا علاقة له بالمصادقة المباشرة، بل بطلبات التسجيل)
 class AccountRequestSerializer(serializers.ModelSerializer):
     password_confirm = serializers.CharField(
         write_only=True,
@@ -109,8 +93,6 @@ class AccountRequestSerializer(serializers.ModelSerializer):
         read_only_fields = ('status', 'request_date',)
         extra_kwargs = {
             'password': {'write_only': True, 'style': {'input_type': 'password'}},
-            # ... (باقي extra_kwargs) ...
-            # تأكد أن هذه الحقول لها نفس الأسماء في موديل AccountRequest
             'second_name': {'required': False}, 'third_name': {'required': False},
             'phone_number': {'required': False}, 'parent_father_phone_number': {'required': False},
             'parent_mother_phone_number': {'required': False}, 'school_name': {'required': False},
@@ -144,15 +126,16 @@ class AccountRequestSerializer(serializers.ModelSerializer):
 
         elif user_type == 'teacher':
             if not data.get('specialized_subject'):
-                raise serializers.ValidationError({"specialized_subject": "المادة المتخصصة (specialized_subject) مطلوبة للأستاذ."})
+                raise serializers.ValidationError({"specialized_subject": "المادة المتخصصة مطلوبة للأستاذ."})
             
-            data['category_type'] = data.get('specialized_subject') # تعيين category_type من specialized_subject
+            data['category_type'] = data.get('specialized_subject')
 
             required_fields = ['first_name', 'last_name', 'phone_number', 'qualifications',
                              'experience', 'category_type', 'what_will_you_add']
             for field in required_fields:
                 if not data.get(field):
                     raise serializers.ValidationError({field: f"هذا الحقل مطلوب للأستاذ."})
+            
 
         elif user_type == 'team_member':
             required_fields = ['first_name', 'last_name', 'phone_number', 'job_position',
@@ -164,26 +147,32 @@ class AccountRequestSerializer(serializers.ModelSerializer):
         return data
 
     def create(self, validated_data):
-        validated_data.pop('password_confirm')
-        specialized_subject_data = validated_data.pop('specialized_subject', None) # إزالة specialized_subject
-
-        validated_data['password'] = make_password(validated_data['password'])
+        validated_data.pop('password_confirm') 
+        specialized_subject_data = validated_data.pop('specialized_subject', None)
+        
         account_request = AccountRequest.objects.create(**validated_data)
         return account_request
 
-# TeacherProfileSerializer الخاص بك
+# TeacherProfileSerializer 
 class TeacherProfileSerializer(serializers.ModelSerializer):
     specialized_subject_display = serializers.CharField(source='get_specialized_subject_display', read_only=True)
-    user_image = serializers.SerializerMethodField() # إضافة user_image هنا أيضاً للبروفايل
+    user_image = serializers.SerializerMethodField() 
 
     class Meta:
         model = CustomUser
-        fields = ['id', 'first_name', 'last_name', 'email', 'user_type', 'specialized_subject_display', 'user_image']
-    
+        # NEW: إضافة جميع الحقول المخصصة التي تم نقلها إلى CustomUser
+        # والتأكد من تضمين specialized_subject_display و user_image
+        fields = ['id', 'email', 'first_name', 'last_name', 'user_type', 'user_image', 
+                  'specialized_subject', 'specialized_subject_display', # NEW: إضافة specialized_subject_display
+                  'gender', 'governorate', 'phone_number', 
+                  'qualifications', 'experience', 'what_will_you_add',
+                  'instagram_link', 'facebook_link', 'website_link'] 
+        read_only_fields = fields # كل الحقول للقراءة فقط
+
     def get_user_image(self, obj):
         if obj.image and hasattr(obj.image, 'url'):
             request = self.context.get('request')
             if request is not None:
                 return request.build_absolute_uri(obj.image.url)
-            return obj.image.url
+            return None 
         return None

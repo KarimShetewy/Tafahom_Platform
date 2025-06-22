@@ -1,11 +1,13 @@
-import academicStructure from '../constants/academicStructure';
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import axios from 'axios'; // استيراد axios
+import academicStructure from '../constants/academicStructure';
 import './HomePage.css';
 
 import StudentHeroImage from '../assets/images/student_hero.png';
 import JoinUsIllustration from '../assets/images/join_us_illustration.png';
 
+// صور Placeholder (تأكد من وجودها)
 import Teacher1 from '../assets/images/teacher1.jpg';
 import Course1 from '../assets/images/course1.jpg';
 
@@ -23,20 +25,21 @@ function HomePage() {
 
     const handleImageError = (e) => {
         console.error("Failed to load image:", e.target.src);
-        e.target.src = 'https://via.placeholder.com/180/CCCCCC/808080?text=No+Image';
+        e.target.src = 'https://via.placeholder.com/180/CCCCCC/808080?text=No+Image'; // صورة Placeholder افتراضية
     };
 
     const fetchTeachers = async () => {
         setLoadingTeachers(true);
         setTeachersError(null);
-        let apiUrl = 'http://127.0.0.1:8000/api/courses/teachers/';
+        // المسار الصحيح لجلب قائمة المدرسين من Backend
+        let apiUrl = 'http://127.0.0.1:8000/api/teachers/'; 
         const params = new URLSearchParams();
 
         if (selectedLevel) {
-            params.append('level', selectedLevel);
+            params.append('academic_level', selectedLevel); 
         }
         if (selectedSubject) {
-            params.append('subject', selectedSubject);
+            params.append('specialized_subject', selectedSubject); 
         }
         
         if (params.toString()) {
@@ -44,15 +47,24 @@ function HomePage() {
         }
 
         try {
-            const response = await fetch(apiUrl);
-            if (!response.ok) {
-                throw new Error('فشل جلب بيانات المدرسين.');
-            }
-            const data = await response.json();
-            setTeachersData(data);
+            // استخدام axios.get لجلب البيانات (axios يتعامل مع JSON تلقائياً)
+            const response = await axios.get(apiUrl); 
+            setTeachersData(response.data);
         } catch (error) {
             console.error('Error fetching teachers:', error);
-            setTeachersError('فشل تحميل المدرسين. يرجى المحاولة لاحقاً.');
+            let errorMessage = 'فشل تحميل المدرسين. يرجى المحاولة لاحقاً.';
+            if (axios.isAxiosError(error) && error.response) {
+                if (error.response.status === 404) {
+                    errorMessage = "لم يتم العثور على مدرسين بالمعايير المختارة.";
+                } else if (error.response.data && error.response.data.detail) {
+                    errorMessage = error.response.data.detail;
+                } else {
+                    errorMessage = `خطأ في الخادم (الحالة: ${error.response.status}).`;
+                }
+            } else {
+                errorMessage = 'حدث خطأ في الشبكة أو خطأ غير متوقع.';
+            }
+            setTeachersError(errorMessage);
         } finally {
             setLoadingTeachers(false);
         }
@@ -61,11 +73,11 @@ function HomePage() {
     const fetchCourses = async () => {
         setLoadingCourses(true);
         setCoursesError(null);
-        let apiUrl = 'http://127.0.0.1:8000/api/courses/';
+        let apiUrl = 'http://127.0.0.1:8000/api/courses/'; // مسار الكورسات صحيح
         const params = new URLSearchParams();
 
         if (selectedLevel) {
-            params.append('level', selectedLevel);
+            params.append('academic_level', selectedLevel);
         }
         if (selectedSubject) {
             params.append('subject', selectedSubject);
@@ -76,15 +88,24 @@ function HomePage() {
         }
         
         try {
-            const response = await fetch(apiUrl);
-            if (!response.ok) {
-                throw new Error('فشل جلب بيانات الكورسات.');
-            }
-            const data = await response.json();
-            setCoursesData(data);
+            // استخدام axios.get لجلب البيانات (axios يتعامل مع JSON تلقائياً)
+            const response = await axios.get(apiUrl); 
+            setCoursesData(response.data);
         } catch (error) {
             console.error('Error fetching courses:', error);
-            setCoursesError('فشل تحميل الكورسات. يرجى المحاولة لاحقاً.');
+            let errorMessage = 'فشل تحميل الكورسات. يرجى المحاولة لاحقاً.';
+             if (axios.isAxiosError(error) && error.response) {
+                if (error.response.status === 404) {
+                    errorMessage = "لم يتم العثور على كورسات بالمعايير المختارة.";
+                } else if (error.response.data && error.response.data.detail) {
+                    errorMessage = error.response.data.detail;
+                } else {
+                    errorMessage = `خطأ في الخادم (الحالة: ${error.response.status}).`;
+                }
+            } else {
+                errorMessage = 'حدث خطأ في الشبكة أو خطأ غير متوقع.';
+            }
+            setCoursesError(errorMessage);
         } finally {
             setLoadingCourses(false);
         }
@@ -115,6 +136,7 @@ function HomePage() {
     const getAvailableSubjects = () => {
         if (!selectedLevel) return [];
         const levelData = academicStructure[selectedLevel];
+        // تأكد أن academicStructure.allSubjectsMap موجودة
         return levelData ? levelData.all_materials : [];
     };
 
@@ -145,7 +167,7 @@ function HomePage() {
                         <div className="teachers-filter">
                             <select onChange={handleLevelChange} value={selectedLevel}>
                                 <option value="">اختر الصف الدراسي</option>
-                                {Object.keys(academicStructure).map(levelKey => (
+                                {Object.keys(academicStructure).filter(key => key.startsWith('level')).map(levelKey => (
                                     <option key={levelKey} value={levelKey}>
                                         {academicStructure[levelKey].label}
                                     </option>
@@ -178,7 +200,7 @@ function HomePage() {
                                             <Link to={`/teachers/${teacher.id}`}> 
                                                 <div className="teacher-image-container">
                                                     <img 
-                                                        src={Teacher1} 
+                                                        src={teacher.user_image || Teacher1} 
                                                         alt={teacher.first_name || "صورة المدرس"} 
                                                         className="teacher-image" 
                                                         onError={handleImageError} 
@@ -189,7 +211,7 @@ function HomePage() {
                                                 <Link to={`/teachers/${teacher.id}`}>
                                                     <h3>أ/ {teacher.first_name} {teacher.last_name}</h3>
                                                 </Link>
-                                                <p>أستاذ {teacher.specialized_subject_display || 'تخصص غير محدد'}</p>
+                                                <p>أستاذ {academicStructure.allSubjectsMap[teacher.specialized_subject]?.label || teacher.specialized_subject || 'تخصص غير محدد'}</p>
                                             </div>
                                         </div>
                                     ))}
@@ -224,8 +246,13 @@ function HomePage() {
                                     {coursesData.map(course => (
                                         <div key={course.id} className="course-card">
                                             <div className="course-image-container-new">
-                                                <img src={course.image || Course1} alt={course.title} className="course-image-new" />
-                                                <div className="course-badge">كورس مثبت</div>
+                                                <img 
+                                                    src={course.image_url || Course1} 
+                                                    alt={course.title} 
+                                                    className="course-image-new"
+                                                    onError={handleImageError}
+                                                />
+                                                <div className="course-badge">{course.course_type_display}</div>
                                             </div>
                                             <div className="course-info-new">
                                                 <h3 title={course.title}>{course.title}</h3>
@@ -263,7 +290,7 @@ function HomePage() {
                         <h2>مواد تفاهم</h2>
 
                         <div className="all-levels-materials-grid">
-                            {Object.keys(academicStructure).filter(key => key !== 'allSubjectsMap').map(levelKey => (
+                            {Object.keys(academicStructure).filter(key => key.startsWith('level')).map(levelKey => (
                                 <div key={levelKey} className="level-group-card">
                                     <h3>{academicStructure[levelKey].label}</h3>
                                     <div className={`level-materials-container ${showAllMaterialsForLevel[levelKey] ? 'show-all' : ''}`}>

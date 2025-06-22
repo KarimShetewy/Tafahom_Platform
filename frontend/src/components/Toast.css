@@ -19,21 +19,21 @@
     z-index: 2000;
     font-size: 1.1em;
     font-weight: 600;
-    direction: rtl;
+    direction: rtl; /* اتجاه النص من اليمين لليسار */
     text-align: right;
     display: flex;
     align-items: center;
     gap: 12px;
     max-width: 380px;
 
-    flex-direction: row; 
-    justify-content: flex-start; 
+    flex-direction: row; /* الأيقونة والنص في صف واحد افتراضياً */
+    justify-content: flex-start; /* محاذاة لليمين */
 }
 
-.toast-notification.confirm { 
-    padding-bottom: 10px;
-    flex-direction: column; 
-    align-items: flex-end; 
+.toast-notification.confirm { /* أنماط خاصة لتوست التأكيد (يحتوي على أزرار) */
+    padding-bottom: 10px; /* مسافة إضافية للأزرار */
+    flex-direction: column; /* الأيقونة والنص في الأعلى، ثم الأزرار في الأسفل */
+    align-items: flex-end; /* محاذاة كل المحتوى (بما في ذلك الأزرار) لليمين */
     gap: 10px;
 }
 
@@ -45,8 +45,8 @@
 
 .toast-notification .toast-icon {
     font-size: 1.6em;
-    flex-shrink: 0;
-    line-height: 1;
+    flex-shrink: 0; /* منع الأيقونة من الانكماش */
+    line-height: 1; /* ضبط ارتفاع السطر للأيقونة */
 }
 
 /* ألوان مختلفة لأنواع التوست */
@@ -54,19 +54,19 @@
 .toast-notification.error { background-color: var(--toast-error-bg-color); }
 .toast-notification.warning { background-color: var(--toast-warning-bg-color); }
 .toast-notification.info { background-color: var(--toast-info-bg-color); }
-.toast-notification.confirm { 
+.toast-notification.confirm { /* لون مختلف لخلفية توست التأكيد (عادةً لون معلوماتي) */
     background-color: var(--info-color); 
-    color: var(--button-text-color);
+    color: var(--button-text-color); /* نص أبيض ليبرز على الخلفية الزرقاء */
 }
 
 
-/* أنماط الأزرار داخل التوست */
+/* أنماط الأزرار داخل التوست (للتوست التأكيدي) */
 .toast-actions {
     display: flex;
     gap: 10px;
-    margin-top: 10px;
-    justify-content: flex-end;
-    width: 100%;
+    margin-top: 10px; /* مسافة بين النص والأزرار */
+    justify-content: flex-end; /* محاذاة الأزرار لليمين */
+    width: 100%; /* لتمتد الأزرار على عرض التوست */
 }
 
 .toast-actions .btn {
@@ -77,13 +77,13 @@
     cursor: pointer;
     transition: all 0.2s ease;
     border: none;
-    display: flex;
+    display: flex; /* لترتيب الأيقونة والنص داخل الزر */
     align-items: center;
-    gap: 5px;
+    gap: 5px; /* المسافة بين الأيقونة والنص في الزر */
 }
 
 .toast-actions .toast-confirm-btn {
-    background-color: var(--success-color);
+    background-color: var(--success-color); /* أخضر للتأكيد */
     color: var(--button-text-color);
 }
 .toast-actions .toast-confirm-btn:hover {
@@ -92,7 +92,7 @@
 }
 
 .toast-actions .toast-cancel-btn {
-    background-color: var(--error-color);
+    background-color: var(--error-color); /* أحمر للإلغاء */
     color: var(--button-text-color);
 }
 .toast-actions .toast-cancel-btn:hover {
@@ -101,29 +101,29 @@
 }
 
 
-/* Responsive adjustments */
+/* Responsive adjustments for Toast */
 @media (max-width: 768px) {
     .toast-notification {
         bottom: 15px;
         right: 15px;
-        left: 15px;
-        max-width: unset;
+        left: 15px; /* سيأخذ العرض الكامل تقريباً */
+        max-width: unset; /* إزالة الحد الأقصى للعرض */
         font-size: 0.9em;
         padding: 12px 20px;
         text-align: center;
         justify-content: center;
-        flex-direction: column;
+        flex-direction: column; /* الأيقونة والنص والأزرار كلها تكون مكدسة عموديا */
     }
     .toast-notification .toast-icon {
         font-size: 1.3em;
     }
     .toast-actions {
-        flex-direction: column;
+        flex-direction: column; /* الأزرار أيضاً تتكدس عمودياً */
         width: 100%;
         gap: 8px;
     }
     .toast-actions .btn {
-        width: 100%;
-        justify-content: center;
+        width: 100%; /* الأزرار تأخذ العرض الكامل */
+        justify-content: center; /* توسيط محتوى الأزرار */
     }
 }

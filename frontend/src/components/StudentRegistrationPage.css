@@ -1,220 +1,354 @@
-/* Student Registration Page specific styles */
-.student-register-page {
-    text-align: right;
-    color: var(--text-color);
+/* frontend/src/components/StudentRegistrationPage.css */
+
+/* General Page Layout */
+.student-registration-page {
+    background-color: var(--primary-bg-color); /* من index.css */
+    color: var(--text-color); /* من index.css */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.5s ease, color 0.5s ease;
 }
 
-/* Student Registration Section */
-.student-register-section {
+.student-registration-page .main-content {
+    flex-grow: 1; /* لجعل المحتوى الرئيسي يملأ المساحة المتاحة */
     display: flex;
     justify-content: center;
-    align-items: flex-start;
-    min-height: 80vh;
-    padding: 40px 0;
+    align-items: center;
+    width: 100%;
+    padding: 40px 0; /* مسافة داخلية */
 }
 
-.student-register-container {
+/* Registration Section Layout */
+.registration-section {
+    padding: 60px 0;
+    width: 100%;
+}
+
+.registration-container {
     display: flex;
-    gap: 40px;
-    background-color: var(--secondary-bg-color);
-    padding: 40px;
-    border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    flex-wrap: wrap;
-    max-width: 1000px;
-    width: 90%;
-    border: 1px solid var(--border-color);
+    justify-content: center;
+    align-items: center;
+    background-color: var(--secondary-bg-color); /* من index.css */
+    border-radius: 15px;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    max-width: 1000px; /* تحديد أقصى عرض للحاوية */
+    width: 100%;
+    transition: background-color 0.5s ease, box-shadow 0.5s ease;
 }
 
-.student-register-image-wrapper {
+.registration-image-wrapper {
     flex: 1;
     display: flex;
     flex-direction: column;
-    align-items: center;
     justify-content: center;
+    align-items: center;
+    background-color: var(--primary-bg-color); /* لون خلفية جانب الصورة */
+    padding: 30px;
     text-align: center;
-    min-width: 250px;
-    order: 1;
+    transition: background-color 0.5s ease;
 }
 
-.student-illustration-img {
-    max-width: 100%;
+.registration-illustration {
+    max-width: 90%;
     height: auto;
-    border-radius: 8px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    margin-bottom: 20px;
 }
 
 .image-title {
-    margin-top: 20px;
     font-size: 1.8em;
     color: var(--heading-color);
-    font-weight: 700;
-    text-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+    margin-top: 10px;
 }
 
-.student-register-form-wrapper {
-    flex: 2;
-    min-width: 300px;
-    order: 2;
+.image-caption {
+    font-size: 1.1em;
+    color: var(--text-color);
+    line-height: 1.6;
 }
 
-.student-register-form-wrapper h2 {
+.registration-form-wrapper {
+    flex: 1;
+    padding: 40px;
+    background-color: var(--secondary-bg-color); /* لون خلفية الفورم */
+    color: var(--text-color);
+    text-align: right; /* محاذاة كل المحتوى لليمين */
+}
+
+.registration-form-wrapper h2 {
+    font-size: 2.5em;
+    color: var(--heading-color); /* لون عناوين الفورم */
+    margin-bottom: 30px;
+    text-align: center; /* توسيط العنوان */
+}
+
+/* Form sections navigation */
+.student-form-sections-nav,
+.teacher-form-sections-nav,
+.team-form-sections-nav {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 30px;
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 10px;
+}
+
+.section-nav-button {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    font-size: 1.1em;
+    font-weight: 600;
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-bottom: 3px solid transparent;
+}
+
+.section-nav-button.active {
+    color: var(--accent-color-1); /* البرتقالي للقسم النشط */
+    border-bottom-color: var(--accent-color-1);
+}
+
+.section-nav-button:hover:not(.active) {
+    color: var(--accent-color-2); /* الأخضر عند التحويم */
+}
+
+/* Form Sections Content */
+.form-section-content {
+    animation: fadeIn 0.5s ease-out; /* تأثير ظهور القسم */
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.form-section-content h3 {
+    font-size: 1.8em;
     color: var(--heading-color);
     margin-bottom: 25px;
     text-align: center;
 }
 
-/* Form Sections Navigation */
-.student-form-sections-nav {
-    display: flex;
-    justify-content: space-around;
-    margin-bottom: 30px;
-    background-color: var(--primary-bg-color);
-    padding: 10px;
-    border-radius: 8px;
-    box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
-    border: 1px solid var(--border-color);
-}
-
-.section-nav-button {
-    background-color: transparent;
-    color: var(--text-color);
-    border: 1px solid var(--border-color);
-    padding: 10px 15px;
-    border-radius: 5px;
-    transition: all 0.3s ease;
-    flex: 1;
-    margin: 0 5px;
-    font-weight: bold;
-}
-
-.section-nav-button.active {
-    background-color: var(--accent-color-1);
-    color: var(--button-text-color);
-    border-color: var(--accent-color-1);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(var(--accent-color-1-rgb), 0.4);
-}
-
-.section-nav-button:hover:not(.active) {
-    background-color: var(--accent-color-2);
-    color: var(--button-text-color);
-    transform: translateY(-2px);
-}
-
-/* Form Section Content */
-.form-section-content h3 {
-    color: var(--accent-color-2);
+/* Form Groups */
+.registration-form .form-group {
     margin-bottom: 20px;
     text-align: right;
 }
 
-.student-register-form .form-group {
-    margin-bottom: 20px;
-}
-
-.student-register-form label {
+.registration-form label {
     display: block;
+    font-size: 1em;
+    color: var(--heading-color);
     margin-bottom: 8px;
-    color: var(--text-color);
-    font-weight: bold;
+    font-weight: 600;
 }
 
-/* Reusing input, select, textarea styles from App.css or index.css */
-/* Make sure these styles are available globally or copy them here if necessary */
-/* They are already defined in App.css for global use */
-
-.student-register-form input[type="file"] {
-    color: var(--text-color);
-    padding-top: 5px;
-    margin-bottom: 10px;
+.registration-form input[type="text"],
+.registration-form input[type="email"],
+.registration-form input[type="password"],
+.registration-form input[type="tel"],
+.registration-form input[type="number"],
+.registration-form input[type="url"],
+.registration-form textarea,
+.registration-form select,
+.registration-form input[type="file"] {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: var(--primary-bg-color); /* لون خلفية حقول الإدخال */
+    color: var(--text-color); /* لون النص داخل الحقول */
+    font-size: 1em;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    box-sizing: border-box; /* لضمان أن البادينغ لا يزيد من العرض الكلي */
 }
 
-/* Specific file upload group style */
-.form-group.upload-group {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
+.registration-form input[type="text"]:focus,
+.registration-form input[type="email"]:focus,
+.registration-form input[type="password"]:focus,
+.registration-form input[type="tel"]:focus,
+.registration-form input[type="number"]:focus,
+.registration-form input[type="url"]:focus,
+.registration-form textarea:focus,
+.registration-form select:focus,
+.registration-form input[type="file"]:focus {
+    outline: none;
+    border-color: var(--accent-color-1); /* البرتقالي عند التركيز */
+    box-shadow: 0 0 0 3px rgba(var(--accent-color-1-rgb), 0.3);
 }
 
-.upload-btn {
-    background-color: var(--heading-color); /* زر الرفع بلون أخضر */
-    color: var(--button-text-color);
-    padding: 8px 15px;
-    border-radius: 5px;
+.registration-form textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+.registration-form select {
+    appearance: none; /* إزالة سهم الاختيار الافتراضي */
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23000000%22%20d%3D%22M287%2C197.386L159.2%2C69.586c-3.7-3.7-8.6-5.6-13.5-5.6s-9.8%2C1.9-13.5%2C5.6L5.386%2C197.386c-7.2%2C7.2-7.2%2C18.9%2C0%2C26.1l11.4%2C11.4c7.2%2C7.2%2C18.9%2C7.2%2C26.1%2C0L145.7%2C150.5c3.7-3.7%2C8.6-5.6%2C13.5-5.6s9.8%2C1.9%2C13.5%2C5.6l98.8%2C98.8c7.2%2C7.2%2C18.9%2C7.2%2C26.1%2C0l11.4-11.4C294.2%2C216.286%2C294.2%2C204.586%2C287%2C197.386z%22%2F%3E%3C%2Fsvg%3E');
+    background-repeat: no-repeat;
+    background-position: left 15px center; /* ضبط موضع السهم لليسار في RTL */
+    background-size: 0.8em;
+    padding-left: 35px; /* مسافة داخلية لليسار للسهم */
+}
+
+.registration-form .error-message {
+    color: var(--error-color);
+    font-size: 0.85em;
     margin-top: 5px;
-    align-self: flex-start;
+    text-align: right;
+    display: block; /* لجعلها تظهر في سطر جديد */
 }
 
-.upload-btn:hover {
-    background-color: rgba(var(--heading-color-rgb), 0.8);
-}
-
-/* Navigation Buttons (Previous/Next) */
-.form-nav-btn {
-    margin-top: 20px;
+/* Buttons */
+.registration-form .form-nav-btn {
     padding: 12px 25px;
     font-size: 1em;
-    margin-left: 10px;
+    border-radius: 8px;
+    font-weight: 600;
+    margin-top: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Submit Button */
-.submit-btn {
-    width: 100%;
-    padding: 15px;
-    font-size: 1.1em;
-    background-color: var(--accent-color-1);
+.registration-form .form-nav-btn:first-of-type {
+    margin-left: 10px; /* مسافة بين الأزرار */
+}
+
+.registration-form .submit-btn {
+    background-color: var(--accent-color-2); /* أخضر لزر الإرسال النهائي */
     color: var(--button-text-color);
-    border-radius: 5px;
-    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    box-shadow: 0 5px 15px rgba(var(--accent-color-2-rgb), 0.3);
 }
-
-.submit-btn:hover {
-    background-color: rgba(var(--accent-color-1-rgb), 0.8);
+.registration-form .submit-btn:hover {
+    filter: brightness(90%);
     transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(var(--accent-color-1-rgb), 0.4);
+    box-shadow: 0 8px 20px rgba(var(--accent-color-2-rgb), 0.4);
+}
+.registration-form .submit-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
 }
 
-/* Has Account Link */
-.has-account-link {
-    margin-top: 25px;
+/* Upload Group */
+.form-group.upload-group {
+    border: 1px dashed var(--border-color);
+    padding: 20px;
+    border-radius: 8px;
+    background-color: var(--primary-bg-color);
     text-align: center;
+}
+.form-group.upload-group label {
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+.form-group.upload-group input[type="file"] {
+    border: none;
+    background: none;
+    padding: 0;
+    width: auto; /* للسماح بعرض اسم الملف */
+    margin: 0 auto; /* توسيط حقل الملف */
+}
+
+
+/* Link to login page */
+.has-account-link {
+    margin-top: 30px;
+    text-align: center;
+    font-size: 1em;
     color: var(--text-color);
 }
-
 .has-account-link a {
-    color: var(--heading-color);
-    font-weight: bold;
+    color: var(--accent-color-1); /* برتقالي للرابط */
+    text-decoration: none;
+    font-weight: 600;
 }
-
 .has-account-link a:hover {
-    color: var(--accent-color-1);
+    text-decoration: underline;
 }
 
-/* Validation Error Message */
-.error-message {
-    color: var(--error-color);
-    font-size: 0.9em;
-    margin-top: 5px;
-    display: block;
-}
 
 /* Responsive adjustments */
-@media (max-width: 768px) {
-    .student-register-container {
+@media (max-width: 992px) {
+    .registration-container {
         flex-direction: column;
+        max-width: 90%;
+    }
+    .registration-image-wrapper {
         padding: 20px;
     }
-    .student-register-form-wrapper, .student-register-image-wrapper {
-        order: initial;
+    .registration-form-wrapper {
+        padding: 30px;
     }
-    .student-form-sections-nav {
-        flex-wrap: wrap;
-        gap: 5px;
+    .registration-form-wrapper h2 {
+        font-size: 2.2em;
+    }
+    .form-section-content h3 {
+        font-size: 1.5em;
     }
     .section-nav-button {
+        font-size: 0.95em;
+        padding: 8px 10px;
+    }
+    .registration-form .form-group label {
+        font-size: 0.9em;
+    }
+    .registration-form input, 
+    .registration-form textarea, 
+    .registration-form select {
+        padding: 10px 12px;
+        font-size: 0.9em;
+    }
+    .registration-form .form-nav-btn,
+    .registration-form .submit-btn {
+        padding: 10px 20px;
+        font-size: 0.95em;
+    }
+}
+
+@media (max-width: 576px) {
+    .registration-container {
+        max-width: 95%;
+        border-radius: 10px;
+    }
+    .registration-image-wrapper {
+        display: none; /* إخفاء الصورة في شاشات الجوال الصغيرة جداً */
+    }
+    .registration-form-wrapper {
+        padding: 20px;
+    }
+    .registration-form-wrapper h2 {
+        font-size: 1.8em;
+    }
+    .form-section-content h3 {
+        font-size: 1.3em;
+    }
+    .student-form-sections-nav,
+    .teacher-form-sections-nav,
+    .team-form-sections-nav {
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: center;
+    }
+    .section-nav-button {
+        width: 100%;
+        max-width: 150px;
         margin: 0;
-        flex-basis: 48%;
+    }
+    .registration-form .form-nav-btn,
+    .registration-form .submit-btn {
+        width: 100%;
+        margin-left: 0 !important;
+    }
+    .registration-form .form-nav-btn:first-of-type {
+        margin-left: 0 !important;
+    }
+    .has-account-link {
         font-size: 0.9em;
     }
 }

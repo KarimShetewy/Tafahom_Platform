@@ -1,62 +1,43 @@
 // frontend/src/constants/academicStructure.js
 
 const academicStructure = {
-    // مستويات أكاديمية
-    'level1': {
-        label: 'الصف الأول الإعدادي',
-        tracks: {
-            'general': { label: 'عام' },
-        },
-        all_materials: ['arabic', 'english', 'math', 'science'],
-    },
-    'level2': {
-        label: 'الصف الثاني الإعدادي',
-        tracks: {
-            'general': { label: 'عام' },
-        },
-        all_materials: ['arabic', 'english', 'math', 'science'],
-    },
-    'level3': {
-        label: 'الصف الثالث الإعدادي',
-        tracks: {
-            'general': { label: 'عام' },
-        },
-        all_materials: ['arabic', 'english', 'math', 'science'],
-    },
+    // مستويات أكاديمية (Academic Levels) - الثانوية العامة فقط
+    // REMOVED: 'level1': { ... }
+    // REMOVED: 'level2': { ... }
+    // REMOVED: 'level3': { ... }
+
     'level_sec_1': {
         label: 'الصف الأول الثانوي',
-        tracks: {
-            'science': { label: 'علمي' },
-            'literary': { label: 'أدبي' },
+        tracks: { 
+            'general': { label: 'عام' }, 
         },
         all_materials: ['arabic', 'english', 'math_sec', 'physics', 'chemistry', 'biology', 'history', 'geography', 'philosophy'],
     },
     'level_sec_2': {
         label: 'الصف الثاني الثانوي',
-        tracks: {
-            'science': { label: 'علمي' },
-            'literary': { label: 'أدبي' },
+        tracks: { 
+            'general': { label: 'عام' }, 
         },
         all_materials: ['arabic', 'english', 'math_sec', 'physics', 'chemistry', 'biology', 'geology', 'history', 'geography', 'philosophy'],
     },
     'level_sec_3': {
         label: 'الصف الثالث الثانوي',
-        tracks: {
-            'science_math': { label: 'علمي رياضة' },
-            'science_علوم': { label: 'علمي علوم' },
-            'literary': { label: 'أدبي' },
+        tracks: { 
+            'general': { label: 'عام' }, 
         },
         all_materials: ['arabic', 'english', 'math_3_science', 'math_3_lit', 'physics', 'chemistry', 'biology', 'geology', 'history', 'geography', 'philosophy_3'],
     },
 
-    // خيارات الجنس
+    // خيارات الجنس (Genders)
     genders: {
+        '': { label: 'اختر الجنس' }, 
         'male': { label: 'ذكر' },
         'female': { label: 'أنثى' },
     },
 
-    // خيارات المحافظات
+    // خيارات المحافظات (Governorates)
     governorates: {
+        '': { label: 'اختر المحافظة' }, 
         'cairo': { label: 'القاهرة' },
         'alexandria': { label: 'الإسكندرية' },
         'giza': { label: 'الجيزة' },
@@ -85,8 +66,9 @@ const academicStructure = {
         'damietta': { label: 'دمياط' },
     },
 
-    // مهن ولي الأمر
+    // مهن ولي الأمر (Parent Professions)
     parentProfessions: {
+        '': { label: 'اختر مهنة ولي الأمر' }, 
         'doctor': { label: 'طبيب' },
         'engineer': { label: 'مهندس' },
         'teacher': { label: 'معلم' },
@@ -96,8 +78,9 @@ const academicStructure = {
         'other': { label: 'أخرى' },
     },
 
-    // وظائف فريق العمل (لفورم تسجيل فريق العمل)
+    // وظائف فريق العمل (Job Positions for team_member)
     jobPositions: {
+        '': { label: 'اختر الوظيفة' }, 
         'developer': { label: 'مطور' },
         'designer': { label: 'مصمم' },
         'content_creator': { label: 'منشئ محتوى' },
@@ -106,31 +89,45 @@ const academicStructure = {
         'admin_assistant': { label: 'مساعد إداري' },
     },
 
-    // أسماء المدرسين (هذه غالباً ستأتي من API في تطبيق حقيقي، لكن للاختبار)
+    // أسماء المدرسين (Teacher Names - هذه غالباً ستأتي من API في تطبيق حقيقي، لكن للاختبار)
     teacherNames: {
-        'ahmed_ali': { label: 'أ. أحمد علي' },
-        'mohamed_hassan': { label: 'أ. محمد حسن' },
-        'fatma_zaki': { label: 'أ. فاطمة زكي' },
+        '': { label: 'اختر الأستاذ (اختياري)' }, 
+        'teacher_ahmed': { label: 'أ. أحمد علي' },
+        'teacher_mohamed': { label: 'أ. محمد حسن' },
+        'teacher_fatma': { label: 'أ. فاطمة زكي' },
     },
 
-    // خريطة لجميع المواد (للتخصصات أو العرض العام)
+    // خريطة لجميع المواد (All Subjects Map - للمواد الفنية في Django)
     allSubjectsMap: {
         'arabic': { label: 'اللغة العربية' },
         'english': { label: 'اللغة الإنجليزية' },
-        'math': { label: 'الرياضيات (إعدادي)' },
+        // REMOVED: 'math': { label: 'الرياضيات (إعدادي)' },
         'math_sec': { label: 'الرياضيات (ثانوي عام)' },
         'math_3_science': { label: 'الرياضيات (علمي رياضة)'},
         'math_3_lit': { label: 'الرياضيات (أدبي)'},
-        'science': { label: 'العلوم (إعدادي)' },
         'physics': { label: 'الفيزياء' },
         'chemistry': { label: 'الكيمياء' },
         'biology': { label: 'الأحياء' },
         'geology': { label: 'الجيولوجيا' },
         'history': { label: 'التاريخ' },
         'geography': { label: 'الجغرافيا' },
-        'philosophy': { label: 'الفلسفة والمنطق' },
+        'philosophy_logic': { label: 'الفلسفة والمنطق' },
         'philosophy_3': { label: 'الفلسفة والمنطق (ثانوية عامة)'},
-        // أضف أي مواد أخرى هنا
+        'religious_edu': { label: 'التربية الدينية' },
+        'programming_cs': { label: 'البرمجة وعلوم الحاسب' },
+        'eg_national_edu': { label: 'التربية الوطنية' },
+        'vocational_edu': { label: 'التربية المهنية' },
+        'military_edu': { label: 'التربية العسكرية' },
+        'psychology': { label: 'علم النفس' },
+        'sociology': { label: 'علم اجتماع' },
+        'applied_math': { label: 'الرياضيات التطبيقية' },
+        'solid_geometry': { label: 'الهندسة الفراغية' },
+        'statistics': { label: 'الإحصاء' },
+        'environmental_science': { label: 'علوم البيئة' },
+        'economy': { label: 'الاقتصاد' },
+        'philosophy': { label: 'فلسفة' },
+        'logic': { label: 'منطق' },
+        'civics': { label: 'المواطنة' },
     },
 };
 
